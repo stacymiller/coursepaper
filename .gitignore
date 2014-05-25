@@ -223,3 +223,16 @@ pip-log.txt
 .synctex.gz
 .out
 .blg
+6th-semester-blx.bib
+
+*.aux
+
+*.bbl
+
+*.blg
+
+*.fdb_latexmk
+
+*.xml
+
+*.gz
