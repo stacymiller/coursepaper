@@ -236,3 +236,9 @@ pip-log.txt
 *.xml
 
 *.gz
+
+*.bcf
+
+*.out
+
+*.toc

@@ -1,0 +1,101 @@
+%%%%%
+%% StatMod' Diploma Work TitlePage Template
+%%
+%% Copyright 2007, 2008 Anton Korobeynikov <asl@math.spbu.ru>
+%% This program can be redistributed and/or modified under the terms
+%% of the GNU Public License, version 2.
+%%
+%% Usage: Set the following fields:
+%%
+%% \author{}
+%% \status{}
+%% \title{}
+%% \subtitle{} (optional)
+%% \supervisor{}
+%% \reviewer{}
+%% \chief{}
+%% \group{}
+%% \facility{}
+%% \date{}
+%% Then do \maketitle. And you'll get it.
+%%%%%
+
+\ProvidesPackage{statmodtitle}
+
+\def\title#1{\gdef\@title{#1}}
+\def\subtitle#1{\gdef\@subtitle{#1}}
+\def\author#1{\gdef\@author{#1}}
+\def\status#1{\gdef\@status{#1}}
+\def\group#1{\gdef\@group{#1}}
+
+\def\supervisor#1{\gdef\@supervisor{#1}}
+\def\reviewer#1{\gdef\@reviewer{#1}}
+\def\chief#1{\gdef\@chief{#1}}
+
+\def\facility#1{\gdef\@facility{#1}}
+\def\date#1{\gdef\@date{#1}}
+
+\def\@author{\@latex@error{No \noexpand\author given}\@ehc}
+\def\@title{\@latex@error{No \noexpand\title given}\@ehc}
+\def\@status{\@latex@warning@no@line{No \noexpand\status given}}
+\def\@group{\@latex@warning@no@line{No \noexpand\group given}}
+\let\@subtitle\@empty
+
+\def\@supervisor{\@latex@warning@no@line{No \noexpand\supervisor given}}
+\def\@reviewer{\@latex@warning@no@line{No \noexpand\reviewer given}}
+\def\@chief{\@latex@warning@no@line{No \noexpand\chief given}}
+
+\def\@facility{\@latex@warning@no@line{No \noexpand\facility given}}
+\def\@date{\@latex@warning@no@line{No \noexpand\date given}}
+\let\@date\today
+
+\renewcommand{\maketitle}{%
+    \begin{titlepage}%
+        \begin{center}
+            Санкт-Петербургский государственный университет\par
+            Математико-механический факультет\par
+            {\@facility} \par
+            \vspace{40mm}
+            {\Large\@author}\par
+            \vspace{20mm}
+            {\LARGE\bf<<\scshape{\@title}>>}\par
+            \vspace{5mm}
+            {\@subtitle}\par
+            \vspace{20mm}
+            {\Large\bfКурсовая работа}\par
+        \end{center}
+        \vfill
+        \hfill
+        \begin{minipage}[t]{80mm}\flushleft            
+            \vspace{10mm}            
+            Научный руководитель \par
+                        {\@supervisor}\par
+ \vspace{10mm}
+Рецензент \par  
+ {\@reviewer}\par
+            \vspace{10mm}
+        \end{minipage}
+        \vspace{10mm}
+        \vfill
+        \begin{center}Санкт-Петербург\par\@date г.\end{center}
+    \end{titlepage}
+    \stepcounter{page}
+
+    \global\let\@title\@empty
+    \global\let\title\relax
+    \global\let\@subtitle\@empty
+    \global\let\subtitle\relax
+    \global\let\@author\@empty
+    \global\let\author\relax
+    \global\let\@status\@empty
+    \global\let\status\relax
+    \global\let\@group\@empty
+    \global\let\group\relax
+
+    \global\let\@supervisor\@empty
+    \global\let\@reviewer\@empty
+    \global\let\@chief\@empty
+    
+    \global\let\@facility\@empty
+    \global\let\@date\@empty
+}
