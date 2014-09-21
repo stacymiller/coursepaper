@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Random;
 
 class ImitatedAsset{
@@ -40,11 +39,8 @@ public class Main {
         if (steps > 0) {
             for (int branch = 0; branch < branches; branch++) {
                 double price = initialPrice + rnd.nextGaussian() * lambda;
-//                System.out.println(((Double)price).toString() + " " + ((Integer)steps).toString());
                 ans.children[branch] = generateAssets(branches, steps-1, price);
-//                System.out.println(price);
             }
-//            System.out.println(Arrays.toString(ans.children));
         }
         return ans;
     }
@@ -55,6 +51,7 @@ public class Main {
         double initialPrice = 100.;
         ImitatedAsset ia = generateAssets(branches, steps, initialPrice);
         System.out.println(ia);
-        System.out.println("Hello World!");
+        System.out.println(BroadieGlassermanEstimation.upperEstimate(ia, 110));
+        System.out.println(BroadieGlassermanEstimation.lowerEstimate(ia, 110));
     }
 }
