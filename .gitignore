@@ -4,6 +4,7 @@
 ## IDEA
 *.xml
 *.iml
+app/.idea/*
 
 ## LATEX
 
