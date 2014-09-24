@@ -20,6 +20,7 @@ class ImitatedAsset implements Comparable{
         lastChild = isLastChild;
     }
 
+    @Override
     public String toString(){
         String ans = "";
         if (!lastChild) {
@@ -64,10 +65,15 @@ public class Main {
         return initialPrice + rnd.nextGaussian() * lambda;
     }
 
-//    private static ImitatedAsset generateByHistogramRecursive(int startingStep, int steps) {
-//
-//    }
-
+    /** Creates new generaions of assets based on distribution of the previous generation
+     *
+     * @param width
+     * @param branch
+     * @param steps
+     * @param sectors
+     * @param initialPrice
+     * @return
+     */
     public static ImitatedAsset generateAssetByHistogram(int width, int branch, int steps, int sectors, double initialPrice){
         int expSteps = (int) Math.floor(Math.log(width) / Math.log(branch));
         ImitatedAsset[] nodes = new ImitatedAsset[width];
@@ -90,9 +96,10 @@ public class Main {
 //                return false;
 //            }
 //        }
-        for (int step = expSteps, i = expSteps; step < steps; step++) {
+        for (int step = expSteps; step < steps; step++) {
+            Arrays.sort(nodes);
+            ImitatedAsset[] new_nodes = new ImitatedAsset[width]; // possible ArrayIndexOutOfBounds
             List<ImitatedAsset> aNodes = Arrays.asList(nodes);
-            Collections.sort(aNodes);
             double min = Collections.min(aNodes).price;
             double max = Collections.max(aNodes).price;
             double sector = (max - min) / sectors;
@@ -101,19 +108,26 @@ public class Main {
             int k = 0;
             int amount = 0;
             for (int j = 0; j < len; j++){
+                int new_nodes_i = 0;
                 if (nodes[j].price > (k+1) * sector) {
-                    ImitatedAsset asset = new ImitatedAsset(sum / amount, (int)(((double)amount / len) * width));
+                    int children = (int)(((double)amount / len) * width);
+                    ImitatedAsset asset = new ImitatedAsset(sum / amount, children);
                     for (int l = 0; l < amount; l++ ){ // assign average node as a child to the previous generation
                         nodes[j-l-1].children[0] = asset;
                     }
-                    // here I should generate new nodes from average
                     k++;
                     amount = 0;
                     sum = 0.;
+                    for (int i = 0; i < children; i++, new_nodes_i++){
+                        asset.children[i] = new ImitatedAsset(getRandomPrice(asset.price), 1);
+                        new_nodes[new_nodes_i] = asset.children[i];
+                    }
+                    new_nodes = asset.children;
                 }
                 sum += nodes[j].price;
                 amount++;
             }
+            nodes = new_nodes;
             // OR take all the averages and produce new {{nodes}} from them here
         }
         return ans;
@@ -143,9 +157,9 @@ public class Main {
         int branches = 3;
         int steps = 5;
         double initialPrice = 100.;
-        ImitatedAsset ia = generateTreeAssets(branches, steps, initialPrice);
+        ImitatedAsset ia = generateAssetByHistogram(15, branches, steps, 5, initialPrice);
         System.out.println(ia);
-        System.out.println(BroadieGlassermanEstimation.upperEstimate(ia, 110));
-        System.out.println(BroadieGlassermanEstimation.lowerEstimate(ia, 110));
+//        System.out.println(BroadieGlassermanEstimation.upperEstimate(ia, 110));
+//        System.out.println(BroadieGlassermanEstimation.lowerEstimate(ia, 110));
     }
 }
