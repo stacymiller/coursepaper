@@ -39,7 +39,7 @@ class ImitatedAsset implements Comparable{
         if (o instanceof ImitatedAsset){
             return (price < ((ImitatedAsset)o).price) ? 1 : -1;
         } else if (o == null) {
-            throw new NullPointerException();
+            return 1;
         } else {
             throw new ClassCastException("Cannot compare ImitatedAsset to " + o.getClass().getName());
         }
@@ -63,6 +63,16 @@ public class Main {
 
     private static double getRandomPrice(double initialPrice) {
         return initialPrice + rnd.nextGaussian() * lambda;
+    }
+    
+    private static double extremalValue(ImitatedAsset[] a, int sign){
+        double ans = Double.MAX_VALUE - 2;
+        for (ImitatedAsset i: a){
+            if ((i != null) && (sign * i.price > sign * ans)){
+                ans = i.price;
+            }
+        }
+        return ans;
     }
 
     /** Creates new generaions of assets based on distribution of the previous generation
@@ -97,11 +107,23 @@ public class Main {
 //            }
 //        }
         for (int step = expSteps; step < steps; step++) {
-            Arrays.sort(nodes);
+//            Arrays.sort(nodes);
+            Arrays.sort(nodes, new Comparator<ImitatedAsset>() {
+                @Override
+                public int compare(ImitatedAsset o1, ImitatedAsset o2) {
+                   if (o1 != null){
+                       return o1.compareTo(o2);
+                   } else if (o2 != null) {
+                       return - o2.compareTo(o1);
+                   } else {
+                       return 0;
+                   }
+                }
+            });
             ImitatedAsset[] new_nodes = new ImitatedAsset[width]; // possible ArrayIndexOutOfBounds
             List<ImitatedAsset> aNodes = Arrays.asList(nodes);
-            double min = Collections.min(aNodes).price;
-            double max = Collections.max(aNodes).price;
+            double min = extremalValue(nodes, -1);
+            double max = extremalValue(nodes, 1);
             double sector = (max - min) / sectors;
             // split [min(nodes); max(nodes)] in {{sectors}} parts and link nodes from each part to their average node
             double sum = 0;
