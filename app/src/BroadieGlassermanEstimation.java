@@ -3,11 +3,14 @@
  */
 public class BroadieGlassermanEstimation extends Estimation {
     public static double upperEstimate(ImitatedAsset a, double strikePrice){
+        if (a == null) {
+            return 0;
+        }
         if (a.lastChild) {
             return payoff(strikePrice, a.price);
         }
         double ans = 0;
-        double len = a.children.length;
+        double len = a.children_length();
         for (ImitatedAsset child : a.children){
             ans += upperEstimate(child, strikePrice) / len;
         }
@@ -15,11 +18,14 @@ public class BroadieGlassermanEstimation extends Estimation {
     }
 
     public static double lowerEstimate(ImitatedAsset a, double strikePrice){
+        if (a == null) {
+            return 0;
+        }
         if (a.lastChild) {
             return payoff(strikePrice, a.price);
         }
 
-        int len = a.children.length;
+        int len = a.children_length();
         double[] childrenEstimates = new double[len];
         double sum = 0;
         for (int i = 0; i < len; i++){

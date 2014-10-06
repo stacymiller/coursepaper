@@ -7,6 +7,7 @@ class ImitatedAsset implements Comparable{
     double price;
     ImitatedAsset[] children;
     boolean lastChild;
+    private int p_children_length = -1;
 
     ImitatedAsset(double newPrice, int branches){
         price = newPrice;
@@ -18,6 +19,20 @@ class ImitatedAsset implements Comparable{
         price = newPrice;
         children = new ImitatedAsset[branches];
         lastChild = isLastChild;
+    }
+
+    public int children_length(){
+        if (p_children_length >= 0) {
+            return p_children_length;
+        }
+        int ans = 0;
+        for (ImitatedAsset child: children){
+            if (child != null) {
+                ans++;
+            }
+        }
+        p_children_length = ans;
+        return p_children_length;
     }
 
     @Override
