@@ -49,9 +49,6 @@ public class AssetGenerator {
         ImitatedAsset ans = generateTreeAssetsToModeling(branch, expSteps, initialPrice, nodes);
 
         for (int step = expSteps; step < steps; step++) {
-            for (ImitatedAsset n: nodes){
-                System.out.print((n == null ? "null" : n.price) + " ");
-            }
             Arrays.sort(nodes, new Comparator<ImitatedAsset>() {
                 @Override
                 public int compare(ImitatedAsset o1, ImitatedAsset o2) {
@@ -65,12 +62,12 @@ public class AssetGenerator {
                 }
             });
             int len = countLength(nodes);
-            System.out.println(String.format("length of nodes: %d, step: %d < %d", len, step, steps));
+//            System.out.println(String.format("length of nodes: %d, step: %d < %d", len, step, steps));
 
             double min = extremalValue(nodes, -1);
             double max = extremalValue(nodes, 1);
             double sector = (max - min) / sectors;
-            System.out.println(sector);
+
             // split [min(nodes); max(nodes)] in {{sectors}} parts and link nodes from each part to their average node
             double sum = 0;
             int k = 0;
@@ -81,6 +78,7 @@ public class AssetGenerator {
                 if (nodes[j].price < max - (k+1) * sector) { // reached the end of the sector
                     System.out.print(" | ");
                     int children = (int)(((double)amount / len) * width);
+                    assert children > 0;
                     ImitatedAsset asset = new ImitatedAsset(sum / amount, children, false); // intermediate asset will definitely have children
                     for (int l = 0; l < amount; l++ ){ // assign average node as a child to the previous generation
                         nodes[j-l-1].children[0] = asset;
@@ -100,6 +98,10 @@ public class AssetGenerator {
             }
             System.out.print("\n");
             nodes = new_nodes;
+            for (ImitatedAsset node: new_nodes){
+                System.out.print(String.format("%.2f ", (node == null) ? -1. : node.price));
+            }
+            System.out.println();
             // OR take all the averages and produce new {{nodes}} from them here
         }
         return ans;
