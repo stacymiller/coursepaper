@@ -1,3 +1,6 @@
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.view.mxGraph;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,6 +66,11 @@ public class MainWindow {
             }
         };
         generateAssetButton.addActionListener(generateAssetListener);
+
+//        mxGraph graph = new mxGraph();
+//
+//        assetDrawingPanel = new AssetDrawingPanel(graph);
+//        mainPanel.add(assetDrawingPanel);
     }
 
 
@@ -73,5 +81,11 @@ public class MainWindow {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    private void createUIComponents() {
+//        mxGraph graph = new mxGraph();
+//
+//        assetDrawingPanel = new AssetDrawingPanel(graph);
     }
 }
