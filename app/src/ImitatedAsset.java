@@ -37,21 +37,21 @@ class ImitatedAsset implements Comparable{
 
     @Override
     public String toString(){
-        String ans = "";
-        if (!lastChild) {
-            for (ImitatedAsset child: children){
-                String temp;
-                if (child == null) {
-                    temp = "null";
-                } else {
-                    temp = child.toString();
-                }
-                ans = ans + temp + "\n";
-            }
-            ans = ans.trim() + "\t";
-        }
-        ans = ans + price + "\n";
-        return ans;
+//        String ans = "";
+//        if (!lastChild) {
+//            for (ImitatedAsset child: children){
+//                String temp;
+//                if (child == null) {
+//                    temp = "null";
+//                } else {
+//                    temp = child.toString();
+//                }
+//                ans = ans + temp + "\n";
+//            }
+//            ans = ans.trim() + "\t";
+//        }
+//        ans = ans + price + "\n";
+        return String.format("%.2f", price);
     }
 
     @Override
