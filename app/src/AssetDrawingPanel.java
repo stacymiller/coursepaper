@@ -1,4 +1,10 @@
+import com.mxgraph.layout.mxFastOrganicLayout;
+import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.swing.util.mxMorphing;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
+import com.mxgraph.util.mxEventSource;
 import com.mxgraph.view.mxGraph;
 
 import javax.swing.*;
@@ -13,16 +19,19 @@ public class AssetDrawingPanel extends mxGraphComponent{
 
     public AssetDrawingPanel(mxGraph g, ImitatedAsset assetToDraw) {
         super(g);
+        setEnabled(false);
         asset = assetToDraw;
     }
 
     public AssetDrawingPanel(mxGraph g) {
         super(g);
+        setEnabled(false);
         asset = null;
     }
 
     public AssetDrawingPanel() {
         super(new mxGraph());
+        setEnabled(false);
         asset = null;
     }
 
@@ -30,21 +39,31 @@ public class AssetDrawingPanel extends mxGraphComponent{
         asset = assetToDraw;
         mxGraph graph = getGraph();
         Object parent = graph.getDefaultParent();
-
+        mxIGraphLayout layout = new mxFastOrganicLayout(graph);
         graph.getModel().beginUpdate();
         try
         {
-            Object v1 = graph.insertVertex(parent, null, "Hello", 20, 20, 80,
-                    30);
-            Object v2 = graph.insertVertex(parent, null, "World!", 240, 150,
-                    80, 30);
-            graph.insertEdge(parent, null, "Edge", v1, v2);
+            graph.removeCells(graph.getChildVertices(graph.getDefaultParent()));
+            assetToGraph(assetToDraw, graph, parent);
         }
         finally
         {
             graph.getModel().endUpdate();
         }
-//        repaint();
+
+        graph.getModel().beginUpdate();
+        layout.execute(graph.getDefaultParent());
+        graph.getModel().endUpdate();
+    }
+
+    private void assetToGraph(ImitatedAsset assetToDraw, mxGraph graph, Object parent) {
+        Object root = graph.insertVertex(parent, null, assetToDraw, 0,0, 40, 40);
+        graph.insertEdge(root, null, "", parent, root);
+        for (ImitatedAsset child: assetToDraw.children){
+            if (child != null) {
+                assetToGraph(child, graph, root);
+            }
+        }
     }
 
     public Dimension getMinimumSize() {
@@ -59,25 +78,25 @@ public class AssetDrawingPanel extends mxGraphComponent{
         return new Dimension (1024, 1024);
     }
 
-    private void paintAsset(Graphics2D g, ImitatedAsset a, int x, int yTop, int yBottom) {
-        String s = String.format(" %.2f ", a.price);
-        g.drawString(s, x, yTop + (yBottom - yTop) / 2);
-        FontMetrics metrics = g.getFontMetrics();
-        int hgt = metrics.getHeight();
-        int wdt = metrics.stringWidth(s);
-        int space = metrics.stringWidth(String.format("%.2f", 100.));
-        if (!a.lastChild) {
-            int len = a.children_length();
-            double h = ((double)(yBottom - yTop)) / len;
-            for (int i=0, j=0; i < a.children.length; i++) {
-                if (a.children[i] != null) {
-                    g.drawLine(x + wdt, yTop + (yBottom - yTop - hgt) / 2, x + wdt + space, yTop + (int)((j + 0.5) * h - hgt / 2));
-                    paintAsset(g, a.children[j], x + wdt + space, yTop + (int)(j * h), yTop + (int)((j + 1) * h));
-                    j++;
-                }
-            }
-        }
-    }
+//    private void paintAsset(Graphics2D g, ImitatedAsset a, int x, int yTop, int yBottom) {
+//        String s = String.format(" %.2f ", a.price);
+//        g.drawString(s, x, yTop + (yBottom - yTop) / 2);
+//        FontMetrics metrics = g.getFontMetrics();
+//        int hgt = metrics.getHeight();
+//        int wdt = metrics.stringWidth(s);
+//        int space = metrics.stringWidth(String.format("%.2f", 100.));
+//        if (!a.lastChild) {
+//            int len = a.children_length();
+//            double h = ((double)(yBottom - yTop)) / len;
+//            for (int i=0, j=0; i < a.children.length; i++) {
+//                if (a.children[i] != null) {
+//                    g.drawLine(x + wdt, yTop + (yBottom - yTop - hgt) / 2, x + wdt + space, yTop + (int)((j + 0.5) * h - hgt / 2));
+//                    paintAsset(g, a.children[j], x + wdt + space, yTop + (int)(j * h), yTop + (int)((j + 1) * h));
+//                    j++;
+//                }
+//            }
+//        }
+//    }
 
 //    @Override
 //    protected void paintComponent(Graphics g) {
