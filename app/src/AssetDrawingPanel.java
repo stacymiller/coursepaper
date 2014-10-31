@@ -1,3 +1,4 @@
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.mxFastOrganicLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.swing.mxGraphComponent;
@@ -15,31 +16,40 @@ import java.awt.*;
  */
 public class AssetDrawingPanel extends mxGraphComponent{
     private ImitatedAsset asset;
+    private mxHierarchicalLayout layout;
     private int prefX=500, prefY=250;
+
+    private void initLayout(){
+        setEnabled(false);
+        layout = new mxHierarchicalLayout(graph);
+        layout.setInterHierarchySpacing(5);
+        layout.setInterRankCellSpacing(30);
+        layout.setIntraCellSpacing(5);
+    }
 
     public AssetDrawingPanel(mxGraph g, ImitatedAsset assetToDraw) {
         super(g);
-        setEnabled(false);
+        initLayout();
         asset = assetToDraw;
     }
 
     public AssetDrawingPanel(mxGraph g) {
         super(g);
-        setEnabled(false);
+        initLayout();
         asset = null;
     }
 
     public AssetDrawingPanel() {
         super(new mxGraph());
-        setEnabled(false);
+        initLayout();
         asset = null;
     }
 
     public void drawAsset(ImitatedAsset assetToDraw) {
         asset = assetToDraw;
-        mxGraph graph = getGraph();
+//        mxGraph graph = getGraph();
         Object parent = graph.getDefaultParent();
-        mxIGraphLayout layout = new mxFastOrganicLayout(graph);
+//        mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
         graph.getModel().beginUpdate();
         try
         {
@@ -57,7 +67,7 @@ public class AssetDrawingPanel extends mxGraphComponent{
     }
 
     private void assetToGraph(ImitatedAsset assetToDraw, mxGraph graph, Object parent) {
-        Object root = graph.insertVertex(parent, null, assetToDraw, 0,0, 40, 40);
+        Object root = graph.insertVertex(graph.getDefaultParent(), null, assetToDraw, 0,0, 40, 20);
         graph.insertEdge(root, null, "", parent, root);
         for (ImitatedAsset child: assetToDraw.children){
             if (child != null) {

@@ -45,25 +45,27 @@ public class MainWindow {
                     return;
                 }
 
-//                if (!widthFormattedTextField.getText().equals("")) {
-//                    width = Integer.parseInt(widthFormattedTextField.getText());
-//                } else {
-//                    ia = AssetGenerator.generateTreeAssets(branches, steps, initialPrice);
-//                    System.out.println(ia);
-//                    return;
-//                }
-//
-//                if (!columnsFormattedTextField.getText().equals("")) {
-//                    columns = Integer.parseInt(columnsFormattedTextField.getText());
-//                } else {
-//                    ia = AssetGenerator.generateTreeAssets(branches, steps, initialPrice);
-//                    System.out.println(ia);
-//                    return;
-//                }
+                if (!widthFormattedTextField.getText().equals("")) {
+                    width = Integer.parseInt(widthFormattedTextField.getText());
+                } else {
+                    return;
+                }
 
-                ia = AssetGenerator.generateTreeAssets(branches, steps, initialPrice);
+                if (!columnsFormattedTextField.getText().equals("")) {
+                    columns = Integer.parseInt(columnsFormattedTextField.getText());
+                } else {
+                    return;
+                }
+
+                if (branches == 0 || steps == 0) {
+                    return;
+                } else if (columns == 0 || width == 0) {
+                    ia = AssetGenerator.generateTreeAssets(branches, steps, initialPrice);
+                } else {
+                    ia = AssetGenerator.generateAssetByHistogram(width, branches, steps, columns, initialPrice);
+                }
                 assetDrawingPanel.drawAsset(ia);
-            }
+                }
         };
         generateAssetButton.addActionListener(generateAssetListener);
 
