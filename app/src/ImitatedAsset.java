@@ -8,6 +8,7 @@ class ImitatedAsset implements Comparable{
     ImitatedAsset[] children;
     boolean lastChild;
     private int p_children_length = -1;
+    private Object vertex = null;
 
     ImitatedAsset(double newPrice, int branches){
         price = newPrice;
@@ -64,5 +65,17 @@ class ImitatedAsset implements Comparable{
         } else {
             throw new ClassCastException("Cannot compare ImitatedAsset to " + o.getClass().getName());
         }
+    }
+
+    public boolean hasAssociatedVertex(){
+        return vertex != null;
+    }
+
+    public void setAssociatedVertex(Object v){
+        vertex = v;
+    }
+
+    public Object getAssociatedVertex(){
+        return vertex;
     }
 }

@@ -68,9 +68,36 @@ public class AssetGenerator {
             double max = extremalValue(nodes, 1);
             double sector = (max - min) / sectors;
 
+            // generate {{width}} nodes
+            int k = 0;
+            double rest = 0.;
+            double sum = 0;
+            int amount = 0;
+            for (int j = 0; j < len; j++){
+                if (nodes[j].price > (k+1) * sector){
+                    int children = (int)((double)amount * width) / len;
+                    rest += ((double)amount * width) / len - children;
+                    if (rest > 1){
+                        children++;
+                        rest -= 1;
+                    }
+                    ImitatedAsset asset = new ImitatedAsset(sum / amount, children, false); // intermediate asset will definitely have children
+                    for (int l = 0; l < amount; l++ ){ // assign average node as a child to the previous generation
+                        nodes[j-l-1].children[0] = asset;
+                    }
+                    k++;
+                    sum = nodes[j].price;
+                    amount = 1;
+                } else {
+                    amount++;
+                    sum += nodes[j].price;
+                }
+            }
+
+
+
             // split [min(nodes); max(nodes)] in {{sectors}} parts and link nodes from each part to their average node
             double sum = 0;
-            int k = 0;
             int amount = 0;
             ImitatedAsset[] new_nodes = new ImitatedAsset[width]; // possible ArrayIndexOutOfBounds
             int new_nodes_i = 0;

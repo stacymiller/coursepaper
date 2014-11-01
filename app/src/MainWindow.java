@@ -47,23 +47,21 @@ public class MainWindow {
 
                 if (!widthFormattedTextField.getText().equals("")) {
                     width = Integer.parseInt(widthFormattedTextField.getText());
-                } else {
-                    return;
                 }
 
                 if (!columnsFormattedTextField.getText().equals("")) {
                     columns = Integer.parseInt(columnsFormattedTextField.getText());
-                } else {
-                    return;
                 }
 
-                if (branches == 0 || steps == 0) {
-                    return;
-                } else if (columns == 0 || width == 0) {
+                System.out.println(String.format("branches=%d, steps=%d, columns=%d, width=%d, initial price=%f", branches, steps, columns, width, initialPrice));
+                if (columns == 0 || width == 0) {
+                    System.out.print(true);
                     ia = AssetGenerator.generateTreeAssets(branches, steps, initialPrice);
                 } else {
+                    System.out.print(false);
                     ia = AssetGenerator.generateAssetByHistogram(width, branches, steps, columns, initialPrice);
                 }
+                System.out.print("End\n");
                 assetDrawingPanel.drawAsset(ia);
                 }
         };

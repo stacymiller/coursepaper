@@ -47,9 +47,7 @@ public class AssetDrawingPanel extends mxGraphComponent{
 
     public void drawAsset(ImitatedAsset assetToDraw) {
         asset = assetToDraw;
-//        mxGraph graph = getGraph();
         Object parent = graph.getDefaultParent();
-//        mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
         graph.getModel().beginUpdate();
         try
         {
@@ -67,7 +65,16 @@ public class AssetDrawingPanel extends mxGraphComponent{
     }
 
     private void assetToGraph(ImitatedAsset assetToDraw, mxGraph graph, Object parent) {
-        Object root = graph.insertVertex(graph.getDefaultParent(), null, assetToDraw, 0,0, 40, 20);
+        Object root;
+        if (assetToDraw.hasAssociatedVertex()) {
+            root = assetToDraw.getAssociatedVertex();
+            System.out.println(root);
+        } else {
+            root = graph.insertVertex(graph.getDefaultParent(), null, assetToDraw, 0,0, 40, 20);
+            System.out.print("Setting associated vertex ");
+            System.out.println(root);
+            assetToDraw.setAssociatedVertex(root);
+        }
         graph.insertEdge(root, null, "", parent, root);
         for (ImitatedAsset child: assetToDraw.children){
             if (child != null) {
