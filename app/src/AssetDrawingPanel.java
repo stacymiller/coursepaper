@@ -68,13 +68,14 @@ public class AssetDrawingPanel extends mxGraphComponent{
         Object root;
         if (assetToDraw.hasAssociatedVertex()) {
             root = assetToDraw.getAssociatedVertex();
+            graph.insertEdge(root, null, "", parent, root);
             System.out.println(root);
-        } else {
-            root = graph.insertVertex(graph.getDefaultParent(), null, assetToDraw, 0,0, 40, 20);
-            System.out.print("Setting associated vertex ");
-            System.out.println(root);
-            assetToDraw.setAssociatedVertex(root);
+            return;
         }
+        root = graph.insertVertex(graph.getDefaultParent(), null, assetToDraw, 0,0, 40, 20);
+        System.out.print("Setting associated vertex ");
+        System.out.println(root);
+        assetToDraw.setAssociatedVertex(root);
         graph.insertEdge(root, null, "", parent, root);
         for (ImitatedAsset child: assetToDraw.children){
             if (child != null) {

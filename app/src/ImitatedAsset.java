@@ -17,8 +17,12 @@ class ImitatedAsset implements Comparable{
     }
 
     ImitatedAsset(double newPrice, int branches, boolean isLastChild){
+        if (Double.isNaN(newPrice)){
+            throw new AssertionError("Asset price is NaN");
+        }
         price = newPrice;
         children = new ImitatedAsset[branches];
+//        System.out.println(String.format("new ImitatedAsset(%f, %d, %b).children.length = %d", newPrice, branches, isLastChild, children.length));
         lastChild = isLastChild;
     }
 
@@ -59,7 +63,7 @@ class ImitatedAsset implements Comparable{
     @NotNull
     public int compareTo(Object o) {
         if (o instanceof ImitatedAsset){
-            return (price < ((ImitatedAsset)o).price) ? 1 : -1;
+            return (price < ((ImitatedAsset)o).price) ? -1 : 1;
         } else if (o == null) {
             return -1;
         } else {

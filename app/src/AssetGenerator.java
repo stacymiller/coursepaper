@@ -8,6 +8,7 @@ import java.util.Random;
 public class AssetGenerator {
     static Random rnd = new Random();
     static double lambda = 10.;
+    static double eps = 10e-6;
 
     public static ImitatedAsset generateTreeAssets(int branches, int steps, double initialPrice){
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, steps == 0);
@@ -34,6 +35,26 @@ public class AssetGenerator {
         return ans;
     }
 
+    private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, boolean lastRow, int start, int end, int children, double price, int new_start){
+        ImitatedAsset asset = new ImitatedAsset(price, children, false); // intermediate asset will definitely have children
+        for (int i = start; i < end; i++ ){ // assign average node as a child to the previous generation
+            nodes[i].children[0] = asset;
+        }
+        for (int i = 0; i < children; i++){ // generating new nodes
+            asset.children[i] = new ImitatedAsset(getRandomPrice(asset.price), 1, lastRow);
+            new_nodes[new_start+i] = asset.children[i];
+//            System.out.print(String.format("\nnew_nodes[%d] = %s", new_start+i, asset.children[i].toString()));
+//                    System.out.println(String.format("new_nodes[%d] = asset.children[%d] = %s", new_nodes_i, i, asset.children[i].toString()));
+        }
+    }
+    private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, int start, int end, int children, double price, int new_start){
+        generateBlock(nodes, new_nodes, false, start, end, children, price, new_start);
+    }
+
+    private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, boolean lastRow, int start, int end, int children, double price){
+        generateBlock(nodes, new_nodes, lastRow, start, end, children, price, start);
+    }
+
     /** Creates new generaions of assets based on distribution of the previous generation
      *
      * @param width
@@ -43,95 +64,124 @@ public class AssetGenerator {
      * @param initialPrice
      * @return
      */
-    public static ImitatedAsset generateAssetByHistogram(int width, int branch, int steps, int sectors, double initialPrice){
+    public static ImitatedAsset generateAssetByHistogram(int width, int branch, int steps, int sectors, double initialPrice) throws InterruptedException {
         int expSteps = (int) Math.floor(Math.log(width) / Math.log(branch));
         ImitatedAsset[] nodes = new ImitatedAsset[width];
         ImitatedAsset ans = generateTreeAssetsToModeling(branch, expSteps, initialPrice, nodes);
 
-        for (int step = expSteps; step < steps; step++) {
-            Arrays.sort(nodes, new Comparator<ImitatedAsset>() {
-                @Override
-                public int compare(ImitatedAsset o1, ImitatedAsset o2) {
-                    if (o1 != null) {
-                        return o1.compareTo(o2);
-                    } else if (o2 != null) {
-                        return -o2.compareTo(null); // because o1 is null
-                    } else {
-                        return 0;
-                    }
+        sortArrayWithNulls(nodes);
+        double sector = getSectorWidth(sectors, nodes);
+        double min = extremalValue(nodes, -1);
+        int len = countLength(nodes);
+        // generate ImitatedAsset array of desired width
+        int k = 0;
+        double rest = 0.;
+        double sum = 0;
+        int amount = 0; // amount of nodes in the sector
+        int new_nodes_i = 0;
+        ImitatedAsset[] new_nodes = new ImitatedAsset[width];
+        System.out.println(sector);
+//        for (int j = 0; j < len; j++)
+//            System.out.println(nodes[j]);
+        int i1 = 0;
+        do {
+            if ((nodes[i1].price > min + (k+1) * sector)){
+//                System.out.print("| ");
+                int children = (int)(((double)amount * width) / len);
+                rest += ((double)amount * width) / len - children;
+                System.out.println(String.format("rest += %f - %d = %f", ((double)amount * width / len), children, rest));
+                if (rest > 1){
+                    children++;
+                    rest -= 1;
                 }
-            });
-            int len = countLength(nodes);
-//            System.out.println(String.format("length of nodes: %d, step: %d < %d", len, step, steps));
-
-            double min = extremalValue(nodes, -1);
-            double max = extremalValue(nodes, 1);
-            double sector = (max - min) / sectors;
-
-            // generate {{width}} nodes
-            int k = 0;
-            double rest = 0.;
-            double sum = 0;
-            int amount = 0;
-            for (int j = 0; j < len; j++){
-                if (nodes[j].price > (k+1) * sector){
-                    int children = (int)((double)amount * width) / len;
-                    rest += ((double)amount * width) / len - children;
-                    if (rest > 1){
-                        children++;
-                        rest -= 1;
-                    }
-                    ImitatedAsset asset = new ImitatedAsset(sum / amount, children, false); // intermediate asset will definitely have children
-                    for (int l = 0; l < amount; l++ ){ // assign average node as a child to the previous generation
-                        nodes[j-l-1].children[0] = asset;
-                    }
-                    k++;
-                    sum = nodes[j].price;
-                    amount = 1;
-                } else {
-                    amount++;
-                    sum += nodes[j].price;
-                }
+                System.out.println(String.format("rest = %f", rest));
+//                System.out.println(children);
+//                System.out.println(String.format("sum = %f, amount = %d", sum, amount));
+                generateBlock(nodes, new_nodes, i1-amount, i1, children, sum/amount, new_nodes_i);
+                new_nodes_i += children;
+                sum = nodes[i1].price;
+                amount = 1;
+                k++;
+//                System.out.print(nodes[i1].toString() + " ");
+            } else {
+//                System.out.print(nodes[i1].toString() + " ");
+                amount++;
+                sum += nodes[i1].price;
             }
+            i1++;
+        }while (i1 < len);
+        int children = (int)(((double)amount * width) / len);
+        rest += ((double)amount * width) / len - children;
+        System.out.println(String.format("rest += %f - %d = %f", ((double)amount * width / len), children, rest));
+        if (rest > 0){
+            children++;
+//            rest -= 1;
+        }
+        System.out.println(String.format("rest = %f", rest));
+        generateBlock(nodes, new_nodes, i1-amount, i1, children, sum/amount, new_nodes_i);
+        System.out.println();
 
+        if(countLength(new_nodes) != width){
+            throw new AssertionError(String.format("Generated %d nodes instead of %d", countLength(new_nodes), width));
+        }
+        nodes = new_nodes;
+//        Thread.sleep(2000);
 
-
-            // split [min(nodes); max(nodes)] in {{sectors}} parts and link nodes from each part to their average node
-            double sum = 0;
-            int amount = 0;
-            ImitatedAsset[] new_nodes = new ImitatedAsset[width]; // possible ArrayIndexOutOfBounds
-            int new_nodes_i = 0;
-            for (int j = 0; j < len; j++){ // iterating over {{nodes}}
-                if (nodes[j].price < max - (k+1) * sector) { // reached the end of the sector
-                    System.out.print(" | ");
-                    int children = (int)(((double)amount / len) * width);
-                    assert children > 0;
-                    ImitatedAsset asset = new ImitatedAsset(sum / amount, children, false); // intermediate asset will definitely have children
-                    for (int l = 0; l < amount; l++ ){ // assign average node as a child to the previous generation
-                        nodes[j-l-1].children[0] = asset;
-                    }
+        for (int step = expSteps; step < steps; step++) {
+            sortArrayWithNulls(nodes);
+            sector = getSectorWidth(sectors, nodes);
+            min = extremalValue(nodes, -1);
+            sum = 0;
+            amount = 0;
+            k = 0;
+            new_nodes = new ImitatedAsset[width];
+            for (int j = 0; j < width; j++){ // iterating over {{nodes}}
+                if (nodes[j].price > min + (k+1) * sector) { // reached the end of the sector
+                    System.out.print("| ");
+                    generateBlock(nodes, new_nodes, (step + 1 == steps), j-amount, j, amount, sum/amount);
                     k++;
                     amount = 0;
-                    sum = 0.;
-                    boolean lastRow = (step + 1 == steps);
-                    for (int i = 0; i < children; i++, new_nodes_i++){ // generating new nodes
-                        asset.children[i] = new ImitatedAsset(getRandomPrice(asset.price), 1, lastRow);
-                        new_nodes[new_nodes_i] = asset.children[i];
-                    }
+                    sum = 0;
                 }
-                System.out.print(String.format("%.2f ", nodes[j].price));
+                System.out.print(nodes[j].toString() + " ");
                 sum += nodes[j].price;
                 amount++;
             }
+            System.out.print("| ");
+            generateBlock(nodes, new_nodes, (step + 1 == steps), width-amount, width, amount, sum/amount);
+            System.out.println("\n");
+
             System.out.print("\n");
             nodes = new_nodes;
             for (ImitatedAsset node: new_nodes){
                 System.out.print(String.format("%.2f ", (node == null) ? -1. : node.price));
             }
             System.out.println();
+//            Thread.sleep(2000);
             // OR take all the averages and produce new {{nodes}} from them here
         }
         return ans;
+    }
+
+    private static double getSectorWidth(int sectors, ImitatedAsset[] nodes) {
+        double min = extremalValue(nodes, -1);
+        double max = extremalValue(nodes, 1);
+        return (max - min) / sectors;
+    }
+
+    private static void sortArrayWithNulls(ImitatedAsset[] nodes) {
+        Arrays.sort(nodes, new Comparator<ImitatedAsset>() {
+            @Override
+            public int compare(ImitatedAsset o1, ImitatedAsset o2) {
+                if (o1 != null) {
+                    return o1.compareTo(o2);
+                } else if (o2 != null) {
+                    return -o2.compareTo(null); // because o1 is null
+                } else {
+                    return 0;
+                }
+            }
+        });
     }
 
     private static int countLength(Object[] sortedArrayWithNullsAtRight) {

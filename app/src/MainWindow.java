@@ -18,14 +18,14 @@ public class MainWindow {
     private JButton generateAssetButton;
     private AssetDrawingPanel assetDrawingPanel;
 
-    public MainWindow() {
+    public MainWindow(){
         ActionListener generateAssetListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int branches = 0, steps = 0, width = 0, columns = 0;
                 double initialPrice;
 
-                ImitatedAsset ia;
+                ImitatedAsset ia = null;
                 String s = branchesFormattedTextField.getText();
                 if (!s.equals("")) {
                     branches = Integer.parseInt(branchesFormattedTextField.getText());
@@ -59,7 +59,11 @@ public class MainWindow {
                     ia = AssetGenerator.generateTreeAssets(branches, steps, initialPrice);
                 } else {
                     System.out.print(false);
-                    ia = AssetGenerator.generateAssetByHistogram(width, branches, steps, columns, initialPrice);
+                    try {
+                        ia = AssetGenerator.generateAssetByHistogram(width, branches, steps, columns, initialPrice);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                 }
                 System.out.print("End\n");
                 assetDrawingPanel.drawAsset(ia);
