@@ -6,7 +6,7 @@ import java.util.Random;
  * Created by stacymiller on 06/10/14.
  */
 public class AssetGenerator {
-    static Random rnd = new Random();
+    static Random rnd = new Random(100);
     static double lambda = 10.;
     static double eps = 10e-6;
 
@@ -80,31 +80,22 @@ public class AssetGenerator {
         int amount = 0; // amount of nodes in the sector
         int new_nodes_i = 0;
         ImitatedAsset[] new_nodes = new ImitatedAsset[width];
-        System.out.println(sector);
-//        for (int j = 0; j < len; j++)
-//            System.out.println(nodes[j]);
+
         int i1 = 0;
         do {
             if ((nodes[i1].price > min + (k+1) * sector)){
-//                System.out.print("| ");
                 int children = (int)(((double)amount * width) / len);
                 rest += ((double)amount * width) / len - children;
-                System.out.println(String.format("rest += %f - %d = %f", ((double)amount * width / len), children, rest));
                 if (rest > 1){
                     children++;
                     rest -= 1;
                 }
-                System.out.println(String.format("rest = %f", rest));
-//                System.out.println(children);
-//                System.out.println(String.format("sum = %f, amount = %d", sum, amount));
                 generateBlock(nodes, new_nodes, i1-amount, i1, children, sum/amount, new_nodes_i);
                 new_nodes_i += children;
                 sum = nodes[i1].price;
                 amount = 1;
                 k++;
-//                System.out.print(nodes[i1].toString() + " ");
             } else {
-//                System.out.print(nodes[i1].toString() + " ");
                 amount++;
                 sum += nodes[i1].price;
             }
@@ -112,20 +103,15 @@ public class AssetGenerator {
         }while (i1 < len);
         int children = (int)(((double)amount * width) / len);
         rest += ((double)amount * width) / len - children;
-        System.out.println(String.format("rest += %f - %d = %f", ((double)amount * width / len), children, rest));
         if (rest > 0){
             children++;
-//            rest -= 1;
         }
-        System.out.println(String.format("rest = %f", rest));
         generateBlock(nodes, new_nodes, i1-amount, i1, children, sum/amount, new_nodes_i);
-        System.out.println();
 
         if(countLength(new_nodes) != width){
             throw new AssertionError(String.format("Generated %d nodes instead of %d", countLength(new_nodes), width));
         }
         nodes = new_nodes;
-//        Thread.sleep(2000);
 
         for (int step = expSteps; step < steps; step++) {
             sortArrayWithNulls(nodes);
@@ -137,28 +123,16 @@ public class AssetGenerator {
             new_nodes = new ImitatedAsset[width];
             for (int j = 0; j < width; j++){ // iterating over {{nodes}}
                 if (nodes[j].price > min + (k+1) * sector) { // reached the end of the sector
-                    System.out.print("| ");
                     generateBlock(nodes, new_nodes, (step + 1 == steps), j-amount, j, amount, sum/amount);
                     k++;
                     amount = 0;
                     sum = 0;
                 }
-                System.out.print(nodes[j].toString() + " ");
                 sum += nodes[j].price;
                 amount++;
             }
-            System.out.print("| ");
             generateBlock(nodes, new_nodes, (step + 1 == steps), width-amount, width, amount, sum/amount);
-            System.out.println("\n");
-
-            System.out.print("\n");
             nodes = new_nodes;
-            for (ImitatedAsset node: new_nodes){
-                System.out.print(String.format("%.2f ", (node == null) ? -1. : node.price));
-            }
-            System.out.println();
-//            Thread.sleep(2000);
-            // OR take all the averages and produce new {{nodes}} from them here
         }
         return ans;
     }
