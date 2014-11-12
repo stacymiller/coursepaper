@@ -8,9 +8,15 @@ import java.util.Random;
 public class AssetGenerator {
     static Random rnd = new Random(100);
     static double lambda = 10.;
+    static double volatility = 0.31436183;
+    static double profitability = 0.3;
+    static double timedelta = 1;
     static double eps = 10e-6;
 
     public static ImitatedAsset generateTreeAssets(int branches, int steps, double initialPrice){
+        if (timedelta == 1) {
+            timedelta = 1. / steps;
+        }
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, steps == 0);
         if (steps > 0) {
             for (int branch = 0; branch < branches; branch++) {
@@ -22,7 +28,7 @@ public class AssetGenerator {
     }
 
     private static double getRandomPrice(double initialPrice) {
-        return initialPrice + rnd.nextGaussian() * lambda;
+        return initialPrice * (1 + profitability*timedelta + volatility*rnd.nextGaussian()*Math.sqrt(timedelta));
     }
 
     private static double extremalValue(ImitatedAsset[] a, int sign){
@@ -65,6 +71,7 @@ public class AssetGenerator {
      * @return
      */
     public static ImitatedAsset generateAssetByHistogram(int width, int branch, int steps, int sectors, double initialPrice) throws InterruptedException {
+        timedelta = 1. / steps;
         int expSteps = (int) Math.floor(Math.log(width) / Math.log(branch));
         ImitatedAsset[] nodes = new ImitatedAsset[width];
         ImitatedAsset ans = generateTreeAssetsToModeling(branch, expSteps, initialPrice, nodes);
