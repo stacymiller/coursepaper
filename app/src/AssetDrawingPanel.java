@@ -1,14 +1,7 @@
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
-import com.mxgraph.layout.mxFastOrganicLayout;
-import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.swing.util.mxMorphing;
-import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
-import com.mxgraph.util.mxEventSource;
 import com.mxgraph.view.mxGraph;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -52,7 +45,7 @@ public class AssetDrawingPanel extends mxGraphComponent{
         try
         {
             graph.removeCells(graph.getChildVertices(graph.getDefaultParent()));
-            assetToGraph(assetToDraw, graph, parent);
+            assetToGraph(assetToDraw, graph, parent, System.currentTimeMillis());
         }
         finally
         {
@@ -64,9 +57,9 @@ public class AssetDrawingPanel extends mxGraphComponent{
         graph.getModel().endUpdate();
     }
 
-    private void assetToGraph(ImitatedAsset assetToDraw, mxGraph graph, Object parent) {
+    private void assetToGraph(ImitatedAsset assetToDraw, mxGraph graph, Object parent, long currentVersion) {
         Object root;
-        if (assetToDraw.hasAssociatedVertex()) {
+        if (assetToDraw.hasAssociatedVertex() && assetToDraw.vertexVersion == currentVersion) {
             root = assetToDraw.getAssociatedVertex();
             graph.insertEdge(root, null, "", parent, root);
             System.out.println(root);
@@ -76,10 +69,11 @@ public class AssetDrawingPanel extends mxGraphComponent{
         System.out.print("Setting associated vertex ");
         System.out.println(root);
         assetToDraw.setAssociatedVertex(root);
+        assetToDraw.vertexVersion = currentVersion;
         graph.insertEdge(root, null, "", parent, root);
         for (ImitatedAsset child: assetToDraw.children){
             if (child != null) {
-                assetToGraph(child, graph, root);
+                assetToGraph(child, graph, root, currentVersion);
             }
         }
     }
@@ -95,36 +89,4 @@ public class AssetDrawingPanel extends mxGraphComponent{
     public Dimension getMaximumSize() {
         return new Dimension (1024, 1024);
     }
-
-//    private void paintAsset(Graphics2D g, ImitatedAsset a, int x, int yTop, int yBottom) {
-//        String s = String.format(" %.2f ", a.price);
-//        g.drawString(s, x, yTop + (yBottom - yTop) / 2);
-//        FontMetrics metrics = g.getFontMetrics();
-//        int hgt = metrics.getHeight();
-//        int wdt = metrics.stringWidth(s);
-//        int space = metrics.stringWidth(String.format("%.2f", 100.));
-//        if (!a.lastChild) {
-//            int len = a.children_length();
-//            double h = ((double)(yBottom - yTop)) / len;
-//            for (int i=0, j=0; i < a.children.length; i++) {
-//                if (a.children[i] != null) {
-//                    g.drawLine(x + wdt, yTop + (yBottom - yTop - hgt) / 2, x + wdt + space, yTop + (int)((j + 0.5) * h - hgt / 2));
-//                    paintAsset(g, a.children[j], x + wdt + space, yTop + (int)(j * h), yTop + (int)((j + 1) * h));
-//                    j++;
-//                }
-//            }
-//        }
-//    }
-
-//    @Override
-//    protected void paintComponent(Graphics g) {
-//        Graphics2D g2 = (Graphics2D) g;
-//        super.paintComponent(g);
-//        if (asset == null) {
-//            g2.setColor(Color.GREEN);
-//        } else {
-//            actY = 0;
-////            paintAsset(g2, asset, 0, 0, getSize().height);
-//        }
-//    }
 }

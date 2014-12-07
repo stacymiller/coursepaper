@@ -6,9 +6,9 @@ import java.util.Random;
  * Created by stacymiller on 06/10/14.
  */
 public class AssetGenerator {
-    static Random rnd = new Random(100);
+    static Random rnd = new Random();
     static double lambda = 10.;
-    static double volatility = 0.31436183;
+    static double volatility = 0.3;
     static double profitability = 0.3;
     static double timedelta = 1;
     static double eps = 10e-6;
@@ -44,13 +44,12 @@ public class AssetGenerator {
     private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, boolean lastRow, int start, int end, int children, double price, int new_start){
         ImitatedAsset asset = new ImitatedAsset(price, children, false); // intermediate asset will definitely have children
         for (int i = start; i < end; i++ ){ // assign average node as a child to the previous generation
+            nodes[i].lastChild = false;
             nodes[i].children[0] = asset;
         }
         for (int i = 0; i < children; i++){ // generating new nodes
             asset.children[i] = new ImitatedAsset(getRandomPrice(asset.price), 1, lastRow);
             new_nodes[new_start+i] = asset.children[i];
-//            System.out.print(String.format("\nnew_nodes[%d] = %s", new_start+i, asset.children[i].toString()));
-//                    System.out.println(String.format("new_nodes[%d] = asset.children[%d] = %s", new_nodes_i, i, asset.children[i].toString()));
         }
     }
     private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, int start, int end, int children, double price, int new_start){
@@ -70,7 +69,7 @@ public class AssetGenerator {
      * @param initialPrice
      * @return
      */
-    public static ImitatedAsset generateAssetByHistogram(int width, int branch, int steps, int sectors, double initialPrice) throws InterruptedException {
+    public static ImitatedAsset generateAssetByHistogram(int width, int branch, int steps, int sectors, double initialPrice){
         timedelta = 1. / steps;
         int expSteps = (int) Math.floor(Math.log(width) / Math.log(branch));
         ImitatedAsset[] nodes = new ImitatedAsset[width];
@@ -121,27 +120,34 @@ public class AssetGenerator {
         nodes = new_nodes;
 
         for (int step = expSteps; step < steps; step++) {
-            sortArrayWithNulls(nodes);
-            sector = getSectorWidth(sectors, nodes);
-            min = extremalValue(nodes, -1);
-            sum = 0;
-            amount = 0;
-            k = 0;
-            new_nodes = new ImitatedAsset[width];
-            for (int j = 0; j < width; j++){ // iterating over {{nodes}}
-                if (nodes[j].price > min + (k+1) * sector) { // reached the end of the sector
-                    generateBlock(nodes, new_nodes, (step + 1 == steps), j-amount, j, amount, sum/amount);
-                    k++;
-                    amount = 0;
-                    sum = 0;
-                }
-                sum += nodes[j].price;
-                amount++;
-            }
-            generateBlock(nodes, new_nodes, (step + 1 == steps), width-amount, width, amount, sum/amount);
+            new_nodes = generateRow(width, (step + 1 == steps), sectors, nodes);
             nodes = new_nodes;
         }
+        ans.lastRow = nodes;
         return ans;
+    }
+
+    public static ImitatedAsset[] generateRow(int width, boolean lastRow, int sectors, ImitatedAsset[] nodes) {
+        ImitatedAsset[] new_nodes;
+        sortArrayWithNulls(nodes);
+        double sector = getSectorWidth(sectors, nodes);
+        double min = extremalValue(nodes, -1);
+        double sum = 0;
+        int amount = 0;
+        int k = 0;
+        new_nodes = new ImitatedAsset[width];
+        for (int j = 0; j < width; j++){ // iterating over {{nodes}}
+            if (nodes[j].price > min + (k+1) * sector) { // reached the end of the sector
+                generateBlock(nodes, new_nodes, lastRow, j-amount, j, amount, sum/amount);
+                k++;
+                amount = 0;
+                sum = 0;
+            }
+            sum += nodes[j].price;
+            amount++;
+        }
+        generateBlock(nodes, new_nodes, lastRow, width-amount, width, amount, sum/amount);
+        return new_nodes;
     }
 
     private static double getSectorWidth(int sectors, ImitatedAsset[] nodes) {
