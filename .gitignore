@@ -26,3 +26,10 @@ app/.idea/*
 *.out
 *.toc
 
+## Java
+*.class
+
+## Sublime
+*.sublime-project
+*.sublime-workspace
+
