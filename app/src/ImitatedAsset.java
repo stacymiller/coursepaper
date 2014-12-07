@@ -6,11 +6,9 @@ import com.sun.istack.internal.NotNull;
 class ImitatedAsset implements Comparable{
     double price;
     ImitatedAsset[] children;
-    ImitatedAsset[] lastRow;
     boolean lastChild;
     private int p_children_length = -1;
     private Object vertex = null;
-    public long vertexVersion = 0;
 
     ImitatedAsset(double newPrice, int branches){
         price = newPrice;
@@ -26,17 +24,6 @@ class ImitatedAsset implements Comparable{
         children = new ImitatedAsset[branches];
 //        System.out.println(String.format("new ImitatedAsset(%f, %d, %b).children.length = %d", newPrice, branches, isLastChild, children.length));
         lastChild = isLastChild;
-    }
-
-    public void addRows(int n, int width, int sectors){
-        if (lastRow == null || lastChild) {
-            throw new UnsupportedOperationException("lastRow not defined; please find parent asset with defined lastRow or calculate it manually");
-        }
-        ImitatedAsset[] newLastRow;
-        for (int i = 0; i < n; i++) {
-            newLastRow = AssetGenerator.generateRow(width, i+1 == n, sectors, lastRow);
-            lastRow = newLastRow;
-        }
     }
 
     public int children_length(){
@@ -55,6 +42,20 @@ class ImitatedAsset implements Comparable{
 
     @Override
     public String toString(){
+//        String ans = "";
+//        if (!lastChild) {
+//            for (ImitatedAsset child: children){
+//                String temp;
+//                if (child == null) {
+//                    temp = "null";
+//                } else {
+//                    temp = child.toString();
+//                }
+//                ans = ans + temp + "\n";
+//            }
+//            ans = ans.trim() + "\t";
+//        }
+//        ans = ans + price + "\n";
         return String.format("%.2f", price);
     }
 
@@ -68,30 +69,6 @@ class ImitatedAsset implements Comparable{
         } else {
             throw new ClassCastException("Cannot compare ImitatedAsset to " + o.getClass().getName());
         }
-    }
-
-    private boolean _equals(ImitatedAsset asset){
-        if (price != asset.price){
-            return false;
-        }
-        if (lastChild != asset.lastChild) {
-            return false;
-        }
-        if (!lastChild){
-            if (children.length != asset.children.length){
-                return false;
-            }
-            for (int i = 0; i < children.length; i++){
-                if (!children[i]._equals(asset.children[i])){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean equals(Object o) {
-        return o instanceof ImitatedAsset && _equals((ImitatedAsset) o);
     }
 
     public boolean hasAssociatedVertex(){

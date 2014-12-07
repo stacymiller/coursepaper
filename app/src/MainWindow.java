@@ -17,8 +17,6 @@ public class MainWindow {
     private JPanel mainPanel;
     private JButton generateAssetButton;
     private AssetDrawingPanel assetDrawingPanel;
-    private JButton addRowToAssetButton;
-    private ImitatedAsset currentAsset;
 
     public MainWindow(){
         ActionListener generateAssetListener = new ActionListener() {
@@ -61,11 +59,14 @@ public class MainWindow {
                     ia = AssetGenerator.generateTreeAssets(branches, steps, initialPrice);
                 } else {
                     System.out.print(false);
-                    ia = AssetGenerator.generateAssetByHistogram(width, branches, steps, columns, initialPrice);
+                    try {
+                        ia = AssetGenerator.generateAssetByHistogram(width, branches, steps, columns, initialPrice);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                 }
                 System.out.print("End\n");
                 assetDrawingPanel.drawAsset(ia);
-                currentAsset = ia;
                 }
         };
         generateAssetButton.addActionListener(generateAssetListener);
@@ -74,25 +75,6 @@ public class MainWindow {
 //
 //        assetDrawingPanel = new AssetDrawingPanel(graph);
 //        mainPanel.add(assetDrawingPanel);
-        addRowToAssetButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (currentAsset != null) {
-                    System.out.println("Adding row");
-                    int width=0;
-                    int columns=0;
-                    if (!widthFormattedTextField.getText().equals("")) {
-                        width = Integer.parseInt(widthFormattedTextField.getText());
-                    }
-
-                    if (!columnsFormattedTextField.getText().equals("")) {
-                        columns = Integer.parseInt(columnsFormattedTextField.getText());
-                    }
-                    currentAsset.addRows(1, width, columns);
-                    assetDrawingPanel.drawAsset(currentAsset);
-                }
-            }
-        });
     }
 
 
