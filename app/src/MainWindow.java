@@ -59,11 +59,8 @@ public class MainWindow {
                     ia = AssetGenerator.generateTreeAssets(branches, steps, initialPrice);
                 } else {
                     System.out.print(false);
-                    try {
-                        ia = AssetGenerator.generateAssetByHistogram(width, branches, steps, columns, initialPrice);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
+                    ia = AssetGenerator.generateAssetByHistogram(width, branches, steps, columns, initialPrice);
+
                 }
                 System.out.print("End\n");
                 assetDrawingPanel.drawAsset(ia);
