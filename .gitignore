@@ -33,3 +33,12 @@ app/.idea/*
 *.sublime-project
 *.sublime-workspace
 
+*.bib
+
+*.log
+
+*.nav
+
+*.snm
+
+*.bak
