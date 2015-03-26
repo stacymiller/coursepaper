@@ -103,7 +103,7 @@ public class AssetDrawingPanel extends mxGraphComponent{
 //        int hgt = metrics.getHeight();
 //        int wdt = metrics.stringWidth(s);
 //        int space = metrics.stringWidth(String.format("%.2f", 100.));
-//        if (!a.lastChild) {
+//        if (!a.isLastChild) {
 //            int len = a.children_length();
 //            double h = ((double)(yBottom - yTop)) / len;
 //            for (int i=0, j=0; i < a.children.length; i++) {

@@ -1,19 +1,23 @@
 import com.sun.istack.internal.NotNull;
 
+import java.util.HashSet;
+
 /**
  * Created by stacymiller on 06/10/14.
  */
 class ImitatedAsset implements Comparable{
     double price;
-    ImitatedAsset[] children;
-    boolean lastChild;
+    HashSet<ImitatedAsset> children;
+    ImitatedAsset parent;
+    boolean isLastChild;
+    private int lastChild;
     private int p_children_length = -1;
     private Object vertex = null;
 
     ImitatedAsset(double newPrice, int branches){
         price = newPrice;
-        children = new ImitatedAsset[branches];
-        lastChild = true;
+        children = new HashSet<ImitatedAsset>();
+        isLastChild = true;
     }
 
     ImitatedAsset(double newPrice, int branches, boolean isLastChild){
@@ -21,29 +25,21 @@ class ImitatedAsset implements Comparable{
             throw new AssertionError("Asset price is NaN");
         }
         price = newPrice;
-        children = new ImitatedAsset[branches];
-//        System.out.println(String.format("new ImitatedAsset(%f, %d, %b).children.length = %d", newPrice, branches, isLastChild, children.length));
-        lastChild = isLastChild;
+        children = new HashSet<ImitatedAsset>();
+        this.isLastChild = isLastChild;
     }
 
-    public int children_length(){
-        if (p_children_length >= 0) {
-            return p_children_length;
+    public void addChild(ImitatedAsset child){
+        if (this.isLastChild){
+            throw new IllegalArgumentException("Last child cannot have children");
         }
-        int ans = 0;
-        for (ImitatedAsset child: children){
-            if (child != null) {
-                ans++;
-            }
-        }
-        p_children_length = ans;
-        return p_children_length;
+        this.children.add(child);
     }
 
     @Override
     public String toString(){
 //        String ans = "";
-//        if (!lastChild) {
+//        if (!isLastChild) {
 //            for (ImitatedAsset child: children){
 //                String temp;
 //                if (child == null) {

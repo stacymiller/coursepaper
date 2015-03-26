@@ -1,3 +1,5 @@
+import java.util.Locale;
+
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
@@ -11,21 +13,27 @@ public class Main {
 //        System.out.println(BroadieGlassermanEstimation.upperEstimateHistogram(ia, 110));
 //        System.out.println(BroadieGlassermanEstimation.lowerEstimateHistogram(ia, 110));
 
-        System.out.println(String.format("branches=%d\tsteps=%d\twidth=%d\tsectors=%d\t", branches, steps, width, sectors));
+//        System.out.println(String.format("branches=%d\tsteps=%d\twidth=%d\tsectors=%d\t", branches, steps, width, sectors));
 
         int converged = 0;
         int notConverged = 0;
 
-        for (int i = 0; i < 100; i++) {
-            if (testConvergence(initialPrice, sectors, steps, branches, width)) {
-                converged++;
-            } else {
-                notConverged++;
-            }
+        for (int i =10; i < 800; i+=10) {
+            calculateMean(i, initialPrice, sectors, branches, width);
+//            System.out.print(String.format(Locale.ENGLISH, "%d, %f, %f\n", i, c[0], c[1]));
         }
+    }
 
-        System.out.println(String.format("Converged: %d", converged));
-        System.out.println(String.format("Not converged: %d", notConverged));
+    private static double[] calculateMean(int n, double initialPrice, int sectors, int branches, int width) {
+        double ansUp = 0;
+        double ansLow = 0;
+        for (int v = 0; v < 1000; v++) {
+            ImitatedAsset ia = AssetGenerator.generateAssetByHistogram(width, branches, n, sectors, initialPrice);
+            ansUp = BroadieGlassermanEstimation.upperEstimateHistogram(ia, 1.3*initialPrice);
+            ansLow = BroadieGlassermanEstimation.lowerEstimateHistogram(ia, 1.3 * initialPrice);
+            System.out.print(String.format(Locale.ENGLISH, "%d, %f, %f\n", n, ansUp, ansLow));
+        }
+        return new double[]{ansUp / 100, ansLow / 100};
     }
 
     public static boolean testConvergence(double initialPrice, int sectors, int steps, int branches, int width) {

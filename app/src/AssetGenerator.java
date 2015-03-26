@@ -21,7 +21,7 @@ public class AssetGenerator {
         if (steps > 0) {
             for (int branch = 0; branch < branches; branch++) {
                 double price = getRandomPrice(initialPrice);
-                ans.children[branch] = generateTreeAssets(branches, steps - 1, price);
+                ans.children.add(generateTreeAssets(branches, steps - 1, price));
             }
         }
         return ans;
@@ -41,16 +41,25 @@ public class AssetGenerator {
         return ans;
     }
 
-    private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, boolean lastRow, int start, int end, int children, double price, int new_start){
+    private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, boolean lastRow, int start, int end, int children, double price, int new_start, boolean saveMiddleRowToTree){
         ImitatedAsset asset = new ImitatedAsset(price, children, false); // intermediate asset will definitely have children
         for (int i = start; i < end; i++ ){ // assign average node as a child to the previous generation
-            nodes[i].children[0] = asset;
+            if (saveMiddleRowToTree) {
+                nodes[i].addChild(asset);
+            } else {
+                nodes[i].parent.addChild(asset);
+            }
         }
         for (int i = 0; i < children; i++){ // generating new nodes
-            asset.children[i] = new ImitatedAsset(getRandomPrice(asset.price), 1, lastRow);
-            new_nodes[new_start+i] = asset.children[i];
+            new_nodes[new_start+i] = new ImitatedAsset(getRandomPrice(asset.price), 1, lastRow);
+            new_nodes[new_start+i].parent = asset;
         }
     }
+
+    private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, boolean lastRow, int start, int end, int children, double price, int new_start){
+        generateBlock(nodes, new_nodes, lastRow, start, end, children, price, new_start, false);
+    }
+
     private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, int start, int end, int children, double price, int new_start){
         generateBlock(nodes, new_nodes, false, start, end, children, price, new_start);
     }
@@ -111,7 +120,7 @@ public class AssetGenerator {
                     children++;
                     rest -= 1;
                 }
-                generateBlock(nodes, new_nodes, i1-amount, i1, children, sum/amount, new_nodes_i);
+                generateBlock(nodes, new_nodes, false, i1-amount, i1, children, sum/amount, new_nodes_i, true);
                 new_nodes_i += children;
                 sum = nodes[i1].price;
                 amount = 1;
@@ -127,7 +136,7 @@ public class AssetGenerator {
         if (rest > 0){
             children++;
         }
-        generateBlock(nodes, new_nodes, i1-amount, i1, children, sum/amount, new_nodes_i);
+        generateBlock(nodes, new_nodes, false, i1-amount, i1, children, sum/amount, new_nodes_i, true);
         return new_nodes;
     }
 
@@ -192,7 +201,9 @@ public class AssetGenerator {
             ans = new ImitatedAsset(initialPrice, branches, false);
             for (int branch = 0; branch < branches; branch++) {
                 double price = getRandomPrice(initialPrice);
-                ans.children[branch] = generateTreeAssetsToModeling(branches, steps - 1, price, lastRow);
+                ImitatedAsset newAsset = generateTreeAssetsToModeling(branches, steps - 1, price, lastRow);
+                ans.children.add(newAsset);
+                newAsset.parent = ans;
             }
         } else {
             ans = new ImitatedAsset(initialPrice, 1, false); // these assets will have a child "intermediate" asset
