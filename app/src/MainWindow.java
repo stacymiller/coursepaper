@@ -1,6 +1,3 @@
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.view.mxGraph;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,12 +14,13 @@ public class MainWindow {
     private JPanel mainPanel;
     private JButton generateAssetButton;
     private AssetDrawingPanel assetDrawingPanel;
+    private JTextField statesTextField;
 
     public MainWindow(){
         ActionListener generateAssetListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int branches = 0, steps = 0, width = 0, columns = 0;
+                int branches = 0, steps = 0, width = 0, columns = 0, states = 0;
                 double initialPrice;
 
                 ImitatedAsset ia = null;
@@ -53,16 +51,19 @@ public class MainWindow {
                     columns = Integer.parseInt(columnsFormattedTextField.getText());
                 }
 
+                if (!statesTextField.getText().equals("")) {
+                    states = Integer.parseInt(statesTextField.getText());
+                }
+
                 System.out.println(String.format("branches=%d, steps=%d, columns=%d, width=%d, initial price=%f", branches, steps, columns, width, initialPrice));
-                if (columns == 0 || width == 0) {
-                    System.out.print(true);
-                    ia = AssetGenerator.generateTreeAssets(branches, steps, initialPrice);
+                if (states != 0) {
+                    ia = FiniteStateAssetGenerator.generateAssetTree(states, branches, steps, initialPrice);
+                } else if (!(width == 0 || columns == 0)) {
+                    ia = HistogramAssetGenerator.generateAssetTreeByHistogram(width, branches, steps, columns, initialPrice);
                 } else {
-                    System.out.print(false);
-                    ia = AssetGenerator.generateAssetByHistogram(width, branches, steps, columns, initialPrice);
+                    ia = AssetGenerator.generateAssetTree(branches, steps, initialPrice);
 
                 }
-                System.out.print("End\n");
                 assetDrawingPanel.drawAsset(ia);
                 }
         };
