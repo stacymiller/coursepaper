@@ -3,22 +3,13 @@ import java.util.Locale;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        int branches = 3;
+        int branches = 10;
         int steps = 150;
         int width = 50;
         int sectors = 7;
         double initialPrice = 100.;
-//        ImitatedAsset ia = AssetGenerator.generateAssetByHistogram(10, branches, steps, 3, initialPrice);
-//        System.out.println(ia);
-//        System.out.println(BroadieGlassermanEstimation.upperEstimateHistogram(ia, 110));
-//        System.out.println(BroadieGlassermanEstimation.lowerEstimateHistogram(ia, 110));
 
-//        System.out.println(String.format("branches=%d\tsteps=%d\twidth=%d\tsectors=%d\t", branches, steps, width, sectors));
-
-        int converged = 0;
-        int notConverged = 0;
-
-        for (int i =10; i < 800; i+=10) {
+        for (int i =5; i < 50; i++) {
             calculateMean(i, initialPrice, sectors, branches, width);
 //            System.out.print(String.format(Locale.ENGLISH, "%d, %f, %f\n", i, c[0], c[1]));
         }
@@ -27,11 +18,13 @@ public class Main {
     private static double[] calculateMean(int n, double initialPrice, int sectors, int branches, int width) {
         double ansUp = 0;
         double ansLow = 0;
-        for (int v = 0; v < 1000; v++) {
-            ImitatedAsset ia = AssetGenerator.generateAssetByHistogram(width, branches, n, sectors, initialPrice);
-            ansUp = BroadieGlassermanEstimation.upperEstimateHistogram(ia, 1.3*initialPrice);
-            ansLow = BroadieGlassermanEstimation.lowerEstimateHistogram(ia, 1.3 * initialPrice);
+        for (int v = 0; v < 100; v++) {
+            ImitatedAsset ia = AssetGenerator.generateAssetTree(branches, n, initialPrice);
+//            ImitatedAsset ia = HistogramAssetGenerator.generateAssetTreeByHistogram(width, branches, n, sectors, initialPrice);
+            ansUp = BroadieGlassermanEstimation.upperEstimate(ia, 1.3*initialPrice);
+            ansLow = BroadieGlassermanEstimation.lowerEstimate(ia, 1.3 * initialPrice);
             System.out.print(String.format(Locale.ENGLISH, "%d, %f, %f\n", n, ansUp, ansLow));
+            ia = null;
         }
         return new double[]{ansUp / 100, ansLow / 100};
     }
@@ -47,7 +40,7 @@ public class Main {
         for (i = 0; i < stepLimit && (Math.abs(x0-x1) > eps); i++) {
             x0 = x1;
             AssetGenerator.rnd.setSeed(seed);
-            ImitatedAsset ia = AssetGenerator.generateAssetByHistogram(width, branches, steps+i, sectors, initialPrice);
+            ImitatedAsset ia = HistogramAssetGenerator.generateAssetTreeByHistogram(width, branches, steps + i, sectors, initialPrice);
             x1 = BroadieGlassermanEstimation.upperEstimateHistogram(ia, 1.3*initialPrice);
         }
         System.out.println(String.format("%d\t%d\t%f", (i != stepLimit) ? 1 : 0, i, x1));
