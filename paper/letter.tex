@@ -1,0 +1,39 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{csquotes}
+\usepackage[T2A]{fontenc}
+
+\usepackage[intlimits]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\usepackage{tikz}
+\usetikzlibrary{graphs}
+
+\begin{document}
+\section{Про распределение}
+Когда мы строим случайное дерево (<<рядами>>, т.е. дочерние вершины порождаются от всех родителей одновременно), на $k$-той итерации процесса у нас есть набор вершин $X = (x_1,\cdots,x_n) \in \mathbb{R}^n$. Итерация состоит в том, что от каждой родительской вершины из $X$ мы генерируем дочерние вершины. Более точно -- генерируем $b$ реализаций случайной величины с распределением, зависящим от родительской вершины (в моём случае -- $N\left( \underbrace{x_i\left(1+\mu\triangle t\right)}_{\mu_i}, \underbrace{x_i\sigma \sqrt{\triangle t}}_{\sigma_i}  \right)$). \\
+Если обозначать как $x_i^j, i\in 1:n, j\in 1:b$ $j$-ю дочернюю вершину вершины $x_i$ ($j$-ю случайную величину с распределением $N\left(\mu_i, \sigma_i\right)$), а за $X_{new}$ обозначить множество всех дочерних вершин $\left\lbrace x_i^j \right\rbrace_{j\in 1:b, i\in 1:n}$, то правда ли, что случайная величина, наугад взятая из $X_{new}$, имеет распределение, являющееся равномерной смесью распределений $\sum_{i=1}^n \frac{1}{n} N\left(\mu_i, \sigma_i\right)$?
+\section{Про квантили смеси распределений} % (fold)
+Как находить квантили смеси нормальных распределений? Т.е. если $\mathcal{P} = \sum_{i=1}^n \frac{1}{n} N\left(\mu_i, \sigma_i\right)$, $\xi \in \mathcal{P}$, каков лучший метод для решения системы
+\[
+\left\lbrace \begin{matrix}
+    &P(\xi < x_1) = \frac{1}{n} \\
+    &\vdots\\
+    &P(\xi < x_{m-1}) = \frac{m-1}{m}
+\end{matrix} \right.
+\]
+Можно расписать подробнее:
+\[
+\left\lbrace \begin{matrix}
+    &\int_{-\infty}^{x_1} \frac{1}{n}\sum_{i=1}^n p_{N(\mu_i,\sigma_i)} (t) dt = \frac{1}{n} \\
+    &\vdots\\
+    &\frac{1}{n}\sum_{i=1}^n \int_{-\infty}^{x_{m-1}} p_{N(\mu_i,\sigma_i)} (t) dt = \frac{m-1}{m}
+\end{matrix} \right.
+\]
+
+Эта система не решается аналитически (обратная функция от нормальной функции распределения не выражается ничем хорошим, обратная функция от суммы также ничем внятным не является), но, возможно, вы слышали/видели/знаете, как кто-то решал это численными методами? Я сама придумала совсем немного (запоминать вычисленные при решении каждого уравнения системы значения функции как приближения к решению следующих уравнений). Может быть, эта задача уже где-то решалась? \\
+% section _ (end)
+\end{document}
