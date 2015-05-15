@@ -31,7 +31,7 @@ public class BroadieGlassermanEstimation extends Estimation {
 
     public static double upperEstimateHistogram(ImitatedAsset a, double strikePrice, Map<ImitatedAsset, Double> estimated){
         Double ans = estimated.get(a);
-        if (ans == null) {
+        if (ans == null) { // this child wasn't calculated yet
             if (a.isLastChild) {
                 ans = payoff(strikePrice, a.price);
                 estimated.put(a, ans);
@@ -39,7 +39,6 @@ public class BroadieGlassermanEstimation extends Estimation {
             }
             ans = 0.;
             int len = a.children.size();
-//        System.out.println(String.format("estimating child with %d children, price %.2f", len, a.price));
             for (ImitatedAsset child : a.children){
                 ans += upperEstimateHistogram(child, strikePrice, estimated) / len;
             }
