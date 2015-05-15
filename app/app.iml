@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="jgraphx" level="project" />
+    <orderEntry type="library" name="external" level="project" />
   </component>
 </module>
 
