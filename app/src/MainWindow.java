@@ -61,7 +61,7 @@ public class MainWindow {
                 } else if (!(width == 0 || columns == 0)) {
                     ia = HistogramAssetGenerator.generateAssetTreeByHistogram(width, branches, steps, columns, initialPrice);
                 } else {
-                    ia = AssetGenerator.generateAssetTree(branches, steps, initialPrice);
+                    ia = EmpiricDistribAssetGenerator.generateAssetTree(branches, steps, initialPrice);
 
                 }
                 assetDrawingPanel.drawAsset(ia);

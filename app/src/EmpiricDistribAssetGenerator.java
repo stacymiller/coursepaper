@@ -5,33 +5,45 @@ import java.util.Arrays;
  */
 public class EmpiricDistribAssetGenerator extends AssetGenerator {
     public static ImitatedAsset generateAssetTree(int branches, int steps, double initialPrice){
-        if (timedelta == 1) {
-            timedelta = 1. / steps;
-        }
-        ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, steps == 0);
-        if (steps > 0) {
-            for (int branch = 0; branch < branches; branch++) {
-                double price = getRandomPrice(initialPrice);
-                ans.children.add(generateAssetTree(branches, steps - 1, price));
+        ImitatedAsset ans = new ImitatedAsset(initialPrice, branches);
+        ImitatedAsset[] prevRow = getFirstRow(ans, branches);
+        for (int step = 0; step < steps; step++) {
+            boolean median = branches % 2 == 1;
+            ImitatedAsset[] curRow = new ImitatedAsset[branches * prevRow.length];
+            ImitatedAsset[] newRow = new ImitatedAsset[prevRow.length];
+            for (int i = 0; i < prevRow.length; i++) {
+                for (int b = 0; b < branches; b++) {
+                    curRow[i * branches + b] = new ImitatedAsset(getRandomPrice(prevRow[i].price), branches);
+                    curRow[i * branches + b].parent = prevRow[i];
+                }
             }
+            Arrays.sort(curRow);
+            for (int i = 0; i < prevRow.length; i++) {
+                ImitatedAsset v;
+                if (median) {
+                    v = curRow[i * branches + branches / 2 + 1];
+                } else {
+                    double price = (curRow[i * branches + branches / 2].price + curRow[i * branches + branches / 2 + 1].price) / 2;
+                    v = new ImitatedAsset(price, branches, false);
+                }
+                for (int b = 0; b < branches; b++) {
+                    curRow[i * branches + b].parent.addChild(v);
+                    curRow[i * branches + b] = null;
+                }
+                newRow[i] = v;
+            }
+            prevRow = newRow;
         }
         return ans;
     }
 
-    private static ImitatedAsset generateAssetTree(int branches, int steps, double initialPrice, ImitatedAsset[] prevRow){
-        ImitatedAsset[] curRow = new ImitatedAsset[branches*prevRow.length];
-        for(int i = 0; i < prevRow.length; i++){
-            for(int b = 0; b < branches; b++){
-                curRow[i*branches + b] = new ImitatedAsset(getRandomPrice(prevRow[i].price), branches);
-                prevRow[i].addChild(curRow[i*branches + b]);
-            }
+    private static ImitatedAsset[] getFirstRow(ImitatedAsset ans, int branches) {
+        ImitatedAsset[] curRow = new ImitatedAsset[branches];
+        for (int b = 0; b < branches; b++) {
+            curRow[b] = new ImitatedAsset(getRandomPrice(ans.price), branches);
+            ans.addChild(curRow[b]);
         }
-        Arrays.sort(curRow);
-
-    }
-
-    protected static double getRandomPrice(double initialPrice) {
-        return initialPrice * (1 + profitability*timedelta + volatility*rnd.nextGaussian()*Math.sqrt(timedelta));
+        return curRow;
     }
 }
 
