@@ -26,6 +26,7 @@ public class AssetGenerator {
     }
 
     protected static double getRandomPrice(double initialPrice) {
+        // TODO: http://en.wikipedia.org/wiki/Optimal_stopping#Option_trading
         return initialPrice * (1 + profitability*timedelta + volatility*rnd.nextGaussian()*Math.sqrt(timedelta));
     }
 }
