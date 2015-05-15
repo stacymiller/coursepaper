@@ -6,7 +6,9 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FiniteStateAssetGenerator extends AssetGenerator {
     static double[] stateBorders;
@@ -68,6 +70,6 @@ public class FiniteStateAssetGenerator extends AssetGenerator {
                 break;
             }
         }
-        return round(initialPrice * (1 + profitability*timedelta + volatility*e*Math.sqrt(timedelta)), 5);
+        return round(getRandomPrice(initialPrice, e), 5);
     }
 }

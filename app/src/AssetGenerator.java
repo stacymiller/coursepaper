@@ -1,5 +1,7 @@
 import java.util.Random;
 
+import static java.lang.Math.exp;
+
 /**
  * Created by stacymiller on 26.03.15.
  */
@@ -25,8 +27,13 @@ public class AssetGenerator {
         return ans;
     }
 
+    protected static double getRandomPrice(double initialPrice, double g) {
+        // TODO: http://en.wikipedia.org/wiki/Optimal_stopping#Option_trading
+        return initialPrice * exp(timedelta * (profitability - volatility * volatility / 2 + volatility * g));
+    }
+
     protected static double getRandomPrice(double initialPrice) {
         // TODO: http://en.wikipedia.org/wiki/Optimal_stopping#Option_trading
-        return initialPrice * (1 + profitability*timedelta + volatility*rnd.nextGaussian()*Math.sqrt(timedelta));
+        return getRandomPrice(initialPrice, rnd.nextGaussian());
     }
 }
