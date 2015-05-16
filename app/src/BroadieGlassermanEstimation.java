@@ -11,7 +11,7 @@ public class BroadieGlassermanEstimation extends Estimation {
         }
         if (a.isLastChild) {
 //            System.out.println(String.format("reached last child with price %.2f, returned payoff %.2f", a.price, payoff(strikePrice, a.price)));
-            return payoff(strikePrice, a.price);
+            return payoff(strikePrice, a);
         }
         double ans = 0;
         int len = a.children.size();
@@ -21,7 +21,7 @@ public class BroadieGlassermanEstimation extends Estimation {
             ans += upperEstimate(child, strikePrice) / len;
         }
 //        System.out.println(String.format("estimated option price %.2f, payoff %.2f, returned %.2f", ans, payoff(strikePrice, a.price), Math.max(payoff(strikePrice, a.price), ans)));
-        return Math.max(payoff(strikePrice, a.price), ans);
+        return Math.max(payoff(strikePrice, a), ans);
     }
 
     public static double upperEstimateHistogram(ImitatedAsset a, double strikePrice){
@@ -33,7 +33,7 @@ public class BroadieGlassermanEstimation extends Estimation {
         Double ans = estimated.get(a);
         if (ans == null) { // this child wasn't calculated yet
             if (a.isLastChild) {
-                ans = payoff(strikePrice, a.price);
+                ans = payoff(strikePrice, a);
                 estimated.put(a, ans);
                 return ans;
             }
@@ -44,7 +44,7 @@ public class BroadieGlassermanEstimation extends Estimation {
             }
             estimated.put(a, ans);
 //        System.out.println(String.format("estimated option price %.2f, payoff %.2f, returned %.2f", ans, payoff(strikePrice, a.price), Math.max(payoff(strikePrice, a.price), ans)));
-            return Math.max(payoff(strikePrice, a.price), ans);
+            return Math.max(payoff(strikePrice, a), ans);
         } else {
             return estimated.get(a);
         }
@@ -55,7 +55,7 @@ public class BroadieGlassermanEstimation extends Estimation {
             return 0;
         }
         if (a.isLastChild) {
-            return payoff(strikePrice, a.price);
+            return payoff(strikePrice, a);
         }
 
         int len = a.children.size();
@@ -68,7 +68,7 @@ public class BroadieGlassermanEstimation extends Estimation {
         }
 
         double answer = 0;
-        double po = payoff(strikePrice, a.price);
+        double po = payoff(strikePrice, a);
         for (i = 0; i < len; i++){
             double ans;
             if ((sum - childrenEstimates[i]) / (len-1) < po){
@@ -90,7 +90,7 @@ public class BroadieGlassermanEstimation extends Estimation {
         Double mappedAns = estimated.get(a);
         if (mappedAns == null) {
             if (a.isLastChild) {
-                mappedAns = payoff(strikePrice, a.price);
+                mappedAns = payoff(strikePrice, a);
                 estimated.put(a, mappedAns);
                 return mappedAns;
             }
@@ -105,7 +105,7 @@ public class BroadieGlassermanEstimation extends Estimation {
             }
 
             double answer = 0;
-            double po = payoff(strikePrice, a.price);
+            double po = payoff(strikePrice, a);
             for (i = 0; i < len; i++) {
                 double ans;
                 if ((sum - childrenEstimates[i]) / (len - 1) < po) {
