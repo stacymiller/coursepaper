@@ -17,7 +17,7 @@ public class HistogramAssetGenerator extends AssetGenerator {
     }
 
     private static void generateBlock(ImitatedAsset[] nodes, ImitatedAsset[] new_nodes, boolean lastRow, int start, int end, int children, double price, int new_start, boolean saveMiddleRowToTree){
-        ImitatedAsset asset = new ImitatedAsset(price, children, false); // intermediate asset will definitely have children
+        ImitatedAsset asset = new ImitatedAsset(price, children, false, timedelta); // intermediate asset will definitely have children
         for (int i = start; i < end; i++ ){ // assign average node as a child to the previous generation
             if (saveMiddleRowToTree) {
                 nodes[i].addChild(asset);
@@ -26,7 +26,7 @@ public class HistogramAssetGenerator extends AssetGenerator {
             }
         }
         for (int i = 0; i < children; i++){ // generating new nodes
-            new_nodes[new_start+i] = new ImitatedAsset(getRandomPrice(asset.price), 1, lastRow);
+            new_nodes[new_start + i] = new ImitatedAsset(getRandomPrice(asset), 1, lastRow, timedelta);
             new_nodes[new_start+i].parent = asset;
         }
     }
@@ -173,15 +173,15 @@ public class HistogramAssetGenerator extends AssetGenerator {
     private static ImitatedAsset generateTreeAssetsToModeling(int branches, int steps, double initialPrice, ImitatedAsset[] lastRow) {
         ImitatedAsset ans;
         if (steps > 0) {
-            ans = new ImitatedAsset(initialPrice, branches, false);
+            ans = new ImitatedAsset(initialPrice, branches, false, timedelta);
             for (int branch = 0; branch < branches; branch++) {
-                double price = getRandomPrice(initialPrice);
+                double price = getRandomPrice(ans);
                 ImitatedAsset newAsset = generateTreeAssetsToModeling(branches, steps - 1, price, lastRow);
                 ans.children.add(newAsset);
                 newAsset.parent = ans;
             }
         } else {
-            ans = new ImitatedAsset(initialPrice, 1, false); // these assets will have a child "intermediate" asset
+            ans = new ImitatedAsset(initialPrice, 1, false, timedelta); // these assets will have a child "intermediate" asset
             for (int i = 0; i < lastRow.length; i++){
                 if (lastRow[i] == null) {
                     lastRow[i] = ans;

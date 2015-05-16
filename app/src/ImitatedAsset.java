@@ -10,8 +10,10 @@ class ImitatedAsset implements Comparable{
     HashSet<ImitatedAsset> children;
     ImitatedAsset parent;
     boolean isLastChild;
-    private int lastChild;
-    private int p_children_length = -1;
+    double discountRate = 0.05;
+    double volatility = 0.2;
+    double dividendRate = 0.1;
+    double discountFactor;
     private Object vertex = null;
 
     ImitatedAsset(double newPrice, int branches){
@@ -20,13 +22,14 @@ class ImitatedAsset implements Comparable{
         isLastChild = true;
     }
 
-    ImitatedAsset(double newPrice, int branches, boolean isLastChild){
+    ImitatedAsset(double newPrice, int branches, boolean isLastChild, double timedelta) {
         if (Double.isNaN(newPrice)){
             throw new AssertionError("Asset price is NaN");
         }
         price = newPrice;
         children = new HashSet<ImitatedAsset>();
         this.isLastChild = isLastChild;
+        discountFactor = discountRate * timedelta;
     }
 
     public void addChild(ImitatedAsset child){
