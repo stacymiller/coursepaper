@@ -12,23 +12,23 @@ public class Main {
         int sectors = 7;
         double initialPrice = 100.;
 
-        testConvergenceToTrueValue(4, 100);
-//        testConvergenceToAmericanOption(100, 5);
+//        testConvergenceToTrueValue(4, 100);
+        testConvergenceToAmericanOption(100, 10);
     }
 
     private static String testConvergenceToTrueValue(int n, double initialPrice) throws FileNotFoundException, UnsupportedEncodingException {
-        String filename = "test_convergence_to_true_value_standard.txt";
+        String filename = "test_convergence_to_true_value.txt";
         double ansUp;
         double ansLow;
         PrintWriter writer = new PrintWriter(filename, "UTF-8");
         writer.println("branches, upper_estimator, lower_estimator");
-        for (int branches = 3; branches < 50; branches++) {
+        for (int branches = 3; branches < 100; branches++) {
             try {
                 for (int sample = 0; sample < 100; sample++) {
                     ImitatedAsset ia;
-                    ia = AssetGenerator.generateAssetTree(branches, n, initialPrice);
-                    ansUp = BroadieGlassermanEstimation.upperEstimate(ia, 1.3 * initialPrice);
-                    ansLow = BroadieGlassermanEstimation.lowerEstimate(ia, 1.3 * initialPrice);
+                    ia = EmpiricDistribAssetGenerator.generateAssetTree(branches, n, initialPrice);
+                    ansUp = BroadieGlassermanEstimation.upperEstimateHistogram(ia, 1.3 * initialPrice);
+                    ansLow = BroadieGlassermanEstimation.lowerEstimateHistogram(ia, 1.3 * initialPrice);
                     writer.println(String.format(Locale.ENGLISH, "%d, %f, %f", branches, ansUp, ansLow));
                     ia = null;
                 }
@@ -45,7 +45,7 @@ public class Main {
         double ansUp;
         double ansLow;
         PrintWriter writer = new PrintWriter(filename, "UTF-8");
-        writer.println("branches, upper_estimator, lower_estimator");
+        writer.println("execution_times,upper_estimator,lower_estimator");
         for (int n = 4; n < 1000; n++) {
             try {
                 for (int sample = 0; sample < 100; sample++) {
@@ -54,6 +54,7 @@ public class Main {
                     ansUp = BroadieGlassermanEstimation.upperEstimate(ia, 1.3 * initialPrice);
                     ansLow = BroadieGlassermanEstimation.lowerEstimate(ia, 1.3 * initialPrice);
                     writer.println(String.format(Locale.ENGLISH, "%d, %f, %f", n, ansUp, ansLow));
+                    System.out.println(String.format(Locale.ENGLISH, "%d, %f, %f", n, ansUp, ansLow));
                     ia = null;
                 }
             } catch (OutOfMemoryError oom) {
