@@ -12,24 +12,25 @@ public class Main {
         int sectors = 7;
         double initialPrice = 100.;
 
-//        testConvergenceToTrueValue(4, 100);
-        testConvergenceToAmericanOption(100, 10);
+        for (int b = 1; b < 5; b++)
+            testConvergenceToTrueValue(4, 100, b*100);
+//        testConvergenceToAmericanOption(100, 10);
     }
 
-    private static String testConvergenceToTrueValue(int n, double initialPrice) throws FileNotFoundException, UnsupportedEncodingException {
-        String filename = "test_convergence_to_true_value.txt";
+    private static String testConvergenceToTrueValue(int n, double initialPrice, int states) throws FileNotFoundException, UnsupportedEncodingException {
+        String filename = String.format(Locale.ENGLISH, "test_convergence_to_true_value_%d.txt", states);
         double ansUp;
         double ansLow;
         PrintWriter writer = new PrintWriter(filename, "UTF-8");
-        writer.println("branches, upper_estimator, lower_estimator");
+        writer.println("branches,states,upper_estimator,lower_estimator");
         for (int branches = 3; branches < 100; branches++) {
             try {
                 for (int sample = 0; sample < 100; sample++) {
                     ImitatedAsset ia;
-                    ia = EmpiricDistribAssetGenerator.generateAssetTree(branches, n, initialPrice);
+                    ia = FiniteStateAssetGenerator.generateAssetTree(500, branches, n, initialPrice);
                     ansUp = BroadieGlassermanEstimation.upperEstimateHistogram(ia, 1.3 * initialPrice);
                     ansLow = BroadieGlassermanEstimation.lowerEstimateHistogram(ia, 1.3 * initialPrice);
-                    writer.println(String.format(Locale.ENGLISH, "%d, %f, %f", branches, ansUp, ansLow));
+                    writer.println(String.format(Locale.ENGLISH, "%d, %d, %f, %f", branches, states, ansUp, ansLow));
                     ia = null;
                 }
             } catch (OutOfMemoryError oom) {
