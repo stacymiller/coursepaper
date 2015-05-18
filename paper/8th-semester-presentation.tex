@@ -5,7 +5,7 @@
 % is displayed in the header and not the full overview.
 \mode<presentation>
 {
-  \usetheme[numbers, totalnumbers, minimal, compress]{Statmod}
+  \usetheme[numbers, totalnumbers, compress]{Statmod}
 
   \setbeamercovered{transparent}
   % or whatever (possibly just delete it)
@@ -20,6 +20,8 @@
 \usepackage{graphicx}
 \graphicspath{ {media/} }
 
+\setbeamercolor{bluetext_color}{fg=blue}
+\newcommand{\bluetext}[1]{{\usebeamercolor[fg]{bluetext_color}#1}}
 
 \usepackage{tikz}
 \usetikzlibrary{arrows}
@@ -97,15 +99,14 @@
     \end{aligned}\right.$$
     здесь $V_0(X_0)$ --- цена опциона, исполняемого $n$ раз в году, на момент выписывания которого базовый актив был в состоянии $X_0$. \\
     \vspace{0.05\paperheight}
-    Задача: оценить $V_0(X_0)$ методами, включающими построение траекторий по случайным деревьям
+    \bluetext{Задача:} оценить $V_0(X_0)$ методами, включающими построение траекторий по случайным деревьям
   \end{frame}
 
 \section{Случайные деревья}
     \begin{frame}
         \frametitle{Случайные траектории}
         Будем оценивать $V_0(S_0)$ методом Монте-Карло.
-        \visible<2->
-        \\ Промоделируем много вариантов жизни базового актива. Траектория --- набор состояний $S_{t_1}, \ldots, S_{t_n}$.
+        Промоделируем много вариантов жизни базового актива. Траектория --- набор состояний $S_{t_1}, \ldots, S_{t_n}$.
         \begin{figure}[h]
             \includegraphics[height=0.5\paperheight]{traces}
             \caption{Возможные траектории цены базового актива, горизонтальная линия -- цена страйк}
