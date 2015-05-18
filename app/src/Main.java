@@ -12,7 +12,7 @@ public class Main {
         int sectors = 7;
         double initialPrice = 100.;
 
-        for (int b = 1; b < 5; b++)
+        for (int b = 1; b < 10; b+=2)
             testConvergenceToTrueValue(4, 100, b*100);
 //        testConvergenceToAmericanOption(100, 10);
     }
