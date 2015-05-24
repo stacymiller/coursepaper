@@ -1,0 +1,38 @@
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=0.35\linewidth, rectangle,draw]
+	\matrix[row sep=10mm,column sep=0.1\linewidth] {
+						 & 					 & 					   & \node (3111) {$Suuu$}; \\
+						 & 					 & \node (211) {$Suu$}; & \node (311) {$Su$}; \\
+						 & \node (11) {$Su$};& \node (21) {$Su$};  & \node (31) {$Su$}; \\
+		\node (0) {$S$}; & \node (10) {$S$}; & \node (20) {$S$};   & \node (30) {$S$}; \\
+						 & \node (12) {$Sd$};& \node (22) {$Sd$};  & \node (32) {$Sd$};  \\
+						 & 					 & \node (222) {$Sdd$};& \node (322) {$Sdd$}; \\
+						 & 					 & 					   & \node (3222) {$Sddd$}; \\
+    };
+    \path 	(0)	edge[->]	(11)
+    			edge[->]	(10)
+    			edge[->]	(12)
+    		(11)	edge[->]	(211)
+    				edge[->]	(21)
+    				edge[->]	(20)
+    		(10)	edge[->]	(21)
+    				edge[->]	(20)
+    				edge[->]	(22)
+    		(12)	edge[->]	(20)
+    				edge[->]	(22)
+    				edge[->]	(222)
+    		(211)	edge[->]	(3111)
+    				edge[->]	(311)
+    				edge[->]	(31)
+    		(21)	edge[->]	(311)
+    				edge[->]	(31)
+    				edge[->]	(30)
+    		(20)	edge[->]	(31)
+    				edge[->]	(30)
+    				edge[->]	(32)
+    		(22)	edge[->]	(30)
+    				edge[->]	(32)
+    				edge[->]	(322)
+    		(222)	edge[->]	(32)
+    				edge[->]	(322)
+    				edge[->]	(3222);
+\end{tikzpicture}

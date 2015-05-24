@@ -1,0 +1,84 @@
+\documentclass[specialist,
+               substylefile = spbu.rtx,
+               subf,href,colorlinks=true, 12pt]{disser}
+
+\usepackage[a4paper,
+            mag=1000, includefoot,
+            left=3cm, right=1.5cm, top=2cm, bottom=2cm, headsep=1cm, footskip=1cm]{geometry}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\ifpdf\usepackage{epstopdf}\fi
+
+% Использовать полужирное начертание для векторов
+\let\vec=\mathbf
+
+% Включать подсекции в оглавление
+\setcounter{tocdepth}{2}
+
+\usepackage[defaultmono]{droidmono}
+\usepackage[T2A]{fontenc}
+% \usepackage{csquotes}
+
+\usepackage[intlimits]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+\usepackage{algorithm2e}
+\usepackage{graphicx}
+\graphicspath{ {media/} }
+\usepackage{listings}
+\usepackage{color}
+
+\usepackage[fixlanguage]{babelbib}
+\selectbiblanguage{russian}
+
+% \usepackage{natbib}
+% \usepackage[style=numeric]{biblatex}
+% \addbibresource{biblio-u.bib}
+
+\usepackage{hyperref}
+\newtheorem{theorem}{Теорема}
+\newcommand{\ev}{\mathsf{E}}
+\newcommand{\prob}[1]{\mathsf{P}\left(#1\right)}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\Tau}{\ensuremath{\mathcal{T}}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\Vhat}{\hat{V}}
+\newcommand{\vhat}{\hat{v}}
+\newcommand{\maxset}[1]{\max\left\lbrace#1\right\rbrace}
+% \setlength\parindent{0pt}
+% \setlength\parskip{0.5em}
+
+\lstdefinestyle{customjava}{
+%   belowcaptionskip=1\baselineskip,
+  	breaklines=true,
+  	breakatwhitespace=true,
+%   xleftmargin=\parindent,
+%   language=Java,
+%   showstringspaces=false,
+   	basicstyle=\footnotesize\fdmfamily,
+   	keywordstyle=\bfseries\color{blue},
+  	commentstyle=\color{magenta},
+  	morekeywords={ImitatedAsset, },
+  	% identifierstyle=\color{green},
+%   stringstyle=\color{orange},
+}
+\lstset{style=customjava, language=Java}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{positioning}
+\usetikzlibrary{graphs}
+
+%----------------------------------------------------------------
+\begin{document}
+\input{intro}
+\input{chapter1}
+\input{chapter2}
+\nocite{*}
+\bibliographystyle{ugost2008}
+\bibliography{biblio-u}
+\end{document}
