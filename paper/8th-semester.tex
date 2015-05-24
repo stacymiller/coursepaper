@@ -28,7 +28,6 @@
 \usepackage{algorithm2e}
 \usepackage{graphicx}
 \graphicspath{ {media/} }
-\usepackage{listings}
 \usepackage{color}
 
 \usepackage[fixlanguage]{babelbib}
@@ -47,9 +46,10 @@
 % \renewcommand\bottomfraction{0.85}
 % \renewcommand\textfraction{0.1}
 % \renewcommand\floatpagefraction{0.85}
-
 \setlength\parindent{0pt}
 \setlength\parskip{0.5em}
+
+\usepackage{minted}
 
 \lstdefinestyle{customjava}{
 %   belowcaptionskip=1\baselineskip,
@@ -270,9 +270,9 @@
 \appendix
 \chapter{Реализация на Java}
 Моделирование организовано итеративно (а не рекурсивно, как это было бы уместно в исходном методе), потому что необходимая информация о дереве в процессе моделирования --- это описание текущего ряда целиком. Поэтому проще всего --- пройти вниз по дереву один раз.
-\renewcommand{\lstlistingname}{Листинг}% Listing -> Algorithm
-\renewcommand{\lstlistlistingname}{Листинги}
-\begin{lstlisting}[caption={Генерирование дерева состояний актива, на который выписан опцион},label={lst:treeGeneration}]
+% % \renewcommand{\lstlistingname}{Листинг}% Listing -> Algorithm
+% \renewcommand{\lstlistlistingname}{Листинги}
+\begin{listing}[caption={Генерирование дерева состояний актива, на который выписан опцион},label={lst:treeGeneration}]
 public static ImitatedAsset generateAssetTree(int branches, int steps, double initialPrice){
         timedelta = 1. / steps;
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, false, timedelta);
@@ -301,6 +301,6 @@ public static ImitatedAsset generateAssetTree(int branches, int steps, double in
                 newRow[i] = v;}
             prevRow = newRow;}
         return ans;}
-	\end{lstlisting}
+\end{listing}
 
 \end{document}

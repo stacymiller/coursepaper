@@ -151,7 +151,7 @@
 		\begin{theorem}
 			$\forall i \in 1:n$
 			\begin{equation*}
-			\mathsf{E}\left[\hat{V}_i^{j_1\ldots j_i}|X_i^{j_1\ldots j_i}\right] \geqslant V_i\left(X_i^{j_1\ldots j_i}\right).
+			\mathsf{E}\left[\hat{V}_i^{j_1\ldots j_i}|X_i^{j_1\ldots j_i}\right] \geq V_i\left(X_i^{j_1\ldots j_i}\right).
 			\end{equation*}
 		\end{theorem}
 		\begin{proof}
@@ -162,13 +162,13 @@
 			\end{equation*}
 			с помощью неравенства Йенсена ($\varphi\left(\ev\left[X\right]\right) \leqslant \ev\left[\varphi(X)\right]$) это можно оценить снизу:
 			\begin{equation*}
-			\ev\left[ \max\left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), \frac{1}{b}\sum_{j = 1}^b \hat{V}_{i+1}^{j_1 \ldots j_i j}\right\rbrace | X_i^{j_1\cdots j_i} \right] \geqslant \max\left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), \ev\left[ \frac{1}{b}\sum_{j = 1}^b \hat{V}_{i+1}^{j_1 \cdots j_i j} | X_i^{j_1\cdots j_i} \right] \right\rbrace ;
+			\ev\left[ \max\left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), \frac{1}{b}\sum_{j = 1}^b \hat{V}_{i+1}^{j_1 \ldots j_i j}\right\rbrace | X_i^{j_1\cdots j_i} \right] \geq \max\left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), \ev\left[ \frac{1}{b}\sum_{j = 1}^b \hat{V}_{i+1}^{j_1 \cdots j_i j} | X_i^{j_1\cdots j_i} \right] \right\rbrace ;
 			\end{equation*}
 			в силу того, что $\forall \, j \in 1:b \quad X_{i+1}^{j_1\cdots j_i j}$ --- независимые одинаково распределённые случайные величины (и их математическое ожидание одинаково), $\ev\left[ \frac{1}{b}\sum_{j = 1}^b \hat{V}_{i+1}^{j_1 \cdots j_i j} \right] = \frac{1}{b}\sum_{j = 1}^b \ev\hat{V}_{i+1}^{j_1 \cdots j_i j} = \ev\hat{V}_{i+1}^{j_1 \cdots j_i 1}$, а в силу индукционного предположения
 			\begin{equation*}
-			\max\left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), \ev\left[ \hat{V}_{i+1}^{j_1 \cdots j_i 1} | X_i^{j_1\cdots j_i} \right] \right\rbrace \geqslant \max \left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), V_i\left(X_i^{j_1\ldots j_i}\right) \right\rbrace .
+			\max\left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), \ev\left[ \hat{V}_{i+1}^{j_1 \cdots j_i 1} | X_i^{j_1\cdots j_i} \right] \right\rbrace \geq \max \left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), V_i\left(X_i^{j_1\ldots j_i}\right) \right\rbrace .
 			\end{equation*}
-			Таким образом, $\ev\left[\hat{V}_i^{j_1\ldots j_i}|X_i^{j_1\ldots j_i}\right] \geqslant \max \left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), V_i\left(X_i^{j_1\ldots j_i}\right) \right\rbrace$.
+			Таким образом, $\ev\left[\hat{V}_i^{j_1\ldots j_i}|X_i^{j_1\ldots j_i}\right] \geq \max \left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), V_i\left(X_i^{j_1\ldots j_i}\right) \right\rbrace$.
 		\end{proof}
 		\par Мы также доказываем, что $\hat{V}_i^{j_1\ldots j_i}$ сходится по вероятности к $V_i\left(X_i^{j_1\ldots j_i}\right)$ при $b \to \infty$. В листьях дерева это очевидно ($\hat{V}_m^{j_1 \ldots j_m} = h_m\left(X_m^{j1 \ldots j_m}\right)$ по определению), на $i-1$ шаге цена удержания опциона $\frac{1}{b} \sum_{j = 1}^b \hat{V}_{i+1}^{j_1 \ldots j_i j}$ является средним арифметическим независимых одинаково распределённых случайных величин и сходится по закону больших чисел. Сходимость распространяется и на саму оценку в силу непрерывности операции взятия максимума. Используя тот факт, что $\forall \, a, c_1, c_2 \in \mathbb{R} \; |\max\left(a, c_1\right) - \max\left(a, c_2\right)| \leqslant |c_1 - c_2|$, мы получаем
 			\begin{equation*}
@@ -178,7 +178,7 @@
 		\par Более того, оценка $\hat{V}_0$ является асимптотически несмещённой, т.е. $\mathsf{E}\hat{V}_0 \to V_0\left(X_0\right)$.
 		\subsection{Оценка снизу}
 		\par Значения оценки сверху в каждый момент времени --- это выбор максимума из стоимости опциона при его немедленном исполнении и математического ожидания стоимости удержания опциона. Но стоимость удержания опциона рассчитывается, исходя из дочерних узлов дерева состояний актива,то есть оценка сверху рассчитывается, опираясь на информацию о будущем. Чтобы убрать ошибку, связанную с этим, нам необходимо отделить механизм принятия решения о исполнении/удержании опциона от значений, полученных после принятия решения об удержании опциона.
-		\par По сути, нам нужно оценить $\max\left\lbrace a, \ev Y \right\rbrace$ с помощью $b$ независимых одинаково распределённых реализаций случайной величины $Y$ для некоторой константы $a$ и случайной величины $Y$. Оценка $\max\left\lbrace a, \bar{Y}\right\rbrace$ (где $\bar{Y}$ --- среднее значение выборки) является оценкой сверху, так как $\ev\max\left\lbrace a, \bar{Y}\right\rbrace \geqslant \max\left\lbrace a, \ev\bar{Y}\right\rbrace = \max\left\lbrace a, \ev Y\right\rbrace$, что мы и использовали в построеии нашей оценки сверху.
+		\par По сути, нам нужно оценить $\max\left\lbrace a, \ev Y \right\rbrace$ с помощью $b$ независимых одинаково распределённых реализаций случайной величины $Y$ для некоторой константы $a$ и случайной величины $Y$. Оценка $\max\left\lbrace a, \bar{Y}\right\rbrace$ (где $\bar{Y}$ --- среднее значение выборки) является оценкой сверху, так как $\ev\max\left\lbrace a, \bar{Y}\right\rbrace \geq \max\left\lbrace a, \ev\bar{Y}\right\rbrace = \max\left\lbrace a, \ev Y\right\rbrace$, что мы и использовали в построеии нашей оценки сверху.
 		\par Разделим наше множество реализаций $\left\lbrace Y_i \right\rbrace _{i=1}^b$ случайной величины $Y$ на два независимых подмножества и вычислим их средние значения $\bar{Y}_1$ и $\bar{Y}_2$. Если положить
 			\begin{equation}
 			\hat{v} = \left\lbrace
