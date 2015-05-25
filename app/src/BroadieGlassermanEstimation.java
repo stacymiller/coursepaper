@@ -20,11 +20,7 @@ public class BroadieGlassermanEstimation extends Estimation {
             }
             ans = 0.;
             int len = a.children.size();
-            double[] estimators = new double[len];
             for (ImitatedAsset child : a.children){
-                if (child.isDummy) {
-
-                }
                 ans += upperEstimate(child, strikePrice, estimated) / len;
             }
             estimated.put(a, ans);
