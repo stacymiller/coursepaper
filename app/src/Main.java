@@ -12,26 +12,18 @@ public class Main {
         int sectors = 7;
         double initialPrice = 100.;
 
-        for (int b = 1; b < 10; b+=2)
-            testConvergenceToTrueValue(4, 100, b*100);
-//        testConvergenceToAmericanOption(100, 10);
+        testConvergenceToTrueValue(4, 100);
     }
 
-    private static String testConvergenceToTrueValue(int n, double initialPrice, int states) throws FileNotFoundException, UnsupportedEncodingException {
-        String filename = String.format(Locale.ENGLISH, "test_convergence_to_true_value_%d.txt", states);
-        double ansUp;
-        double ansLow;
+    private static String testConvergenceToTrueValue(int n, double initialPrice) throws FileNotFoundException, UnsupportedEncodingException {
+        String filename = "test_convergence_to_true_value_random_subtree.txt";
         PrintWriter writer = new PrintWriter(filename, "UTF-8");
-        writer.println("branches,states,upper_estimator,lower_estimator");
-        for (int branches = 3; branches < 100; branches++) {
+        writer.println("branches,upper_estimator,lower_estimator");
+        for (int branches = 20; branches < 5000; branches+=20) {
             try {
-                for (int sample = 0; sample < 100; sample++) {
-                    ImitatedAsset ia;
-                    ia = FiniteStateAssetGenerator.generateAssetTree(500, branches, n, initialPrice);
-                    ansUp = BroadieGlassermanEstimation.upperEstimateHistogram(ia, 1.3 * initialPrice);
-                    ansLow = BroadieGlassermanEstimation.lowerEstimateHistogram(ia, 1.3 * initialPrice);
-                    writer.println(String.format(Locale.ENGLISH, "%d, %d, %f, %f", branches, states, ansUp, ansLow));
-                    ia = null;
+                for (int sample = 0; sample < 10000; sample++) {
+                    double[] ans = RandomSubtreeGeneratorEstimator.calculate(branches, n, initialPrice, 1.3*initialPrice);
+                    writer.println(String.format(Locale.ENGLISH, "%d, %f, %f", branches, ans[0], ans[1]));
                 }
             } catch (OutOfMemoryError oom) {
                 break;
@@ -78,7 +70,7 @@ public class Main {
             x0 = x1;
             AssetGenerator.rnd.setSeed(seed);
             ImitatedAsset ia = HistogramAssetGenerator.generateAssetTreeByHistogram(width, branches, steps + i, sectors, initialPrice);
-            x1 = BroadieGlassermanEstimation.upperEstimateHistogram(ia, 1.3*initialPrice);
+            x1 = BroadieGlassermanEstimation.upperEstimate(ia, 1.3 * initialPrice);
         }
         System.out.println(String.format("%d\t%d\t%f", (i != stepLimit) ? 1 : 0, i, x1));
 
