@@ -1,5 +1,7 @@
 import org.apache.commons.math3.distribution.PoissonDistribution;
 
+import static java.lang.Math.max;
+
 /**
  * Created by stacymiller on 24.05.15.
  */
@@ -11,16 +13,19 @@ public class RandomSubtreeAssetGenerator extends AssetGenerator{
         }
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, steps == 0, timedelta);
         if (steps > 0) {
+            int needCalculation = 0;
             for (int branch = 0; branch < branches; branch++) {
-                double price = getRandomPrice(ans);
-                double alpha = rnd2.nextDouble();
-
-                System.out.println(1.2 / branches);
-                if (alpha < 1.2 / branches) {
-                    ans.addChild(generateAssetTree(branches, steps - 1, price));
-                } else {
-                    ans.addChild(new ImitatedAsset(price, 0, true, timedelta, true));
+                if (rnd2.nextDouble() < 1.2 / branches){
+                    needCalculation++;
                 }
+            }
+            needCalculation = max(needCalculation, 1);
+            for (int branch = 0; branch < needCalculation; branch++) {
+                double price = getRandomPrice(ans);
+                ans.addChild(generateAssetTree(branches, steps - 1, price));
+            }
+            for (int branch = needCalculation; branch < branches; branch++){
+                ans.addChild(new ImitatedAsset(getRandomPrice(ans), 0, true, timedelta));
             }
         }
         return ans;
