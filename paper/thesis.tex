@@ -25,6 +25,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{mathtools}
+\usepackage{nicefrac}
 
 \usepackage{algorithm2e}
 \usepackage{graphicx}
@@ -42,15 +43,17 @@
 \usepackage{hyperref}
 \newtheorem{theorem}{Теорема}
 \newcommand{\ev}{\mathsf{E}}
+\newcommand{\vfi}{\varphi}
 \newcommand{\prob}[1]{\mathsf{P}\left(#1\right)}
 \newcommand{\R}{\ensuremath{\mathbb{R}}}
-\newcommand{\Tau}{\ensuremath{\mathcal{T}}}
+\newcommand{\Tau}{\ensuremath{\mathfrak{T}}}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\Vhat}{\hat{V}}
 \newcommand{\vhat}{\hat{v}}
 \newcommand{\maxset}[1]{\max\left\lbrace#1\right\rbrace}
-% \setlength\parindent{0pt}
-% \setlength\parskip{0.5em}
+% \DeclareMathOperator{\mod}{mod}
+\setlength\parindent{0pt}
+\setlength\parskip{0.5em}
 
 \lstdefinestyle{customjava}{
 %   belowcaptionskip=1\baselineskip,
@@ -75,9 +78,11 @@
 
 %----------------------------------------------------------------
 \begin{document}
+\tableofcontents
 \input{intro}
 \input{chapter1}
 \input{chapter2}
+\input{chapter3}
 \nocite{*}
 \bibliographystyle{ugost2008}
 \bibliography{biblio-u}

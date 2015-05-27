@@ -1,0 +1,86 @@
+\chapter{Схема Неймана-Улама и её обобщение на нелинейные уравнения}
+Деревья конструкции, аналогичной описанной в главе \ref{chapter:2}, используются в известном обощении схемы Неймана-Улама, что приводит к идее применения оценок, разработанных для линейных интегральных уравнений, к задаче нахождения цены Американского опциона. Ниже будут изложены общие сведения о схеме Неймана-Улама и проведены более детальные аналогии с оценками \eqref{eq:common_recursive_statement}.
+
+Пусть $\mathfrak{X}$ --- локально компактное хаусдорфово пространство, $\mu$ --- $\sigma$-конечная мера Радона на $\mathfrak{X}$. Обозначим пространство вещественных функций, $r$-я степень которых интегрируема относительно меры $\mu$, как $L^r\left(\mathfrak{X}, \mu\right)$ (или просто $L^r$ в тех случаях, когда это не порождает неоднозначность). Объектом интереса будет являться уравнение вида
+\begin{equation} \label{eq:integral}
+	\vfi = \mathcal{K}\vfi + f,
+\end{equation}
+где $\mathcal{K}: L^r \to L^r$ --- регулярный интегральный оператор с ядром $K: \mathfrak{X}\to \mathfrak{X}$, $f\in L^r$, а $\sum_{i=0}^\infty \mathcal{K}^i f$ сходится по метрике в $L^r$.
+
+$\forall\,\vfi$ -- решение уравнения \eqref{eq:integral}, $h\in L^t\left(\mathfrak{X}, \mu\right)$ для $t:\nicefrac{1}{t} + \nicefrac{1}{r} = 1$ определено $\left(h, \vfi\right) = \int h\left(x\right)\vfi\left(x\right) d\mu$, причём $\left(h,\vfi\right) = \sum_{i=1}^\infty \left(\mathcal{K}^i f, h\right)$. Следовательно\footnote{Более подробно --- в \cite{montekarlo1975}}, можно представить $\left(\vfi,h\right)$ как
+\begin{equation}
+	\left(\vfi, h\right) = \sum_{i=1}^\infty \int_{\mathfrak{X}^{i+1}}f(x_0)K(x_0, x_1)\cdots K(x_{i-1}, x_i)h\left(x_i\right)\mu^id\left(x_1,\ldots,x_i\right).
+\end{equation}
+Будем далее обозначать $K\left(x_{i-1}, x_i\right) = K_{i-1, i}, f\left(x_i\right) = f_i, h\left(x_i\right) = h_i$.
+
+Рассмотрим теперь марковскую цепь с поглощением, определяемую начальным распределением $\pi\left(x\right): \int_{\mathfrak{X}} \pi(x) dx = 1$ и переходной плотностью 
+$$p\left(x_{i-1}, x_i\right) \geq 0 : \:\forall x \int_\mathfrak{X} p(x, x_i)\mu(dx_i) = 1 - g(x) \mod \mu,$$
+$g\in\left[0;1\right)$ $\mu$-почти всюду, $g$ --- вероятность <<поглощения>>, обрыва траектории. Будем далее обозначать аналогично операторам в интегральном уравнении $p\left(x_{i-1}, x_i\right) = p_{i-1, i}, g\left(x_i\right) = g_i, \pi\left(x_i\right) = \pi_i$.
+
+Для марковской цепи \emph{выполняются условия согласования}, если $\forall \left(x_0, \ldots, x_k\right) \in \mathfrak{X}$
+	\[
+		f_0 K_{0,1}\cdots K_{k-1, k} h_k \not = 0 \mod \mu^{k+1} \implies p_0 p_{0,1}\cdots p_{k-1, k} g_k > 0 \mod \mu^{k+1}.
+	\]
+\newpage
+
+Пусть имеется уравнение 
+\begin{equation}
+	\vfi\left(x\right) = \int K\left(x, y, \vfi\left(y\right)\right)\vfi\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu,
+\end{equation}
+для которого сходится метод последовательных приближений
+\begin{equation}
+	\vfi_n\left(x\right) = \int K\left(x, y, \vfi_{n-1}\left(y\right)\right)\vfi_n\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu,
+\end{equation}
+для некоторого начального приближения $\vfi_0\left(x\right)$ при $n\to\infty$. Тогда при наличии предположений о сходимости ряда Неймана $\sum_{i=0}^\infty \int K^i f d\mu$ в той же метрике, в которой сходится метод последовательных приближений, об устойчивости ядра $K$ интегрального оператора к возмущениям, и, возможно, некоторых других, можно получать приближённые решения $\vfi_n$ методом Монте-Карло.
+
+Процесс отыскания численного решения усложняется тем, что неизвестным в интегральном уравнении является функция, а не число, что означает дополнительные вопросы о способе хранения информации о решении уравнения. Представленный ниже способ, как будет видно, избавляет от необходимости хранить таблицу значений искомой функции.
+
+Будем рассматривать только <<одночленные>> уравнения вида 
+\begin{align}
+	\vfi\left(x\right) &= \int K\left(x, y_1, \ldots,y_b\right)\prod_{i=1}^b\vfi\left(y_i\right)\mu^b\left(dy_1, \ldots,dy_b\right) + f\left(x\right) \Longleftrightarrow \label{eq:tree-basic}\\
+	\Longleftrightarrow \vfi &= \mathcal{K}\vfi^{\left(b\right)} + f \nonumber
+\end{align}
+и предполагать, что метод последовательных приближений $$\label{eq:consecutive-approximations}\vfi_0 = f, \vfi_n = \mathcal{K}\vfi_{n-1}^{(b)} + f$$ сходится в метрике некоторого банахова пространства $F$ к решению уравнения \eqref{eq:tree-basic}.
+
+Рассмотрим пример для $b=2, n=2$.
+\begin{align*}
+\vfi_1\left(x_0\right) = &f(x_0) + \int K\left(x_0, x_1, x_2\right)f(x_1)f(x_2)\mu^2\left(dx_1,dx_2\right) \\
+\vfi_2(x_0) = &f(x_0) + \int K\left(x_0, x_1, x_2\right)\times \\
+% \times\left[f(x_1) + \int K\right]\times \\
+\times&\left[f(x_1) + \int K\left(x_1, x_3, x_3\right)f(x_3)f(x_4)\mu^2\left(dx_3,dx_4\right)\right]\times \\
+\times&\left[
+	f(x_2) + \int K\left(x_2, x_5, x_6\right)f(x_5)f(x_6)\mu^2\left(dx_5,dx_6\right)
+\right]\times\mu^2\left(dx_1,dx_2\right) =\\
+=& f_0 + \int K_{0,1,2}f_1f_2\mu_{1,2} + 
+	\int K_{0,1,2}\left(f_1\int K_{2,5,6}f_5f_6\mu_{5,6}\right)\mu_{1,2} + \\
+	&+ \int K_{0,1,2}\left(f_2\int K_{1,3,4}f_3f_4\mu_{3,4}\right)\mu_{1,2} + \\
+	&+ \int\int\int K_{0,1,2}K_{1,3,4}K_{2,5,6}f_3f_4f_5f_6\mu_{1,2}\mu_{3,4}\mu_{5,6}
+\end{align*}
+Если посмотреть на дерево вида \ref{fig:exponential_tree}, можно заметить, что переменные в слагаемых вышеприведённого уравнения в точности соответствуют поддеревьям полного дерева, у которого из каждой вершины выходит $b=2$ дочерних, а расстояние от корня до листьев равно $n=2$.
+
+Обозначив последовательности $j_1\cdots j_k$ мультииндексами $\nu[k] = (1, j_1, \ldots, j_k); \nu[0] = (1), \nu[k+1] = (\nu[k], j_{k+1})$, можно выразить уравнение метода последовательных приближений \eqref{eq:consecutive-approximations} как
+$$
+	\begin{aligned}
+		\vfi_{N-k}\left(x\left[\nu(k)\right]\right) = 
+		&\int K\left(
+			x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left[\nu(k),b\right]
+		\right) \times \\
+		&\times\prod_{j_{k+1} = 1}^b \vfi_{N-k-1}\left(x\left[\nu(k+1)\right]\right)\mu^b\left(
+			dx\left[\nu(k), 1\right],\ldots,dx\left[\nu(k),b\right]
+		\right) + \\
+		&+ f\left(x\left[\nu(k)\right]\right),
+	\end{aligned}
+$$
+а введя сокращённые обозначения 
+$$
+	\begin{aligned}
+	z\left[\nu\left(k\right)\right] = \vfi_{N-k}\left(x\left[\nu(k)\right]\right), \\
+	a_{\nu\left(k\right)}\vfi = \int K\left(
+			x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left[\nu(k),b\right]
+		\right) \vfi d\mu,
+	\end{aligned}
+$$
+переписать в виде
+$$
+	z\left[\nu\left(k\right)\right] = _{\nu\left(k\right)}\prod_{j_{k+1} = 1}^b z\left[\nu\left(k+1\right)\right] + f\left[\nu\left(k\right)\right].
+$$
