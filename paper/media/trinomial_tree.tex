@@ -1,12 +1,16 @@
-\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=0.35\linewidth, rectangle,draw]
-	\matrix[row sep=10mm,column sep=0.1\linewidth] {
-						 & 					 & 					   & \node (3111) {$Suuu$}; \\
-						 & 					 & \node (211) {$Suu$}; & \node (311) {$Su$}; \\
-						 & \node (11) {$Su$};& \node (21) {$Su$};  & \node (31) {$Su$}; \\
-		\node (0) {$S$}; & \node (10) {$S$}; & \node (20) {$S$};   & \node (30) {$S$}; \\
-						 & \node (12) {$Sd$};& \node (22) {$Sd$};  & \node (32) {$Sd$};  \\
-						 & 					 & \node (222) {$Sdd$};& \node (322) {$Sdd$}; \\
-						 & 					 & 					   & \node (3222) {$Sddd$}; \\
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,rectangle,draw]
+	\matrix[row sep=10mm,column sep=0.05\linewidth] {
+		% 				 & 					 & 					   & \node (3111) {$Suuu$}; \\
+		% 				 & 					 & \node (211) {$Suu$}; & \node (311) {$Su$}; \\
+		% 				 & \node (11) {$Su$};& \node (21) {$Su$};  & \node (31) {$Su$}; \\
+		% \node (0) {$S$}; & \node (10) {$S$}; & \node (20) {$S$};   & \node (30) {$S$}; \\
+		% 				 & \node (12) {$Sd$};& \node (22) {$Sd$};  & \node (32) {$Sd$};  \\
+		% 				 & 					 & \node (222) {$Sdd$};& \node (322) {$Sdd$}; \\
+		% 				 & 					 & 					   & \node (3222) {$Sddd$}; \\
+        &&&\node (0) {$S$};&&&\\
+        &&\node (11) {$Su$};&\node (10) {$S$};&\node (12) {$Sd$};&& \\
+        &\node (211) {$Suu$};&\node (21) {$Su$};&\node (20) {$S$};&\node (22) {$Sd$};&\node (222) {$Sdd$};& \\
+        \node (3111) {$Suuu$};&\node (311) {$Su$};&\node (31) {$Su$};&\node (30) {$S$};&\node (32) {$Sd$};&\node (322) {$Sdd$};&\node (3222) {$Sddd$};  \\
     };
     \path 	(0)	edge[->]	(11)
     			edge[->]	(10)
