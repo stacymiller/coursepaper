@@ -9,15 +9,13 @@ import static java.lang.Math.sqrt;
 public class AssetGenerator {
     static Random rnd = new Random();
     static Random rnd2 = new Random();
-    static double lambda = 10.;
-    static double volatility = 0.31436183;
-    static double profitability = 0.3;
     static double timedelta = 1;
-    static double eps = 10e-6;
+    static int stepsTotal;
 
     public static ImitatedAsset generateAssetTree(int branches, int steps, double initialPrice){
         if (timedelta == 1) {
             timedelta = 1. / steps;
+            stepsTotal = steps;
         }
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, steps == 0, timedelta);
         if (steps > 0) {

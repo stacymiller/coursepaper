@@ -22,14 +22,15 @@ class ImitatedAsset implements Comparable{
         isLastChild = true;
     }
 
-    ImitatedAsset(double newPrice, int branches, boolean isLastChild, double timedelta) {
+    // double time is amount of time passed from t_0
+    ImitatedAsset(double newPrice, int branches, boolean isLastChild, double time) {
         if (Double.isNaN(newPrice)){
             throw new AssertionError("Asset price is NaN");
         }
         price = newPrice;
         children = new HashSet<ImitatedAsset>();
         this.isLastChild = isLastChild;
-        discountFactor = discountRate * timedelta;
+        discountFactor = discountRate * time;
     }
 
     public void addChild(ImitatedAsset child){
@@ -41,20 +42,6 @@ class ImitatedAsset implements Comparable{
 
     @Override
     public String toString(){
-//        String ans = "";
-//        if (!isLastChild) {
-//            for (ImitatedAsset child: children){
-//                String temp;
-//                if (child == null) {
-//                    temp = "null";
-//                } else {
-//                    temp = child.toString();
-//                }
-//                ans = ans + temp + "\n";
-//            }
-//            ans = ans.trim() + "\t";
-//        }
-//        ans = ans + price + "\n";
         return String.format("%.2f", price);
     }
 
