@@ -1,28 +1,28 @@
 \chapter{Схема Неймана-Улама и её обобщение на нелинейные уравнения}
-Деревья конструкции, аналогичной описанной в главе \ref{chapter:2}, используются в известном обощении схемы Неймана-Улама, что приводит к идее применения оценок, разработанных для линейных интегральных уравнений, к задаче нахождения цены Американского опциона. Ниже будут изложены общие сведения о схеме Неймана-Улама и проведены более детальные аналогии с оценками \eqref{eq:common_recursive_statement}.
+Деревья конструкции, аналогичной описанной в главе \ref{chapter:2}, используются в известном обобщении схемы Неймана-Улама, что приводит к идее применения оценок, разработанных для линейных интегральных уравнений, к задаче нахождения цены Американского опциона. Ниже будут изложены общие сведения о схеме Неймана-Улама и проведены более детальные аналогии с оценками \eqref{eq:common_recursive_statement}.
 
-Пусть $\mathfrak{X}$ --- локально компактное хаусдорфово пространство, $\mu$ --- $\sigma$-конечная мера Радона на $\mathfrak{X}$. Обозначим пространство вещественных функций, $r$-я степень которых интегрируема относительно меры $\mu$, как $L^r\left(\mathfrak{X}, \mu\right)$ (или просто $L^r$ в тех случаях, когда это не порождает неоднозначность). Объектом интереса будет являться уравнение вида
-\begin{equation} \label{eq:integral}
-	\vfi = \mathcal{K}\vfi + f,
-\end{equation}
-где $\mathcal{K}: L^r \to L^r$ --- регулярный интегральный оператор с ядром $K: \mathfrak{X}\to \mathfrak{X}$, $f\in L^r$, а $\sum_{i=0}^\infty \mathcal{K}^i f$ сходится по метрике в $L^r$.
+% Пусть $\mathfrak{X}$ --- локально компактное хаусдорфово пространство, $\mu$ --- $\sigma$-конечная мера Радона на $\mathfrak{X}$. Обозначим пространство вещественных функций, $r$-я степень которых интегрируема относительно меры $\mu$, как $L^r\left(\mathfrak{X}, \mu\right)$ (или просто $L^r$ в тех случаях, когда это не порождает неоднозначность). Объектом интереса будет являться уравнение вида
+% \begin{equation} \label{eq:integral}
+% 	\vfi = \mathcal{K}\vfi + f,
+% \end{equation}
+% где $\mathcal{K}: L^r \to L^r$ --- регулярный интегральный оператор с ядром $K: \mathfrak{X}\to \mathfrak{X}$, $f\in L^r$, а $\sum_{i=0}^\infty \mathcal{K}^i f$ сходится по метрике в $L^r$.
 
-$\forall\,\vfi$ -- решение уравнения \eqref{eq:integral}, $h\in L^t\left(\mathfrak{X}, \mu\right)$ для $t:\nicefrac{1}{t} + \nicefrac{1}{r} = 1$ определено $\left(h, \vfi\right) = \int h\left(x\right)\vfi\left(x\right) d\mu$, причём $\left(h,\vfi\right) = \sum_{i=1}^\infty \left(\mathcal{K}^i f, h\right)$. Следовательно\footnote{Более подробно --- в \cite{montekarlo1975}}, можно представить $\left(\vfi,h\right)$ как
-\begin{equation}
-	\left(\vfi, h\right) = \sum_{i=1}^\infty \int_{\mathfrak{X}^{i+1}}f(x_0)K(x_0, x_1)\cdots K(x_{i-1}, x_i)h\left(x_i\right)\mu^id\left(x_1,\ldots,x_i\right).
-\end{equation}
-Будем далее обозначать $K\left(x_{i-1}, x_i\right) = K_{i-1, i}, f\left(x_i\right) = f_i, h\left(x_i\right) = h_i$.
+% $\forall\,\vfi$ -- решение уравнения \eqref{eq:integral}, $h\in L^t\left(\mathfrak{X}, \mu\right)$ для $t:\nicefrac{1}{t} + \nicefrac{1}{r} = 1$ определено $\left(h, \vfi\right) = \int h\left(x\right)\vfi\left(x\right) d\mu$, причём $\left(h,\vfi\right) = \sum_{i=1}^\infty \left(\mathcal{K}^i f, h\right)$. Следовательно\footnote{Более подробно --- в \cite{montekarlo1975}}, можно представить $\left(\vfi,h\right)$ как
+% \begin{equation}
+% 	\left(\vfi, h\right) = \sum_{i=1}^\infty \int_{\mathfrak{X}^{i+1}}f(x_0)K(x_0, x_1)\cdots K(x_{i-1}, x_i)h\left(x_i\right)\mu^id\left(x_1,\ldots,x_i\right).
+% \end{equation}
+% Будем далее обозначать $K\left(x_{i-1}, x_i\right) = K_{i-1, i}, f\left(x_i\right) = f_i, h\left(x_i\right) = h_i$.
 
-Рассмотрим теперь марковскую цепь с поглощением, определяемую начальным распределением $\pi\left(x\right): \int_{\mathfrak{X}} \pi(x) dx = 1$ и переходной плотностью 
-$$p\left(x_{i-1}, x_i\right) \geq 0 : \:\forall x \int_\mathfrak{X} p(x, x_i)\mu(dx_i) = 1 - g(x) \mod \mu,$$
-$g\in\left[0;1\right)$ $\mu$-почти всюду, $g$ --- вероятность <<поглощения>>, обрыва траектории. Будем далее обозначать аналогично операторам в интегральном уравнении $p\left(x_{i-1}, x_i\right) = p_{i-1, i}, g\left(x_i\right) = g_i, \pi\left(x_i\right) = \pi_i$.
+% Рассмотрим теперь марковскую цепь с поглощением, определяемую начальным распределением $\pi\left(x\right): \int_{\mathfrak{X}} \pi(x) dx = 1$ и переходной плотностью 
+% $$p\left(x_{i-1}, x_i\right) \geq 0 : \:\forall x \int_\mathfrak{X} p(x, x_i)\mu(dx_i) = 1 - g(x) \mod \mu,$$
+% $g\in\left[0;1\right)$ $\mu$-почти всюду, $g$ --- вероятность <<поглощения>>, обрыва траектории. Будем далее обозначать аналогично операторам в интегральном уравнении $p\left(x_{i-1}, x_i\right) = p_{i-1, i}, g\left(x_i\right) = g_i, \pi\left(x_i\right) = \pi_i$.
 
-Для марковской цепи \emph{выполняются условия согласования}, если $\forall \left(x_0, \ldots, x_k\right) \in \mathfrak{X}$
-	\[
-		f_0 K_{0,1}\cdots K_{k-1, k} h_k \not = 0 \mod \mu^{k+1} \implies p_0 p_{0,1}\cdots p_{k-1, k} g_k > 0 \mod \mu^{k+1}.
-	\]
-\newpage
-
+% Для марковской цепи \emph{выполняются условия согласования}, если $\forall \left(x_0, \ldots, x_k\right) \in \mathfrak{X}$
+% 	\[
+% 		f_0 K_{0,1}\cdots K_{k-1, k} h_k \not = 0 \mod \mu^{k+1} \implies p_0 p_{0,1}\cdots p_{k-1, k} g_k > 0 \mod \mu^{k+1}.
+% 	\]
+% \newpage
+\section{Общие сведения о схеме Неймана-Улама применительно к ветвящемуся марковскому процессу}
 Пусть имеется уравнение 
 \begin{equation}
 	\vfi\left(x\right) = \int K\left(x, y, \vfi\left(y\right)\right)\vfi\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu,
@@ -40,7 +40,13 @@ $g\in\left[0;1\right)$ $\mu$-почти всюду, $g$ --- вероятност
 	\vfi\left(x\right) &= \int K\left(x, y_1, \ldots,y_b\right)\prod_{i=1}^b\vfi\left(y_i\right)\mu^b\left(dy_1, \ldots,dy_b\right) + f\left(x\right) \Longleftrightarrow \label{eq:tree-basic}\\
 	\Longleftrightarrow \vfi &= \mathcal{K}\vfi^{\left(b\right)} + f \nonumber
 \end{align}
-и предполагать, что метод последовательных приближений $$\label{eq:consecutive-approximations}\vfi_0 = f, \vfi_n = \mathcal{K}\vfi_{n-1}^{(b)} + f$$ сходится в метрике некоторого банахова пространства $F$ к решению уравнения \eqref{eq:tree-basic}.
+и предполагать, что метод последовательных приближений 
+\begin{equation}
+\label{eq:consecutive-approximations}
+\vfi_0 = f, \quad\vfi_n = \mathcal{K}\vfi_{n-1}^{(b)} + f
+\end{equation}
+
+сходится в метрике некоторого банахова пространства $F$ к решению уравнения \eqref{eq:tree-basic}.
 
 Рассмотрим пример для $b=2, n=2$.
 \begin{align*}
@@ -58,7 +64,7 @@ $g\in\left[0;1\right)$ $\mu$-почти всюду, $g$ --- вероятност
 \end{align*}
 Если посмотреть на дерево вида \ref{fig:exponential_tree}, можно заметить, что переменные в слагаемых вышеприведённого уравнения в точности соответствуют поддеревьям полного дерева, у которого из каждой вершины выходит $b=2$ дочерних, а расстояние от корня до листьев равно $n=2$.
 
-Обозначив последовательности $j_1\cdots j_k$ мультииндексами $\nu[k] = (1, j_1, \ldots, j_k); \nu[0] = (1), \nu[k+1] = (\nu[k], j_{k+1})$, можно выразить уравнение метода последовательных приближений \eqref{eq:consecutive-approximations} как
+Обозначив последовательности $j_1\cdots j_k$ мультииндексами $\nu[k] = (1, j_1, \ldots, j_k); \;\nu[0] = (1), \;\nu[k+1] = (\nu[k], j_{k+1})$, можно выразить уравнение метода последовательных приближений \eqref{eq:consecutive-approximations} как
 $$
 	\begin{aligned}
 		\vfi_{N-k}\left(x\left[\nu(k)\right]\right) = 
@@ -74,13 +80,141 @@ $$
 а введя сокращённые обозначения 
 $$
 	\begin{aligned}
-	z\left[\nu\left(k\right)\right] = \vfi_{N-k}\left(x\left[\nu(k)\right]\right), \\
-	a_{\nu\left(k\right)}\vfi = \int K\left(
+	z\left[\nu\left(k\right)\right] &= \vfi_{N-k}\left(x\left[\nu(k)\right]\right), \\
+	a_{\nu\left(k\right)}\vfi &= \int K\left(
 			x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left[\nu(k),b\right]
 		\right) \vfi d\mu,
 	\end{aligned}
 $$
 переписать в виде
 $$
-	z\left[\nu\left(k\right)\right] = _{\nu\left(k\right)}\prod_{j_{k+1} = 1}^b z\left[\nu\left(k+1\right)\right] + f\left[\nu\left(k\right)\right].
+	z\left[\nu\left(k\right)\right] = a_{\nu\left(k\right)}\prod_{j_{k+1} = 1}^b z\left[\nu\left(k+1\right)\right] + f\left[\nu\left(k\right)\right].
 $$
+
+Каждый мультииндекс $\nu(k)$ является описанием некоторой траектории, а в силу конструкции индексов эти траектории сливаются в дерево. Для дальнейшей работы дадим более формальное описание деревьев.
+
+Пусть $\gamma_k = \left(\mathfrak{B}_0,\ldots,\mathfrak{B}_k\right)$ --- совокупность множеств $\mathfrak{B}_r, r\in \mathbb{N}\cup\left\lbrace 0\right\rbrace$ мультииндексов $\nu(r)$, удовлетворяющих следующим условиям:
+\begin{enumerate}
+	\item $\forall\: r > 1, \:\nu(r)\in \mathfrak{B}_r$ соответствующее $\nu(r-1)\in\mathfrak{B}'_{r-1}\subset\mathfrak{B}_{r-1}$,
+	\item $l_r$ для каждого $\nu(r)$ принимает всевозможные значения из $1:b$,
+	\item $\mathfrak{B}_0 = \left\lbrace\left(1\right)\right\rbrace$.
+\end{enumerate}
+Такую совокупность $\gamma_k$ назовём деревом. Дерево, для которого все $\mathfrak{B}'_{r-1} = \mathfrak{B}_{r-1}$, называется полным. Множество $\mathfrak{B}'_{r}$ здесь по сути является множеством, траектории из которого <<продолжат существование>> на следующем шаге. Так, дерево с рис. \ref{fig:exponential_tree} имеет $\mathfrak{B}'_1 = \cup_{b=1}^3 \left\lbrace (1, b,1), (1,b,2), (1,b,3)\right\rbrace$ и $\mathfrak{B}'_2 = \emptyset$. Для любого дерева $\gamma$ определён оператор
+$$
+	\begin{aligned}
+	A\left(\gamma\right) = &f\left[\nu(0)\right] \text{ при } N=0 \\
+	A\left(\gamma\right) = &a_{\nu(0)}\prod_{\mathfrak{B}_1\setminus\mathfrak{B}'_1}f\left[\nu(1)\right]\prod_{\mathfrak{B}'_1}a_{\nu(1)} \prod_{\mathfrak{B}_2\setminus\mathfrak{B}'_2}f\left[\nu(1)\right]\prod_{\mathfrak{B}'_2}a_{\nu(2)} \times \\
+	&\times\cdots\times \prod_{\mathfrak{B}_N}a_{\nu(N)} \text{ при } N>0
+	\end{aligned} 
+$$
+В \cite{montekarlo1975} доказано, что 
+\begin{equation}\label{eq:subtrees}
+z\left[\nu(0)\right] = \sum_{\gamma\in\Gamma_N}A\left(\gamma\right),
+\end{equation}
+где суммирование проходит по всем поддеревьям с $N$ и менее поколениями полного дерева с $N$ поколениями $\Gamma_N$.
+
+В результате реализации одногодного ветвящегося марковского процесса с начальной плотностью $\pi\left(x\right) \geq 0$, переходной плотностью $p(x,y_1,\ldots,y_b) \geq 0$ и вероятностью поглощения $g\left(x\right): \int p(x,y_1,\ldots,y_b) \mu^s\left(dy_1, \ldots, dy_b\right) = 1 - g(x)$ образуется дерево описанного выше типа, число поколений которого $N$ не обязательно конечно. В случае, если конкретная реализация $\gamma$ имеет длину $N\in(0;\infty)$, то ей соответствует плотность вероятности
+\begin{align*}
+	p(\gamma) = &\pi\left(x\left[1\right]\right)p\left(x\left[1\right], x\left[1,1\right], \ldots ,x\left[1,b\right]\right)\times \prod_{\mathfrak{B}_1\setminus\mathfrak{B}'_1}g\left[\nu(1)\right] \times \\
+	&\times \prod_{\mathfrak{B}'_1}p\left(x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left[\nu(k),b\right]\right) \times \\
+	&\times \prod_{\mathfrak{B}_2\setminus\mathfrak{B}'_2}g\left[\nu(2)\right]\times \cdots \times\prod_{\mathfrak{B}_N}f\left[\nu(N)\right].
+\end{align*}
+
+Для марковского процесса \emph{выполняются условия согласования}, если
+\begin{enumerate}
+ \item $\forall (x,y_1, \ldots, y_b)$ 
+$$
+\begin{aligned}
+K\left(x, y_1, \ldots, y_b\right) \neq 0 \quad \mod \mu^{b+1} \implies \\ \implies p\left(x, y_1, \ldots, y_b\right) > 0 \quad \mod \mu^{b+1}
+\end{aligned}$$
+\item $\forall x$ $$
+\begin{aligned}
+h(x) \neq 0\quad \mod \mu \implies \pi(x) > 0\quad \mod \mu \\
+f(x) \neq 0\quad \mod \mu \implies g(x) > 0\quad \mod \mu 
+\end{aligned}$$
+\end{enumerate}
+
+Сокращая обозначения $h_0 = h(x[1])$, $\pi_0 = \pi(x[1])$, $f[\nu(k)] = f\left(x\left[\nu\left(k\right)\right]\right)$, $g[\nu(k)] = g\left(x\left[\nu\left(k\right)\right]\right)$, 
+\begin{align*}
+K_{\nu[k]} = K\left(x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left[\nu(k),b\right]\right), \\
+p_{\nu[k]} = p\left(x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left[\nu(k),b\right]\right),
+\end{align*}
+для интегрального уравнения \eqref{eq:tree-basic} и марковской цепи, для которой выполняются условия согласования с этим уравнением, можно определить оценку
+\begin{equation}\label{eq:accumulation-estimator}
+	\hat{J}_\gamma = \frac{h_0}{p_0}\frac{K_{\nu(0)}}{p_{\nu(0)}}\prod_{\mathfrak{B}_1\setminus\mathfrak{B}'_1}\frac{f\left[\nu\left(1\right)\right]}{p\left[\nu\left(1\right)\right]}\prod_{\mathfrak{B}'_1} \frac{K_{\nu(1)}}{p_{\nu(1)}}\prod_{\mathfrak{B}_2\setminus\mathfrak{B}'_2}\frac{f\left[\nu\left(2\right)\right]}{p\left[\nu\left(2\right)\right]}\prod_{\mathfrak{B}'_2} \frac{K_{\nu(2)}}{p_{\nu(2)}}\times\cdots\times\prod_{\mathfrak{B}_N} \frac{f\left[\nu\left(N\right)\right]}{p\left[\nu\left(N\right)\right]}.
+\end{equation}
+Эта оценка является несмещённой оценкой функционала $\left(\vfi, h\right)$ (см. \cite{montekarlo1975}).
+
+% --------------------------------------------------------
+
+\section{Приложение к задаче оценивания Американского опциона}
+Обратимся снова к уравнению \eqref{eq:common_recursive_statement}. Обозначая операцию взятия максимума $\max\left\lbrace a, b\right\rbrace = a\oplus b$, мы можем переписать его в виде
+$$
+	\begin{aligned}
+		V_m\left(x\right) &= h_m\left(x\right) \\
+		V_k\left(x\right) &= h_k\left(x\right)\oplus \int V_{k+1}p_{k, k+1}\left(x, X_{k+1}\right) dX_{k+1}, k\in 0:m-1
+	\end{aligned}
+$$
+
+Задача также легко развёртывается в вид 
+\begin{multline*}
+	V_0\left(x\right) = h_0\left(x\right)\oplus\int\left(h_1\left(X_1\right)\oplus\int\left(h_2\left(X_2\right)\oplus\int\left(\cdots\oplus\right.\right.\right.\\
+	\left.\left.\left.\oplus\int V_m\left(X_m\right)d\mu_{m-1, m}\left(X_{m-1}\right)\cdots\right)\mu_{2,3}\left(X_2\right)\right)d\mu_{1,2}\left(X_1\right)\right)d\mu_{0,1}(x),
+\end{multline*}
+где $d\mu_{k-1,k}(x) = p_{k-1, k}(x, X_k)dX_k$. К сожалению, полной аналогии с оценками по поглощению провести не удаётся, так как $\int a\oplus b \leq \int a \oplus \int b$, поэтому подсчёт величины, аналогичной \eqref{eq:accumulation-estimator}, даст разве что оценку сверху. 
+
+Тем не менее, теорема, результат которой представлен в \eqref{eq:subtrees}, доказана с использованием лишь дистрибутивности сложения относительно умножения. Так как операция взятия максимума также дистрибутивна относительно умножения ($\forall x,y,z \; x(y\oplus z) = xy\oplus xz$), мы можем применить эту идею на практике.
+
+\subsection{Описание метода}
+Для дерева состояний базового актива обрыв траектории в $t_i < t_m$ означает, что опцион исполнен в момент $t_i$. Априори вероятность этого события неизвестна, поэтому определить $g(x)$ иначе, как равное 0, если $t < t_m$, и 1, если $t = t_m$, не представляется возможным. По этой же причине оценка стоимости опциона в вершине $X_i^{j_1\cdots j_i}$ как $h_i\left(X_i^{j_1\cdots j_i}\right)$ является несостоятельной. Тем не менее, обходить все вершины (так как при текущем определении $g$ дерево состояний всегда получается полным длины $m$) не хочется.
+
+Из вышестоящих рассуждений можно сделать алгоритм, приведённый на листинге \ref{alg:random_subtree}.
+\IncMargin{1em}
+\begin{algorithm}
+  \SetKwData{Left}{left}\SetKwData{This}{this}\SetKwData{Up}{up}
+  \SetKwProg{Fn}{def}{\string:}{}
+  \SetKwFunction{Union}{Union}\SetKwFunction{FindCompress}{FindCompress}
+  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+  \SetKwFunction{calculate}{calculate}
+  \Fn{\calculate{$X_i^{j_1\cdots j_i}, b, K$}}{
+	  \Input{текущее состояние $X_i^{j_1\cdots j_i}$ (включает в себя время $t_i$), число веток $b$, цена страйк $K$}
+	  \Output{оценка стоимости опциона $\hat{V}_i^{j_1\cdots j_i}$ при условии, что он не был исполнен до этого момента}
+	  \BlankLine
+	  \If{$t_i = t_m$}{
+	        \KwRet{$h_m\left(X_m^{j_1\cdots j_m}\right)$}\;
+	      }
+	  % \emph{выбрать случайным образом число }\;
+	  \emph{промоделировать состояния $\left\lbrace X_{i+1}^{j_1\cdots j_i j} \right\rbrace_{j=1}^b$}\;
+	  \emph{выбрать случайным образом состояния $\left\lbrace X_{i+1}^l \right\rbrace_{l=1}^k \subset \left\lbrace X_{i+1}^{j_1\cdots j_i j} \right\rbrace_{j=1}^b$, из которых будут генерироваться дочерние вершины}\;
+	  \For{$x \in \left\lbrace X_{i+1}^l \right\rbrace_{l=1}^k$}{
+	  	$\hat{V}_{i+1}^l$ = \calculate{$x, b, K$}\;
+	  }
+	  \For{$x \in \left\lbrace X_{i+1}^{j_1\cdots j_i j} \right\rbrace_{j=1}^b \setminus\left\lbrace X_{i+1}^l \right\rbrace_{l=1}^k$}{
+	  	$\hat{V}_{i+1}^l$ = \emph{случайно выбранная из уже полученных оценок}\;
+	  }
+	  \KwRet{$\max\left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), \frac{1}{b}\sum_{j=1}^b \hat{V}_{i+1}^j\right\rbrace$}\;
+	}
+  \caption{оценка стоимости Американского опциона по случайно выбранным поддеревьям}\label{alg:random_subtree}
+\end{algorithm}\DecMargin{1em}
+
+Неочевидными остаются алгоритм выбора состояний, из которых дерево будет продолжать расти, и алгоритм назначения оценок.
+\subsection{Численные результаты}
+Алгоритм был реализован. На рис.\ref{fig:random_subtree_modified_ev} можно увидеть полученные оценки. Вершины, из которых будут строиться дочерние из состояния $X_i^{j_1\cdots j_i}$, выбирались равновероятно из множества $\left\lbrace X_{i+1}^{j_1\cdots j_i j}\right\rbrace_{j=1}^b$ всех смоделированных вершин, математическое ожидание числа вершин на шаге $i$ было равно $\max\left\lbrace b\min\left\lbrace\nicefrac{i+1}{m}, 1\right\rbrace, 1\right\rbrace$.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{random_subtree_modified_ev}
+    \caption{Верхняя и нижняя оценки стоимости опциона по случайным поддеревьям}
+    \label{fig:random_subtree_modified_ev}
+    \footnotesize{Оценки стоимости опциона с начальной ценой 100, выписанного на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемого 4 раза в году}
+\end{figure}
+
+Также был реализован алгоритм Броади-Глассермана, результаты его работы можно увидеть на рис.\ref{fig:true_value_test_standard}.
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=0.8\textwidth]{true_value_test_standard_with_ci}
+	\caption{Верхняя и нижняя оценки стоимости опциона по алгоритму Броади-Глассермана}
+	\label{fig:true_value_test_standard}
+	\footnotesize{Оценки стоимости опциона с начальной ценой 100, выписанного на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемого 4 раза в году}
+\end{figure}
+
+По графику можно видеть, что оценка, получающаяся по данному алгоритмо, обладает значительно большей дисперсией. При этом время работы близко к линейному, что отчасти компенсирует широкие доверительные интервалы.
