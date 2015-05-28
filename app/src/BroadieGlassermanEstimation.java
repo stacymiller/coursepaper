@@ -1,6 +1,8 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.Math.exp;
+
 /**
  * Created by derketzer on 22.09.14.
  */
@@ -21,7 +23,7 @@ public class BroadieGlassermanEstimation extends Estimation {
             ans = 0.;
             int len = a.children.size();
             for (ImitatedAsset child : a.children){
-                ans += upperEstimate(child, strikePrice, estimated) / len;
+                ans += exp(-child.discountFactor)*upperEstimate(child, strikePrice, estimated) / len;
             }
             estimated.put(a, ans);
             return Math.max(payoff(strikePrice, a), ans);
@@ -49,7 +51,7 @@ public class BroadieGlassermanEstimation extends Estimation {
             int i = 0;
             double sum = 0;
             for (ImitatedAsset child: a.children){
-                childrenEstimates[i] = lowerEstimate(child, strikePrice, estimated);
+                childrenEstimates[i] = exp(-child.discountFactor)*lowerEstimate(child, strikePrice, estimated);
                 sum += childrenEstimates[i++];
             }
 

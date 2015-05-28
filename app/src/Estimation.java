@@ -19,6 +19,7 @@ public class Estimation {
             throw new IllegalArgumentException(String.format("Payoff calculation method is unknown for %s option",
                     optionType.toString()));
         }
-        return exp(-asset.discountFactor) * ans;
+//        return exp(-asset.discountFactor) * ans;
+        return ans;
     }
 }
