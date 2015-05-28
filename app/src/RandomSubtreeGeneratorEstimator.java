@@ -16,31 +16,44 @@ public class RandomSubtreeGeneratorEstimator extends Estimation{
     static PoissonDistribution poisson = new PoissonDistribution(1);
     static Random rnd = new Random();
     static Random rnd2 = new Random();
+    static int stepsTotal;
 
     static double timedelta = 1;
     public static double[] calculate(int branches, int steps, double initialPrice, double strikePrice){
         if (timedelta == 1) {
             timedelta = 1. / steps;
+            stepsTotal = steps;
         }
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, steps == 0, timedelta);
         if (steps > 0) {
             int needCalculation = 0;
+//            System.out.println((steps + 1.) / stepsTotal);
             for (int branch = 0; branch < branches; branch++) {
-                if (rnd2.nextDouble() < 1.2 / branches){
+                if (rnd2.nextDouble() < (steps + 1.) / stepsTotal){
                     needCalculation++;
                 }
             }
             needCalculation = max(needCalculation, 1);
             double[][] estimators = new double[branches][2];
+            double[] prices = new double[needCalculation];
             double upperEstimator = 0;
             double lowerSum = 0;
-            for (int b = 0; b < needCalculation; b++){
-                estimators[b] = calculate(branches, steps-1, getRandomPrice(ans), strikePrice);
+            for (int b = 0; b < needCalculation; b++) {
+                prices[b] = getRandomPrice(ans);
+                estimators[b] = calculate(branches, steps - 1, prices[b], strikePrice);
+                estimators[b][0] *= exp(-ans.discountFactor);
+                estimators[b][1] *= exp(-ans.discountFactor);
                 upperEstimator += estimators[b][0] / branches;
                 lowerSum += estimators[b][1];
             }
-            for (int b = needCalculation; b < branches; b++){
-                estimators[b] = estimators[(int)floor(rnd2.nextDouble()*needCalculation)];
+            for (int b = needCalculation; b < branches; b++) {
+                double price = getRandomPrice(ans);
+                double minDist = Double.MAX_VALUE;
+                for (int k = 0; k < needCalculation; k++){
+                    if (abs(price - prices[k]) < minDist){
+                        estimators[b] = estimators[k];
+                    }
+                }
                 upperEstimator += estimators[b][0] / branches;
                 lowerSum += estimators[b][1];
             }

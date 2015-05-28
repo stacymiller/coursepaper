@@ -10,12 +10,14 @@ public class RandomSubtreeAssetGenerator extends AssetGenerator{
     public static ImitatedAsset generateAssetTree(int branches, int steps, double initialPrice){
         if (timedelta == 1) {
             timedelta = 1. / steps;
+            stepsTotal = steps;
         }
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, steps == 0, timedelta);
         if (steps > 0) {
             int needCalculation = 0;
+            System.out.println((steps + 1.) / stepsTotal);
             for (int branch = 0; branch < branches; branch++) {
-                if (rnd2.nextDouble() < 1.2 / branches){
+                if (rnd2.nextDouble() < (steps + 1.) / stepsTotal){
                     needCalculation++;
                 }
             }
