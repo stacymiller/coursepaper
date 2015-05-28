@@ -49,8 +49,8 @@
 \setlength\parindent{0pt}
 \setlength\parskip{0.5em}
 
-\usepackage{minted}
-
+% \usepackage{minted}
+\usepackage{listings}
 \lstdefinestyle{customjava}{
 %   belowcaptionskip=1\baselineskip,
   	breaklines=true,
@@ -272,7 +272,7 @@
 Моделирование организовано итеративно (а не рекурсивно, как это было бы уместно в исходном методе), потому что необходимая информация о дереве в процессе моделирования --- это описание текущего ряда целиком. Поэтому проще всего --- пройти вниз по дереву один раз.
 % % \renewcommand{\lstlistingname}{Листинг}% Listing -> Algorithm
 % \renewcommand{\lstlistlistingname}{Листинги}
-\begin{listing}[caption={Генерирование дерева состояний актива, на который выписан опцион},label={lst:treeGeneration}]
+\begin{lstlisting}[caption={Генерирование дерева состояний актива, на который выписан опцион},label={lst:treeGeneration}]
 public static ImitatedAsset generateAssetTree(int branches, int steps, double initialPrice){
         timedelta = 1. / steps;
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, false, timedelta);
@@ -301,6 +301,6 @@ public static ImitatedAsset generateAssetTree(int branches, int steps, double in
                 newRow[i] = v;}
             prevRow = newRow;}
         return ans;}
-\end{listing}
+\end{lstlisting}
 
 \end{document}
