@@ -49,11 +49,15 @@ substylefile = spbu.rtx,
 \newcommand{\prob}[1]{\mathsf{P}\left(#1\right)}
 \newcommand{\R}{\ensuremath{\mathbb{R}}}
 \newcommand{\Tau}{\ensuremath{\mathfrak{T}}}
+\newcommand{\GothB}{\mathfrak{B}}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\Vhat}{\hat{V}}
 \newcommand{\vhat}{\hat{v}}
 \newcommand{\maxset}[1]{\max\left\lbrace#1\right\rbrace}
-% \DeclareMathOperator{\mod}{mod}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+
 \setlength\parindent{0pt}
 \setlength\parskip{0.5em}
 
@@ -151,11 +155,11 @@ substylefile = spbu.rtx,
 \maketitle[en]
 
 \tableofcontents
-\input{intro}
-\input{chapter1}
+% % \input{intro}
+% % \input{chapter1}
 \input{chapter2}
 \input{chapter3}
-\input{chapter4}
+% % \input{chapter4}
 \nocite{*}
 \bibliographystyle{ugost2008}
 \bibliography{biblio-u}

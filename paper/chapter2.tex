@@ -2,7 +2,7 @@
 
 Метод случайных деревьев, предложенный в \cite{Broadie1997}, ищет решение проблемы оптимального времени остановки и оценивает истинное значение цены Американского опциона (в отличие от метода параметрических приближений).
 
-\par Вместо того, чтобы строить оценку, каким-либо образом стремящуюся к $V_0\left(X_0\right)$, мы построим две функции, являющиеся смещёнными вверх и вниз состоятельными оценками $V$, (в \cite{Broadie1997} приведено доказательство отсутствия несмещённой оценки для $V_0\left(X_0\right)$). Пусть $\Vhat\left(b\right)$ и $\hat{v}\left(b\right)$ --- такие оценки, зависящие от некоторого параметра $b$, сходящиеся к $V$ при $b\to\infty$.
+\par Вместо того, чтобы строить оценку, каким-либо образом стремящуюся к $V_0\left(X_0\right)$, мы построим две функции, являющиеся смещёнными вверх и вниз состоятельными оценками $V$, (в \cite{Broadie1997} приведено доказательство отсутствия несмещённой оценки для $V_0\left(X_0\right)$). Пусть $\Vhat\left(b\right)$ и $\vhat\left(b\right)$ --- такие оценки, зависящие от некоторого параметра $b$, сходящиеся к $V$ при $b\to\infty$.
 \par Метод случайного дерева основан на моделировании случайной цепи $X_0, X_1, \ldots X_m$. Зафиксируем параметр ветвления $b$. Из исходного состояния $X_0$ смоделируем $b$ независимых следующих состояний $X_1^1, X_1^2, \ldots X_1^b$, все с условием $X_1$. Для каждого $X_1^i$ снова смоделируем $b$ независимых последующих состояний $X_2^{i1}, \ldots X_2^{ib}$. На $m$-ом шаге будем иметь $b^m$ состояний, и это и есть источник основного недостатка этого метода --- его экспоненциальной алгоритмической сложности. Пример получающегося дерева состояний приведён на \ref{fig:exponential_tree}.
 \begin{figure}
 	\centering
@@ -52,7 +52,7 @@
 		\end{equation*}
 		Таким образом, $\ev\left[\Vhat_i^{j_1\ldots j_i}|X_i^{j_1\ldots j_i}\right] \geq \max \left\lbrace h_i\left(X_i^{j_1\cdots j_i}\right), V_i\left(X_i^{j_1\ldots j_i}\right) \right\rbrace$
 	\end{proof}
-	\begin{theorem} Оценка $\Vhat$ асимптотически состоятельна, то есть
+	\begin{theorem}\label{thm:consistency} Оценка $\Vhat$ асимптотически состоятельна, то есть
 		$$\Vhat_i^{j_1\ldots j_i} \underset{b\to\infty}{\overset{\mathsf{P}}{\to}} V_i\left(X_i^{j_1\ldots j_i}\right)$$
 	\end{theorem}
 	\begin{proof}
@@ -85,7 +85,7 @@
 	\par В более общей (и более короткой) постановке --- необходимо оценить $\max\left\lbrace a, \ev Y \right\rbrace$ с помощью $b$ независимых одинаково распределённых реализаций случайной величины $Y$ для некоторой константы $a$ и случайной величины $Y$. Оценка $\max\left\lbrace a, \bar{Y}\right\rbrace$ (где $\bar{Y}$ --- среднее значение выборки) является оценкой сверху, так как $\ev\max\left\lbrace a, \bar{Y}\right\rbrace \geq \max\left\lbrace a, \ev\bar{Y}\right\rbrace = \max\left\lbrace a, \ev Y\right\rbrace$, что и было использовано в построении оценки сверху.
 	\par Разделим множество реализаций $\left\lbrace Y_i \right\rbrace _{i=1}^b$ случайной величины $Y$ на два независимых подмножества и вычислим их средние значения $\bar{Y}_1$ и $\bar{Y}_2$. Если положить
 	\begin{equation}
-	\hat{v} = \begin{dcases*}
+	\vhat = \begin{dcases*}
 		a, & если $\bar{Y}_1 \leqslant a$, \\
 		\bar{Y}_2, & иначе,
 	\end{dcases*}
@@ -94,26 +94,26 @@
 		% 	\bar{Y}_2, & \, \text{иначе,} 
 		% \end{array}\right.
 	\end{equation}
-	мы отделим процесс принятия решения о исполнении или удержании опциона от оценки стоимости (за решение будет отвечать $\bar{Y}_1$, за оценку - $\bar{Y}_2$). При этом оценка $\hat{v}$ является оценкой снизу:
+	мы отделим процесс принятия решения о исполнении или удержании опциона от оценки стоимости (за решение будет отвечать $\bar{Y}_1$, за оценку - $\bar{Y}_2$). При этом оценка $\vhat$ является оценкой снизу:
 			\[
-				\ev\hat{v} = \mathsf{P}\left(\bar{Y}_1 \leqslant a\right)a + \left( 1 - \mathsf{P}\left(\bar{Y}_1 \leqslant a\right) \right)\ev Y \leqslant \max\left\lbrace a, \ev Y \right\rbrace
+				\ev\vhat = \mathsf{P}\left(\bar{Y}_1 \leqslant a\right)a + \left( 1 - \mathsf{P}\left(\bar{Y}_1 \leqslant a\right) \right)\ev Y \leqslant \max\left\lbrace a, \ev Y \right\rbrace
 			\]
 			
 	В оригинальной работе \cite{Broadie1997} была исполоьзована немного другая оценка. Пусть <<отвечающим за принятие решения>> подмножеством будут все реализации, кроме одной, а <<оценивающее>> множество будет состоять из одной оставшейся реализации. Возьмём математическое ожидание этой величины, т.е. положим в листьях дерева значение оценки
     \begin{equation}\label{eq:lower-terminal}
-		\hat{v}_m^{j_1 j_2 \cdots j_m} = h\left( X_m^{j_1 j_2 \cdots j_m}\right),
+		\vhat_m^{j_1 j_2 \cdots j_m} = h\left( X_m^{j_1 j_2 \cdots j_m}\right),
 	\end{equation}
 	а для промежуточных узлов определим
     \begin{equation}
-        \hat{v}_{ik}^{j_1 j_2 \cdots j_i} = \left\lbrace
+        \vhat_{ik}^{j_1 j_2 \cdots j_i} = \left\lbrace
 		    \begin{array}{l l}
-			    h\left( X_i^{j_1 j_2 \cdots j_i}\right), & \, \text{если } \frac{1}{b-1}\sum_{j=1, j\not= k}^b \hat{v}_{i+1}^{j_1 j_2 \cdots j_i j} \leq h\left(X_i^{j_1 j_2 \cdots j_i}\right) \\
-			    \hat{v}_{i+1}^{j_1 j_2 \cdots j_i k}, & \, \text{иначе} 
+			    h\left( X_i^{j_1 j_2 \cdots j_i}\right), & \, \text{если } \frac{1}{b-1}\sum_{j=1, j\not= k}^b \vhat_{i+1}^{j_1 j_2 \cdots j_i j} \leq h\left(X_i^{j_1 j_2 \cdots j_i}\right) \\
+			    \vhat_{i+1}^{j_1 j_2 \cdots j_i k}, & \, \text{иначе} 
 		    \end{array}\right.
     \end{equation}
     и оценку положим равной 
     \begin{equation}\label{eq:lower-node}
-    	\hat{v}_i^{j_1 j_2 \cdots j_i} = \frac{1}{b}\sum_{k=1}^b \hat{v}_{ik}^{j_1 j_2 \cdots j_i}.
+    	\vhat_i^{j_1 j_2 \cdots j_i} = \frac{1}{b}\sum_{k=1}^b \vhat_{ik}^{j_1 j_2 \cdots j_i}.
     \end{equation}
 
 	Доказательства смещённости и состоятельности нижней оценки аналогичны вышеприведённым для оценки сверху и также могут быть найдены в \cite{Broadie1997}.

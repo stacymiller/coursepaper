@@ -1,0 +1,16 @@
+\documentclass{letter}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+
+\usepackage[intlimits]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\newcommand{\vfi}{\varphi}
+\begin{document}
+\begin{enumerate}
+\item Верно ли, что метод последовательных приближений для интегрального уравнения выглядит как $$\vfi_n\left(x\right) = \int K\left(x, y, \vfi_{n-1}\left(y\right)\right)\vfi_{n-1}\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu$$, а не как $$\vfi_n\left(x\right) = \int K\left(x, y, \vfi_{n-1}\left(y\right)\right)\vfi_n\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu$$? Потому что иначе непонятно, как мы можем сокращённо записывать это как $\vfi = \mathcal{K}\vfi^{\left(b\right)} + f$.
+\end{enumerate}
+\end{document}
