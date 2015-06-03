@@ -7,7 +7,7 @@
 % \end{equation}
 % где $\mathcal{K}: L^r \to L^r$ --- регулярный интегральный оператор с ядром $K: \mathfrak{X}\to \mathfrak{X}$, $f\in L^r$, а $\sum_{i=0}^\infty \mathcal{K}^i f$ сходится по метрике в $L^r$.
 
-% $\forall\,\vfi$ -- решение уравнения \eqref{eq:integral}, $h\in L^t\left(\mathfrak{X}, \mu\right)$ для $t:\nicefrac{1}{t} + \nicefrac{1}{r} = 1$ определено $\left(h, \vfi\right) = \int h\left(x\right)\vfi\left(x\right) d\mu$, причём $\left(h,\vfi\right) = \sum_{i=1}^\infty \left(\mathcal{K}^i f, h\right)$. Следовательно\footnote{Более подробно --- в \cite{montekarlo1975}}, можно представить $\left(\vfi,h\right)$ как
+% $\forall\,\vfi$ --- решение уравнения \eqref{eq:integral}, $h\in L^t\left(\mathfrak{X}, \mu\right)$ для $t:\nicefrac{1}{t} + \nicefrac{1}{r} = 1$ определено $\left(h, \vfi\right) = \int h\left(x\right)\vfi\left(x\right) d\mu$, причём $\left(h,\vfi\right) = \sum_{i=1}^\infty \left(\mathcal{K}^i f, h\right)$. Следовательно\footnote{Более подробно --- в \cite{montekarlo1975}}, можно представить $\left(\vfi,h\right)$ как
 % \begin{equation}
 % 	\left(\vfi, h\right) = \sum_{i=1}^\infty \int_{\mathfrak{X}^{i+1}}f(x_0)K(x_0, x_1)\cdots K(x_{i-1}, x_i)h\left(x_i\right)\mu^id\left(x_1,\ldots,x_i\right).
 % \end{equation}
@@ -53,7 +53,7 @@
 \vfi_1\left(x_0\right) = &f(x_0) + \int K\left(x_0, x_1, x_2\right)f(x_1)f(x_2)\mu^2\left(dx_1,dx_2\right) \\
 \vfi_2(x_0) = &f(x_0) + \int K\left(x_0, x_1, x_2\right)\times \\
 % \times\left[f(x_1) + \int K\right]\times \\
-\times&\left[f(x_1) + \int K\left(x_1, x_3, x_3\right)f(x_3)f(x_4)\mu^2\left(dx_3,dx_4\right)\right]\times \\
+\times&\left[f(x_1) + \int K\left(x_1, x_3, x_4\right)f(x_3)f(x_4)\mu^2\left(dx_3,dx_4\right)\right]\times \\
 \times&\left[
 	f(x_2) + \int K\left(x_2, x_5, x_6\right)f(x_5)f(x_6)\mu^2\left(dx_5,dx_6\right)
 \right]\times\mu^2\left(dx_1,dx_2\right) =\\
@@ -64,7 +64,7 @@
 \end{align*}
 Если посмотреть на дерево вида \ref{fig:exponential_tree}, можно заметить, что переменные в слагаемых вышеприведённого уравнения в точности соответствуют поддеревьям полного дерева, у которого из каждой вершины выходит $b=2$ дочерних, а расстояние от корня до листьев равно $n=2$.
 
-Обозначив последовательности $j_1\cdots j_k$ мультииндексами $\nu[k] = (1, j_1, \ldots, j_k); \;\nu[0] = (1), \;\nu[k+1] = (\nu[k], j_{k+1})$, можно выразить уравнение метода последовательных приближений \eqref{eq:consecutive-approximations} как
+Обозначив последовательности $j_1\cdots j_k$ мультииндексами $\nu[0] = (1), \;\nu[k+1] = (\nu[k], j_{k+1})$, можно выразить уравнение метода последовательных приближений \eqref{eq:consecutive-approximations} как
 $$
 	\begin{aligned}
 		\vfi_{N-k}\left(x\left[\nu(k)\right]\right) = 
@@ -83,7 +83,8 @@ $$
 	z\left[\nu\left(k\right)\right] &= \vfi_{N-k}\left(x\left[\nu(k)\right]\right), \\
 	a_{\nu\left(k\right)}\vfi &= \int K\left(
 			x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left[\nu(k),b\right]
-		\right) \vfi d\mu,
+		\right) \vfi d\mu, \\
+	f\left[\nu\left(k\right)\right] &= f\left(x\left[\nu(k)\right]\right),
 	\end{aligned}
 $$
 переписать в виде
@@ -95,25 +96,41 @@ $$
 
 Пусть $\gamma_k = \left(\mathfrak{B}_0,\ldots,\mathfrak{B}_k\right)$ --- совокупность множеств $\mathfrak{B}_r, r\in \mathbb{N}\cup\left\lbrace 0\right\rbrace$ мультииндексов $\nu(r)$, удовлетворяющих следующим условиям:
 \begin{enumerate}
-	\item $\forall\: r > 1, \:\nu(r)\in \mathfrak{B}_r$ соответствующее $\nu(r-1)\in\mathfrak{B}'_{r-1}\subset\mathfrak{B}_{r-1}$,
-	\item $l_r$ для каждого $\nu(r)$ принимает всевозможные значения из $1:b$,
+	\item $\forall\: r > 1, \:\nu(r)\in \mathfrak{B}_r$ соответствующее $\nu(r-1)\in\mathfrak{B}'_{r-1}\subset\mathfrak{B}_{r-1}$.
+	\item $\forall\; r > 0 \:\nu(r) = \left(\nu(r-1), j_r\right)$, и $j_r$ принимает всевозможные значения из $1:b$.
 	\item $\mathfrak{B}_0 = \left\lbrace\left(1\right)\right\rbrace$.
 \end{enumerate}
 Такую совокупность $\gamma_k$ назовём деревом. Дерево, для которого все $\mathfrak{B}'_{r-1} = \mathfrak{B}_{r-1}$, называется полным. Множество $\mathfrak{B}'_{r}$ здесь по сути является множеством, траектории из которого <<продолжат существование>> на следующем шаге. Так, дерево с рис. \ref{fig:exponential_tree} имеет $\mathfrak{B}'_1 = \cup_{b=1}^3 \left\lbrace (1, b,1), (1,b,2), (1,b,3)\right\rbrace$ и $\mathfrak{B}'_2 = \emptyset$. Для любого дерева $\gamma$ определён оператор
-$$
+\begin{equation}\label{eq:tree-operator}
 	\begin{aligned}
 	A\left(\gamma\right) = &f\left[\nu(0)\right] \text{ при } N=0 \\
 	A\left(\gamma\right) = &a_{\nu(0)}\prod_{\mathfrak{B}_1\setminus\mathfrak{B}'_1}f\left[\nu(1)\right]\prod_{\mathfrak{B}'_1}a_{\nu(1)} \prod_{\mathfrak{B}_2\setminus\mathfrak{B}'_2}f\left[\nu(1)\right]\prod_{\mathfrak{B}'_2}a_{\nu(2)} \times \\
-	&\times\cdots\times \prod_{\mathfrak{B}_N}a_{\nu(N)} \text{ при } N>0
+	&\times\cdots\times \prod_{\mathfrak{B}_N}f\left[\nu(N)\right] \text{ при } N>0
 	\end{aligned} 
-$$
+\end{equation}
+
+% Оператор \ref{eq:tree-operator} определён с некоторыми вольностями в обозначениях: так, для оператора и функции
+% 	$$a_{\nu(k)} f\left[\nu\left(k\right)\right] = \int K\left(
+% 			x_{\nu(k)}, x_{\nu(k), 1}, \ldots, x_{\nu(k), b}
+% 		\right)
+% 		\prod_{j=1}^b f\left[\nu(k), j\right]
+% 		dx_{\nu(k), 1}, \ldots, dx_{\nu(k), b},$$ тогда как та же запись для двух операторов обозначает их композицию 
+% 		\begin{multline}
+% 		a_{\nu(k)} a_{\nu(k+1)} = \int K\left(
+% 				x_{\nu(k)}, x_{\nu(k), 1}, \ldots, x_{\nu(k), b}
+% 			\right) \times \\ \times\prod_{j=1}^b \int K\left(
+% 				x_{\nu(k), j}, x_{\nu(k), j, 1}, \ldots, x_{\nu(k), j, b}
+% 			\right)\;\bullet\;dx_{\nu(k), j, 1}, \ldots, dx_{\nu(k), j, b} \\
+% 			dx_{\nu(k), 1}, \ldots, dx_{\nu(k), b}.
+% 		\end{multline}
+		
 В \cite{montekarlo1975} доказано, что 
 \begin{equation}\label{eq:subtrees}
 z\left[\nu(0)\right] = \sum_{\gamma\in\Gamma_N}A\left(\gamma\right),
 \end{equation}
-где суммирование проходит по всем поддеревьям с $N$ и менее поколениями полного дерева с $N$ поколениями $\Gamma_N$.
+где суммирование проходит по всем поддеревьям полного дерева с $N$ поколениями $\Gamma_N$.
 
-В результате реализации одногодного ветвящегося марковского процесса с начальной плотностью $\pi\left(x\right) \geq 0$, переходной плотностью $p(x,y_1,\ldots,y_b) \geq 0$ и вероятностью поглощения $g\left(x\right): \int p(x,y_1,\ldots,y_b) \mu^s\left(dy_1, \ldots, dy_b\right) = 1 - g(x)$ образуется дерево описанного выше типа, число поколений которого $N$ не обязательно конечно. В случае, если конкретная реализация $\gamma$ имеет длину $N\in(0;\infty)$, то ей соответствует плотность вероятности
+В результате реализации однородного ветвящегося марковского процесса с начальной плотностью $\pi\left(x\right) \geq 0$, переходной плотностью $p(x,y_1,\ldots,y_b) \geq 0$ и вероятностью поглощения $g\left(x\right): \int p(x,y_1,\ldots,y_b) \mu^s\left(dy_1, \ldots, dy_b\right) = 1 - g(x)$ образуется дерево описанного выше типа, число поколений которого $N$ не обязательно конечно. В случае, если конкретная реализация $\gamma$ имеет длину $N\in(0;\infty)$, то ей соответствует плотность вероятности
 \begin{align*}
 	p(\gamma) = &\pi\left(x\left[1\right]\right)p\left(x\left[1\right], x\left[1,1\right], \ldots ,x\left[1,b\right]\right)\times \prod_{\mathfrak{B}_1\setminus\mathfrak{B}'_1}g\left[\nu(1)\right] \times \\
 	&\times \prod_{\mathfrak{B}'_1}p\left(x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left[\nu(k),b\right]\right) \times \\

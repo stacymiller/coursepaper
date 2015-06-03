@@ -5,7 +5,7 @@
 % is displayed in the header and not the full overview.
 \mode<presentation>
 {
-  \usetheme[numbers, totalnumbers, compress]{Statmod}
+  \usetheme[numbers, totalnumbers, minimal, nonav]{Statmod}
 
   \setbeamercovered{transparent}
   % or whatever (possibly just delete it)
@@ -32,6 +32,7 @@
 \newtheorem{theorem}{Теорема}
 \newtheorem{example}{Пример}
 \newtheorem{definition}{Определение}
+\newcommand{\vfi}{\varphi}
 
 \title{Имитационная модель американских опционов}
 
@@ -46,7 +47,7 @@
 }
 \date{
     Санкт-Петербург\\
-    \today
+    июнь 2015
 }
 
 % \subject{Beamer}
@@ -75,16 +76,16 @@
     \frametitle{Основные понятия}
 
     \begin{definition}
-      \emph{Опцион} -- договор, по которому потенциальный покупатель или потенциальный продавец актива (товара, ценной бумаги) получает право, но не обязательство, совершить покупку или продажу данного актива по заранее оговорённой цене в определённый договором момент в будущем или на протяжении определённого отрезка времени.
+      \emph{Опцион} --- договор, по которому потенциальный покупатель или продавец актива получает право, но не обязательство, совершить покупку или продажу данного актива по заранее оговорённой цене в определённый договором момент в будущем или на протяжении определённого отрезка времени.
     \end{definition}
   \end{frame}
 
   \begin{frame}
     \frametitle{Основные понятия}
-% Задача -- частный случай более общей проблемы оптимального времени остановки. Имеет аналитическое решение в случае бесконечного горизонта (неограниченной валидности опциона) (Karatzas, Ioannis; Shreve, Steven E. (1998). "Methods of Mathematical Finance". Stochastic Modelling and Applied Probability 39), аналитическое решение в случае конечного горизонта неизвестно (http://en.wikipedia.org/wiki/Optimal_stopping#Option_trading).
+% Задача --- частный случай более общей проблемы оптимального времени остановки. Имеет аналитическое решение в случае бесконечного горизонта (неограниченной валидности опциона) (Karatzas, Ioannis; Shreve, Steven E. (1998). "Methods of Mathematical Finance". Stochastic Modelling and Applied Probability 39), аналитическое решение в случае конечного горизонта неизвестно (http://en.wikipedia.org/wiki/Optimal_stopping#Option_trading).
     \begin{block}{}
     Справедливой ценой опциона будет максимальная выручка, которую можно получить от исполнения опциона:
-    $$\max_{\tau\in \left[0;T\right]}E\left( e^{-rt} \left( S_\tau - K \right)^+ \right)$$\footnotemark
+    $$\max_{\tau\in \left[0;T\right]}E\left( e^{-rt} \left( S_\tau - K \right)^+ \right)\text{\footnotemark}$$
     \end{block}
     Дискретные оценки: состояние актива меняется только в определённых точках $t_0,\ldots,t_n \in \left[0;T\right], n < \infty$.
     \footnotetext[1]{$S_\tau$ в зависимости от контекста обозначает либо состояние базового актива, либо цену, которую можно получить за него на рынке}
@@ -94,7 +95,7 @@
     \frametitle{Формулировка задачи}
     Дискретизация процесса даёт оценку
     $$\left\lbrace \begin{aligned}
-        V_i(X_i) &= \max \left\lbrace e^{-rt_i} \left( S_{t_i} - K \right)^+, EV_{i+1}(X_{i+1}) \right\rbrace, i\in 1:n-1 \\
+        V_i(X_i) &= \max \left\lbrace e^{-rt_i} \left( S_{t_i} - K \right)^+, EV_{i+1}(X_{i+1}) \right\rbrace, i\in 1\mathord{:}n\mathord{-}1 \\
         V_n(X_n) &= e^{-rt_n} \left( S_{t_n} - K \right)^+
     \end{aligned}\right.$$
     здесь $V_0(X_0)$ --- цена опциона, исполняемого $n$ раз в году, на момент выписывания которого базовый актив был в состоянии $X_0$. \\
@@ -109,121 +110,177 @@
         Промоделируем много вариантов жизни базового актива. Траектория --- набор состояний $S_{t_1}, \ldots, S_{t_n}$.
         \begin{figure}[h]
             \includegraphics[height=0.5\paperheight]{traces}
-            \caption{Возможные траектории цены базового актива, горизонтальная линия -- цена страйк}
+            \caption{Возможные траектории цены базового актива, горизонтальная линия --- цена страйк.}
             \label{fig:traces}
         \end{figure}
     \end{frame}
 
 \begin{frame}
     \frametitle{Случайные деревья}
-    Дерево -- способ получить больше траекторий в том же объёме памяти. Построение обычного дерева:
-    \begin{figure}[h]
-        картинка про дерево
-    \end{figure}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Случайные деревья}
-    Число вершин в дереве -- $$\sum_{k=0}^n b^k = \frac{b^{n+1} - 1}{b-1} = O(b^n)$$
-    Идея (Ермаков): число вершин уменьшится, если считать достаточно близкие вершины одинаковыми.
-\end{frame}
-
-\begin{frame}
-    \frametitle{Квантили эмпирического распределения}
-    $S_i^j, i \in 1:b, j\in 1:k$ --- все промоделированные состояния базового актива, относящиеся к одному времени.
-    $$F_{S_i^j}(x) = \frac{1}{bk}\#\left\lbrace (i, j) \in 1:b \times 1:k \middle\vert S_i^j < x \right\rbrace$$
-    Группировка по квантилям:
-    $$A_j = \left\lbrace S_i^j \middle\vert \frac{j-1}{n} < F_{S_\tau}\left( S_i^j\right) < \frac{j}{n}\right\rbrace$$
-    Все вершины, принадлежащие множеству $A_j$, заменяются на $\mathsf{med}A_j$.
-\end{frame}
-
-\begin{frame}
-    \frametitle{Случайные деревья}
+    Дерево --- способ получить больше траекторий в том же объёме памяти. Построение обычного дерева:
     \begin{figure}
     \centering
-    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=0.35\linewidth, main node/.style={rectangle,draw}]
-
-        \node[main node] (2) {97}
-            child { node[main node] (88) {88}}
-            child { node[main node] (92) {92}}
-            child { node[main node] (106) {106}};
-        \node[main node] (3) [right of=2] {103}
-            child { node[main node] (96) {96}}
-            child { node[main node] (115) {115}}
-            child { node[main node] (107) {107}};
-        \node[main node] (1) [right of=3] {110}
-            child { node[main node] (116) {116}}
-            child { node[main node] (104) {104}}
-            child { node[main node] (112) {112}};
-
-        \node[main node] (92s) [below=0.1\paperheight of 92]{92}
-            child { node[main node] (92r) {92}};
-        \path (92) edge[<->] (92s);
-        \node[main node] (88s) [below=0.1\paperheight of 88] {88};
-        \path (88) edge[<->] (88s)
-            (88s) edge (92r);
-        \node[main node] (96s) [below=0.1\paperheight of 106]{96};
-        \path (96) edge[<->] (96s)
-            (96s) edge (92r);
-
-        \node[main node] (106s) [below=0.1\paperheight of 115]{106}
-            child { node[main node] (106r) {106}};
-        \path (106) edge[<->] (106s);
-        \node[main node] (104s) [below=0.1\paperheight of 96]{104};
-        \path (104) edge[<->] (104s)
-            (104s) edge (106r);
-        \node[main node] (107s) [below=0.1\paperheight of 107]{107};
-        \path (107) edge[<->] (107s)
-            (107s) edge (106r);
-
-        \node[main node] (115s) [below=0.1\paperheight of 104]{115}
-            child { node[main node] (115r) {115}};
-        \path (115) edge[<->] (115s);
-        \node[main node] (112s) [below=0.1\paperheight of 116]{112};
-        \path (112) edge[<->] (112s)
-            (112s) edge (115r);
-        \node[main node] (116s) [below=0.1\paperheight of 112]{116};
-        \path (116) edge[<->] (116s)
-            (116s) edge (115r);
-
-    \end{tikzpicture}
-    \caption{Пример прореживания дерева}
-    \label{fig:reduceTree}
+    \includegraphics[width=\textwidth]{exponential_tree}
+    \caption{Дерево состояний актива для $b = 3, m = 2$.}
+    \label{fig:exponential_tree}
     \end{figure}
-
 \end{frame}
 
-\begin{frame}\frametitle{Оценки $V_0(X_0)$по прореженному и точному дереву}
-    Используемые оценки --- оценки Броади-Глассермана, разработанные для деревьев с $O(b^n)$ вершинами
+\begin{frame}
+    \frametitle{Случайные деревья}
+    Число вершин в дереве --- $$\sum_{k=0}^n b^k = \frac{b^{n+1} - 1}{b-1} = O(b^n)$$
+    Идея (Ермаков): обходить не все вершины, а лишь некоторые
+\end{frame}
+
+\begin{frame}
+    \frametitle{Оценка по поглощениям}
+    Для уравнений вида $$\vfi\left(x\right) = \int K\left(x, y, \vfi\left(y\right)\right)\vfi\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu,$$
+    для которых сходится метод последовательных приближений 
+    \[
+    \vfi_n\left(x\right) = \int K\left(x, y, \vfi_{n-1}\left(y\right)\right)\vfi_n\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu,
+    \]
+    разработан метод оценки по ветвящемуся марковскому процессу. Так как
+    $$
+    V_k\left(x\right) = h_k\left(x\right)\oplus \int V_{k+1}p_{k, k+1}\left(x, X_{k+1}\right) dX_{k+1},
+    $$
+    можно попробовать применить его к задаче оценки А.о.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Оценка по поглощениям}
+    Доказано, что для оператора
+    \[
+    \begin{aligned}
+    A\left(\gamma\right) = &f\left[\nu(0)\right] \text{ при } N=0, \\
+    A\left(\gamma\right) = &a_{\nu(0)}\prod_{\mathfrak{B}_1\setminus\mathfrak{B}'_1}f\left[\nu(1)\right]\prod_{\mathfrak{B}'_1}a_{\nu(1)} \prod_{\mathfrak{B}_2\setminus\mathfrak{B}'_2}f\left[\nu(1)\right]\prod_{\mathfrak{B}'_2}a_{\nu(2)} \times \\
+    &\times\cdots\times \prod_{\mathfrak{B}_N}f\left[\nu(N)\right] \text{ при } N>0,
+    \end{aligned}
+    \]
+    где $a_{\nu\left(k\right)}\vfi = \int K\left(
+            x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left[\nu(k),b\right]
+        \right) \vfi d\mu$, 
+    \begin{block}{}
+    $$z\left[\nu(0)\right] = \sum_{\gamma\in\Gamma_N}A\left(\gamma\right)$$
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Результаты}
     \begin{columns}
         \begin{column}{0.5\textwidth}
-            \begin{figure}
+            \begin{figure}[h]
                 \centering
-                \includegraphics[width=\linewidth]{true_value_test_empiric_distr}
-                \caption{Прореженное дерево}
-                \label{fig:true_value_test_empiric_distrib}
+                \includegraphics[width=\linewidth]{standard_slides}
+                \caption{Полное дерево.}
+                \label{fig:true_value_test_standard}
+                % \footnotesize{Оценки стоимости опциона с начальной ценой 100, выписанного на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемого 4 раза в году}
             \end{figure}
         \end{column}
         \begin{column}{0.5\textwidth}
-            \begin{figure}
+            \begin{figure}[h]
                 \centering
-                \includegraphics[width=\linewidth]{true_value_test_standard.pdf}
-                \caption{Обычное дерево}
-                \label{fig:true_value_test_standard}
+                \includegraphics[width=\linewidth]{random_subtree_modified_ev_slides}
+                \caption{Случайные поддеревья.}
+                \label{fig:random_subtree_modified_ev}
+                % \footnotesize{Оценки стоимости опциона с начальной ценой 100, выписанного на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемого 4 раза в году}
             \end{figure}
-    \end{column}
-\end{columns}
+        \end{column}
+        
+    \end{columns}
 \end{frame}
 
+% \begin{frame}
+%     \frametitle{Квантили эмпирического распределения}
+%     $S_i^j, i \in 1:b, j\in 1:k$ --- все промоделированные состояния базового актива, относящиеся к одному времени.
+%     $$F_{S_i^j}(x) = \frac{1}{bk}\#\left\lbrace (i, j) \in 1:b \times 1:k \middle\vert S_i^j < x \right\rbrace$$
+%     Группировка по квантилям:
+%     $$A_j = \left\lbrace S_i^j \middle\vert \frac{j-1}{n} < F_{S_\tau}\left( S_i^j\right) < \frac{j}{n}\right\rbrace$$
+%     Все вершины, принадлежащие множеству $A_j$, заменяются на $\mathsf{med}A_j$.
+% \end{frame}
+
+% \begin{frame}
+%     \frametitle{Случайные деревья}
+%     \begin{figure}
+%     \centering
+%     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=0.35\linewidth, main node/.style={rectangle,draw}]
+
+%         \node[main node] (2) {97}
+%             child { node[main node] (88) {88}}
+%             child { node[main node] (92) {92}}
+%             child { node[main node] (106) {106}};
+%         \node[main node] (3) [right of=2] {103}
+%             child { node[main node] (96) {96}}
+%             child { node[main node] (115) {115}}
+%             child { node[main node] (107) {107}};
+%         \node[main node] (1) [right of=3] {110}
+%             child { node[main node] (116) {116}}
+%             child { node[main node] (104) {104}}
+%             child { node[main node] (112) {112}};
+
+%         \node[main node] (92s) [below=0.1\paperheight of 92]{92}
+%             child { node[main node] (92r) {92}};
+%         \path (92) edge[<->] (92s);
+%         \node[main node] (88s) [below=0.1\paperheight of 88] {88};
+%         \path (88) edge[<->] (88s)
+%             (88s) edge (92r);
+%         \node[main node] (96s) [below=0.1\paperheight of 106]{96};
+%         \path (96) edge[<->] (96s)
+%             (96s) edge (92r);
+
+%         \node[main node] (106s) [below=0.1\paperheight of 115]{106}
+%             child { node[main node] (106r) {106}};
+%         \path (106) edge[<->] (106s);
+%         \node[main node] (104s) [below=0.1\paperheight of 96]{104};
+%         \path (104) edge[<->] (104s)
+%             (104s) edge (106r);
+%         \node[main node] (107s) [below=0.1\paperheight of 107]{107};
+%         \path (107) edge[<->] (107s)
+%             (107s) edge (106r);
+
+%         \node[main node] (115s) [below=0.1\paperheight of 104]{115}
+%             child { node[main node] (115r) {115}};
+%         \path (115) edge[<->] (115s);
+%         \node[main node] (112s) [below=0.1\paperheight of 116]{112};
+%         \path (112) edge[<->] (112s)
+%             (112s) edge (115r);
+%         \node[main node] (116s) [below=0.1\paperheight of 112]{116};
+%         \path (116) edge[<->] (116s)
+%             (116s) edge (115r);
+
+%     \end{tikzpicture}
+%     \caption{Пример прореживания дерева}
+%     \label{fig:reduceTree}
+%     \end{figure}
+
+% \end{frame}
+
+% \begin{frame}\frametitle{Оценки $V_0(X_0)$по прореженному и точному дереву}
+%     Используемые оценки --- оценки Броади-Глассермана, разработанные для деревьев с $O(b^n)$ вершинами
+%     \begin{columns}
+%         \begin{column}{0.5\textwidth}
+%             \begin{figure}
+%                 \centering
+%                 \includegraphics[width=\linewidth]{true_value_test_empiric_distr}
+%                 \caption{Прореженное дерево}
+%                 \label{fig:true_value_test_empiric_distrib}
+%             \end{figure}
+%         \end{column}
+%         \begin{column}{0.5\textwidth}
+%             \begin{figure}
+%                 \centering
+%                 \includegraphics[width=\linewidth]{true_value_test_standard.pdf}
+%                 \caption{Обычное дерево}
+%                 \label{fig:true_value_test_standard}
+%             \end{figure}
+%     \end{column}
+% \end{columns}
+% \end{frame}
 
 
-  \begin{frame}
-    \frametitle{Планы}
-    \begin{enumerate}
-    \item Закончить рассмотрение оценки по гистограмме, в т.ч.\ найти аналитически математическое ожидание оценки
-    \item Рассмотреть оценку по кластерам
-    \item Рассмотреть другие оценки
-  \end{enumerate}
-  \end{frame}
+\section{Заключение}
+\begin{frame}
+    \frametitle{Конец} 
+    \centering Вопросы
+\end{frame}
 
 \end{document}
