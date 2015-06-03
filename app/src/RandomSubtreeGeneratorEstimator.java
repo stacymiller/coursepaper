@@ -21,13 +21,15 @@ public class RandomSubtreeGeneratorEstimator extends Estimation{
     public static int elCompLower;
 
     static double timedelta = 1;
+
     public static double[] calculate(int branches, int steps, double initialPrice, double strikePrice){
-        if (timedelta == 1) {
-            timedelta = 1. / steps;
-            stepsTotal = steps;
-            elCompUpper = 0;
-            elCompLower = 0;
-        }
+        stepsTotal = steps;
+        timedelta = 1. / steps;
+        elCompLower = 0;
+        elCompUpper = 0;
+        return calculate_estimators(branches, steps, initialPrice, strikePrice);
+    }
+    public static double[] calculate_estimators(int branches, int steps, double initialPrice, double strikePrice){
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, steps == 0, timedelta);
         if (steps > 0) {
             int needCalculation = 0;
@@ -44,7 +46,7 @@ public class RandomSubtreeGeneratorEstimator extends Estimation{
             double lowerSum = 0;
             for (int b = 0; b < needCalculation; b++) {
                 prices[b] = getRandomPrice(ans);
-                estimators[b] = calculate(branches, steps - 1, prices[b], strikePrice);
+                estimators[b] = calculate_estimators(branches, steps - 1, prices[b], strikePrice);
                 estimators[b][0] *= exp(-ans.discountFactor);
                 estimators[b][1] *= exp(-ans.discountFactor);
                 upperEstimator += estimators[b][0] / branches;

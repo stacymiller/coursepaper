@@ -7,8 +7,11 @@ import static java.lang.Math.exp;
  * Created by derketzer on 22.09.14.
  */
 public class BroadieGlassermanEstimation extends Estimation {
+    public static int elCompUpper;
+    public static int elCompLower;
     public static double upperEstimate(ImitatedAsset a, double strikePrice){
         Map<ImitatedAsset, Double> estimated = new HashMap<ImitatedAsset, Double>();
+        elCompUpper = 0;
         return upperEstimate(a, strikePrice, estimated);
     }
 
@@ -26,6 +29,7 @@ public class BroadieGlassermanEstimation extends Estimation {
                 ans += exp(-child.discountFactor)*upperEstimate(child, strikePrice, estimated) / len;
             }
             estimated.put(a, ans);
+            elCompUpper++;
             return Math.max(payoff(strikePrice, a), ans);
         } else {
             return estimated.get(a);
@@ -34,6 +38,7 @@ public class BroadieGlassermanEstimation extends Estimation {
 
     public static double lowerEstimate(ImitatedAsset a, double strikePrice){
         Map<ImitatedAsset, Double> estimated = new HashMap<ImitatedAsset, Double>();
+        elCompLower = 0;
         return lowerEstimate(a, strikePrice, estimated);
     }
 
@@ -67,6 +72,7 @@ public class BroadieGlassermanEstimation extends Estimation {
                 answer += ans / len;
             }
             estimated.put(a, answer);
+            elCompLower++;
             return answer;
         } else {
             return mappedAns;

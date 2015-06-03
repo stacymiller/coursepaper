@@ -35,37 +35,64 @@ def GBM(N, volatility, u, S0):
     return S0 * np.exp(p1 + p2)
 
 
-# font = {'family': 'normal',
-#         'weight': 'normal',
-#         'size': 22}
-matplotlib.rc('font',**{'family':'Arial'})
+def matplotlib_to_slides():
+    font = {'family': 'Arial',
+            'weight': 'normal',
+            'size': 22}
+    matplotlib.rc('font', **font)
 
-def show_stats(k=1, s=1, total=1, filename=""):
+
+def show_stats(k=1, s=1, total=1, filename="", groupby="branches", plottitle=None, true_value=None, to_slides=False):
+    lnw = 2 if to_slides else 1
+    if to_slides:
+        matplotlib_to_slides()
     data = pd.read_table(filename, sep=",", decimal=".")
-    # data = data[data.branches <= 30]
-    means = data.groupby("branches").mean()
+    if not plottitle:
+        plottitle = (filename.split("/")[-1]).split(".")[0].replace("_", " ")
+    means = data.groupby(groupby).mean()
     q = norm.ppf(0.975)
-    uperr = q*data.groupby("branches").std().upper_estimator / np.sqrt(len(means))
-    # print means.index
-    lowerr = q*data.groupby("branches").std().lower_estimator / np.sqrt(len(means))
-    # plt.subplot(total,1,k)
-    # plt.tight_layout()
-    # plt.ylim(ymin=0.3, ymax=0.9)
-    # plt.title(u'%d возможных состояний' % (s*100))
-    up = plt.errorbar(means.index, means.upper_estimator, yerr=uperr, color="green")
+    uperr = q * data.groupby(groupby).std().upper_estimator / np.sqrt(len(means))
+    lowerr = q * data.groupby(groupby).std().lower_estimator / np.sqrt(len(means))
+    # # plt.subplot(total,1,k)
+    # plt.ylim(ymin=0, ymax=1)
+    plt.title(plottitle)
+    plt.xlabel(u"число ветвей")
+    plt.ylabel(u"оценки")
+    up = plt.errorbar(means.index, means.upper_estimator, yerr=uperr, elinewidth=lnw, linewidth=lnw)
     up.set_label(u"верхняя оценка")
-    low = plt.errorbar(means.index, means.lower_estimator, yerr=lowerr, color="blue")
+    low = plt.errorbar(means.index, means.lower_estimator, yerr=lowerr, elinewidth=lnw, linewidth=lnw)
     low.set_label(u"нижняя оценка")
+    if true_value:
+        tvl = plt.axhline(true_value, xmax=means.index[-1], linewidth=lnw, color="red")
+        tvl.set_label(u"истинное значение")
     plt.legend()
-# border = lambda x, T, K: K - np.sqrt(5*(T-np.array(x)))
-# plt.plot(GBM_consecutive(100, 0.2, 0.1, 100))
-# plt.plot(range(100), border(range(100), 100, 110))
-# plt.axhline(110)
-# data = pd.read_table("../app/test_convergence_to_true_value_900.txt", sep=",", decimal=".")
-# data = data[data.branches >= 30]
-# means = data.groupby("branches").mean()
-# print means.describe()
+    plt.tight_layout()
 
-show_stats(filename="../app/test_convergence_to_true_value_random_subtree.txt")
-plt.savefig("../paper/media/convergence_to_true_value_random_subtree.eps")
+
+def RMSE_by_nop(filename, true_value, groupby="branches", plottitle=None, to_slides=False):
+    if to_slides:
+        matplotlib_to_slides()
+    data = pd.read_table(filename, sep=",", decimal=".")
+    # print grouped.upper_estimator - true_value
+    data["upper_dev"] = (data.upper_estimator - true_value) ** 2
+    data["lower_dev"] = (data.lower_estimator - true_value) ** 2
+    grouped = data.groupby(groupby)
+    # print (data.upper_estimator - true_value)**2
+    rmse_upper = grouped.upper_dev.mean()
+    rmse_lower = grouped.lower_dev.mean()
+    plt.xscale("log")
+    plt.plot(grouped.elem_comp_upper_est.mean(), rmse_upper)
+    plt.plot(grouped.elem_comp_lower_est.mean(), rmse_lower)
+    plt.rc('text', usetex=True)
+    plt.xlabel(
+        r'\# of elementary computations ($\max\left\lbrace h_k\left(X_k\right), '
+        r'\mathsf{E}\left(V(X_{k+1})\middle\vert X_k\right)\right\rbrace$)')
+    plt.ylabel("RMSE")
+
+# plt.plot(GBM_consecutive(100, 0.2, 0.1, 100))
+show_stats(filename="../app/test_convergence_to_true_value_random_subtree.txt", groupby="branches", true_value=5.731)
+# RMSE_by_nop(filename="../app/test_convergence_to_true_value_standard_6_branches.txt", groupby="branches", true_value=5.731)
+# plottitle=u"оценки по полному дереву", true_value=5.731)
+# plt.savefig("../paper/media/rmse_by_nop_standard_3_exec_times.eps")
+# plt.savefig("../paper/media/convergence_to_true_value_random_subtree_modified_ev.png")
 plt.show()
