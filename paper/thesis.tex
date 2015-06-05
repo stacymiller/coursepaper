@@ -1,4 +1,4 @@
-\documentclass[specialist,
+\documentclass[specialist, twoside,
 substylefile = spbu.rtx,
                subf,href,colorlinks=true, 12pt]{disser}
 
@@ -59,7 +59,7 @@ substylefile = spbu.rtx,
 
 
 \setlength\parindent{0pt}
-\setlength\parskip{0.5em}
+\setlength\parskip{0.4em}
 
 \lstdefinestyle{customjava}{
 %   belowcaptionskip=1\baselineskip,
@@ -155,11 +155,12 @@ substylefile = spbu.rtx,
 \maketitle[en]
 
 \tableofcontents
-% % \input{intro}
-% % \input{chapter1}
+\input{intro}
+\input{chapter1}
 \input{chapter2}
 \input{chapter3}
-% % \input{chapter4}
+\input{chapter4}
+\input{concl}
 \nocite{*}
 \bibliographystyle{ugost2008}
 \bibliography{biblio-u}
