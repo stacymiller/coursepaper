@@ -42,3 +42,5 @@ app/.idea/*
 *.snm
 
 *.bak
+
+paper/media/*-converted-to.pdf
