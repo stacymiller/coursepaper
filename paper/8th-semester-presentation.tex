@@ -22,6 +22,7 @@
 \usepackage{amsthm}
 \usepackage{mathtools}
 \usepackage{nicefrac}
+\usepackage[noend]{algorithm2e}
 
 \usepackage{graphicx}
 \graphicspath{ {media/} }
@@ -53,7 +54,7 @@
 
 \title{Имитационная модель американских опционов}
 
-\author{Анастасия Миллер}
+\author{Анастасия Александровна Миллер, 422 группа}
 \institute[СПбГУ]{Санкт-Петербургский государственный университет \\
     Математико-механический факультет \\
     Кафедра статистического моделирования \\
@@ -107,13 +108,12 @@
 
 \begin{frame}
     \frametitle{Формулировка задачи динамического программирования}
-    Дискретизация процесса даёт задачу динамического программирования
     $$\left\lbrace \begin{aligned}
         V_i(X_i) &= \max \left\lbrace e^{-rt_i} \left( S_{t_i} - K \right)^+, \ev\left[ V_{i+1}\left(X_{i+1}\right)\middle\vert X_i\right] \right\rbrace, i\in 1\mathord{:}n\mathord{-}1 \\
         V_n(X_n) &= e^{-rt_n} \left( S_{t_n} - K \right)^+
     \end{aligned}\right.$$
     здесь $V_0(X_0)$ --- цена опциона, исполняемого $n$ раз в году, на момент выписывания которого базовый актив был в состоянии $X_0$. \\
-    В статье М.Броади и П.Глассермана 1997 г. разработаны оценки сверху и снизу для $V_0(X_0)$.
+    В (\cite{Broadie1997}) разработаны оценки сверху и снизу для $V_0(X_0)$.
 \end{frame}
 
 \begin{frame}
@@ -134,13 +134,15 @@
     Число вершин в дереве:
     $$\sum_{k=0}^m b^k = \frac{b^{m+1} - 1}{b-1} = O(b^m), \text{ при этом } m\to\infty.$$
     \bluetext{Задача:} указать методы, позволяющие избежать экспоненциального роста вычислительной работы. 
+    \vskip 0.05\paperheight
+    Избежать экспоненциального роста позволяет рандомизация.
 \end{frame}
 
 \begin{frame}
     \frametitle{Интегральные уравнения с полиномиальной нелинейностью} 
     В <<Методах Монте-Карло и смежных вопросах>> С.~М.~Ермакова для
-    $$\vfi\left(x\right) = \int K\left(x, y, \vfi\left(y\right)\right)\vfi\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu,$$
-    описано использование схожих деревьев.
+    $$\vfi\left(x\right) = \int K\left(x, y_1, \ldots, y_b \right)\prod_{i=1}^b\vfi\left(y_i\right) \mu^b\left(dy_1\cdots dy_b\right) + f\left(x\right),$$
+    описано использование случайных поддеревьев полного дерева
     \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{exponential_subtrees}
@@ -148,14 +150,43 @@
 \end{frame}
 
 \begin{frame}
+    \frametitle{Интегральные уравнения с полиномиальной нелинейностью} 
+    Также имеется сходство между самими уравнениями:
+    \begin{align*}
+        \vfi\left(x\right) = f\left(x\right) + &\int K\left(x, y_1, \ldots, y_b \right)\prod_{i=1}^b\vfi\left(y_i\right) \mu^b\left(dy_1\cdots dy_b\right) \text{ и } \\
+        V_i(X_i) = h\left(X_i\right)\oplus &\int V_{i+1}p_{i, i+1}\left(X_i, X_{i+1}\right) dX_{i+1}.
+    \end{align*}
+    Можно проводить аналогии в построении оценок.
+\end{frame}
+
+\begin{frame}
     \frametitle{Механизм моделирования} 
     Заданы $p(X_k; X_{k+1}^1, \cdots, X_{k+1}^b)$ и $g_k(X_k)$, $X_0$.
-    \newline\newline
-    В каждом новом состоянии моделируется событие обрыва траектории. Если траектория не обрывается,
-    \newline\newline
-    то моделируем $b$ дочерних вершин с плотностью $\nicefrac{p(x_k; x_{k+1}^1, \cdots, x_{k+1}^b)}{1 - g_k(X_k)}$ и повторяем процесс в каждой из них,
-    \newline\newline
-    иначе возвращаемся к родительской вершине.
+    % \newline\newline
+    % В каждом новом состоянии моделируется событие обрыва траектории. Если траектория не обрывается,
+    % \newline\newline
+    % то моделируем $b$ дочерних вершин с плотностью $\nicefrac{p(x_k; x_{k+1}^1, \cdots, x_{k+1}^b)}{1 - g_k(X_k)}$ и повторяем процесс в каждой из них,
+    % \newline\newline
+    % иначе возвращаемся к родительской вершине.
+    \begin{algorithm*}[H]
+      \SetKwProg{Fn}{def}{\string:}{}
+      \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+      \SetKwFunction{generate}{generate}
+      \SetKwFunction{Get}{Get}
+      \Fn{\generate{$X_i, b$}}{
+          \Input{текущее состояние $X_i^{j_1\cdots j_i}$ (включает в себя время $t_i$), число веток $b$}
+          \BlankLine
+          \Get{событие обрыва $\eta$ с вероятностью $g_k$}\;
+          \If{$\eta$ произошло}{
+                возвращаемся к родительской вершине\;
+              }
+          \emph{промоделировать состояния $\left\lbrace X_{i+1}^1\cdots X_{i+1}^1 \right\rbrace$}\;
+          \For{$x \in \left\lbrace X_{i+1}^l \right\rbrace_{l=1}^k$}{
+            \generate{$x, b$}\;
+          }
+        }
+      % \caption{алгоритм моделирования дерева}\label{alg:random_subtree}
+    \end{algorithm*}
 \end{frame}
 
 % \section{Случайные деревья}
@@ -247,7 +278,7 @@
                 \includegraphics[width=\linewidth]{convergence_to_true_value_standard_slides}
                 \caption{Полное дерево.}
                 \label{fig:true_value_test_standard}
-                % \footnotesize{Оценки стоимости опциона с начальной ценой 100, выписанного на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемого 4 раза в году}
+                \footnotesize{Реализация алгоритма из статьи}
             \end{figure}
         \end{column}
         \begin{column}{0.5\textwidth}
@@ -256,7 +287,7 @@
                 \includegraphics[width=\linewidth]{convergence_to_true_value_random_subtree_slides}
                 \caption{Случайные поддеревья.}
                 \label{fig:random_subtree_modified_ev}
-                % \footnotesize{Оценки стоимости опциона с начальной ценой 100, выписанного на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемого 4 раза в году}
+                \footnotesize{Реализация предложенного в ВКР алгоритма}
             \end{figure}
         \end{column}
         
@@ -289,106 +320,13 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Выводы}
+    \frametitle{Итоги}
     \begin{itemize}
         \item Рассмотрены оценки Американских опционов, основанные на имитационных моделях.
         \item Проведены аналогии с решением интегральных уравнений с полиномиальной нелинейностью.
         \item Реализованы методы и проведены вычислительные эксперименты по подбору оптимального соотношения дисперсии и вычислительной сложности.
-        \item Предложенный метод применим при больших $m$, когда исходный метод даже при минимальных параметрах работает неприемлемо долго.
+        \item Предложенный метод применим при больших $m$, когда исходный метод работает неприемлемо долго.
     \end{itemize}
-\end{frame}
-% \begin{frame}
-%     \frametitle{Квантили эмпирического распределения}
-%     $S_i^j, i \in 1:b, j\in 1:k$ --- все промоделированные состояния базового актива, относящиеся к одному времени.
-%     $$F_{S_i^j}(x) = \frac{1}{bk}\#\left\lbrace (i, j) \in 1:b \times 1:k \middle\vert S_i^j < x \right\rbrace$$
-%     Группировка по квантилям:
-%     $$A_j = \left\lbrace S_i^j \middle\vert \frac{j-1}{n} < F_{S_\tau}\left( S_i^j\right) < \frac{j}{n}\right\rbrace$$
-%     Все вершины, принадлежащие множеству $A_j$, заменяются на $\mathsf{med}A_j$.
-% \end{frame}
-
-% \begin{frame}
-%     \frametitle{Случайные деревья}
-%     \begin{figure}
-%     \centering
-%     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=0.35\linewidth, main node/.style={rectangle,draw}]
-
-%         \node[main node] (2) {97}
-%             child { node[main node] (88) {88}}
-%             child { node[main node] (92) {92}}
-%             child { node[main node] (106) {106}};
-%         \node[main node] (3) [right of=2] {103}
-%             child { node[main node] (96) {96}}
-%             child { node[main node] (115) {115}}
-%             child { node[main node] (107) {107}};
-%         \node[main node] (1) [right of=3] {110}
-%             child { node[main node] (116) {116}}
-%             child { node[main node] (104) {104}}
-%             child { node[main node] (112) {112}};
-
-%         \node[main node] (92s) [below=0.1\paperheight of 92]{92}
-%             child { node[main node] (92r) {92}};
-%         \path (92) edge[<->] (92s);
-%         \node[main node] (88s) [below=0.1\paperheight of 88] {88};
-%         \path (88) edge[<->] (88s)
-%             (88s) edge (92r);
-%         \node[main node] (96s) [below=0.1\paperheight of 106]{96};
-%         \path (96) edge[<->] (96s)
-%             (96s) edge (92r);
-
-%         \node[main node] (106s) [below=0.1\paperheight of 115]{106}
-%             child { node[main node] (106r) {106}};
-%         \path (106) edge[<->] (106s);
-%         \node[main node] (104s) [below=0.1\paperheight of 96]{104};
-%         \path (104) edge[<->] (104s)
-%             (104s) edge (106r);
-%         \node[main node] (107s) [below=0.1\paperheight of 107]{107};
-%         \path (107) edge[<->] (107s)
-%             (107s) edge (106r);
-
-%         \node[main node] (115s) [below=0.1\paperheight of 104]{115}
-%             child { node[main node] (115r) {115}};
-%         \path (115) edge[<->] (115s);
-%         \node[main node] (112s) [below=0.1\paperheight of 116]{112};
-%         \path (112) edge[<->] (112s)
-%             (112s) edge (115r);
-%         \node[main node] (116s) [below=0.1\paperheight of 112]{116};
-%         \path (116) edge[<->] (116s)
-%             (116s) edge (115r);
-
-%     \end{tikzpicture}
-%     \caption{Пример прореживания дерева}
-%     \label{fig:reduceTree}
-%     \end{figure}
-
-% \end{frame}
-
-% \begin{frame}\frametitle{Оценки $V_0(X_0)$по прореженному и точному дереву}
-%     Используемые оценки --- оценки Броади-Глассермана, разработанные для деревьев с $O(b^n)$ вершинами
-%     \begin{columns}
-%         \begin{column}{0.5\textwidth}
-%             \begin{figure}
-%                 \centering
-%                 \includegraphics[width=\linewidth]{true_value_test_empiric_distr}
-%                 \caption{Прореженное дерево}
-%                 \label{fig:true_value_test_empiric_distrib}
-%             \end{figure}
-%         \end{column}
-%         \begin{column}{0.5\textwidth}
-%             \begin{figure}
-%                 \centering
-%                 \includegraphics[width=\linewidth]{true_value_test_standard.pdf}
-%                 \caption{Обычное дерево}
-%                 \label{fig:true_value_test_standard}
-%             \end{figure}
-%     \end{column}
-% \end{columns}
-% \end{frame}
-
-
-\section{Заключение}
-\begin{frame}
-    \frametitle{Конец} 
-    \centering Вопросы
 \end{frame}
 
 \end{document}

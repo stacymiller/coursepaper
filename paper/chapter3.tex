@@ -29,7 +29,7 @@
 \end{equation}
 для которого сходится метод последовательных приближений
 \begin{equation}
-	\vfi_n\left(x\right) = \int K\left(x, y, \vfi_{n-1}\left(y\right)\right)\vfi_n\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu,
+	\vfi_n\left(x\right) = \int K\left(x, y, \vfi_{n-1}\left(y\right)\right)\vfi_{n-1}\left(y\right) \mu\left(dy\right) + f\left(x\right) \quad \mod \mu,
 \end{equation}
 для некоторого начального приближения $\vfi_0\left(x\right)$ при $n\to\infty$. Тогда при наличии предположений о сходимости ряда Неймана $\sum_{i=0}^\infty \int K^i f d\mu$ в той же метрике, в которой сходится метод последовательных приближений, об устойчивости ядра $K$ интегрального оператора к возмущениям, и, возможно, некоторых других, можно получать приближённые решения $\vfi_n$ методом Монте-Карло.
 
@@ -158,7 +158,7 @@ p_{\nu[k]} = p\left(x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left
 \end{align*}
 для интегрального уравнения \eqref{eq:tree-basic} и марковской цепи, для которой выполняются условия согласования с этим уравнением, можно определить оценку
 \begin{equation}\label{eq:accumulation-estimator}
-	\hat{J}_\gamma = \frac{h_0}{p_0}\frac{K_{\nu(0)}}{p_{\nu(0)}}\prod_{\GothB_1\setminus\GothB'_1}\frac{f\left[\nu\left(1\right)\right]}{p\left[\nu\left(1\right)\right]}\prod_{\GothB'_1} \frac{K_{\nu(1)}}{p_{\nu(1)}}\prod_{\GothB_2\setminus\GothB'_2}\frac{f\left[\nu\left(2\right)\right]}{p\left[\nu\left(2\right)\right]}\prod_{\GothB'_2} \frac{K_{\nu(2)}}{p_{\nu(2)}}\times\cdots\times\prod_{\GothB_N} \frac{f\left[\nu\left(N\right)\right]}{p\left[\nu\left(N\right)\right]}.
+	\hat{J}_\gamma = \frac{h_0}{p_0}\frac{K_{\nu(0)}}{p_{\nu(0)}}\prod_{\GothB_1\setminus\GothB'_1}\frac{f\left[\nu\left(1\right)\right]}{g\left[\nu\left(1\right)\right]}\prod_{\GothB'_1} \frac{K_{\nu(1)}}{p_{\nu(1)}}\prod_{\GothB_2\setminus\GothB'_2}\frac{f\left[\nu\left(2\right)\right]}{g\left[\nu\left(2\right)\right]}\prod_{\GothB'_2} \frac{K_{\nu(2)}}{p_{\nu(2)}}\times\cdots\times\prod_{\GothB_N} \frac{f\left[\nu\left(N\right)\right]}{g\left[\nu\left(N\right)\right]}.
 \end{equation}
 Эта оценка является несмещённой оценкой функционала $\left(\vfi, h\right)$ (см. \cite{montekarlo1975}).
 
@@ -179,9 +179,9 @@ p_{\nu[k]} = p\left(x\left[\nu(k)\right], x\left[\nu(k),1\right], \ldots ,x\left
 					  &\left. + h_1(X_1^3)\oplus\frac{1}{3}\sum_{j=1}^3 h_2(X_2^{3j})\right) = \\
 	\text{используя тот факт, что } &\forall\;a,b,c,d\:\: a\oplus b + c\oplus d = \left(a+c\right)\oplus\left(a+d\right)\oplus\left(b+c\right)\oplus\left(b+b\right) \\
 	= h_0(X_0) \oplus \frac{1}{3}&\left(h_1(X_1^1) + h_1(X_1^2) + h_1(X_1^3)\right) \oplus \\
-			   \oplus \frac{1}{3}&\left(h_1(X_1^1) + h_1(X_1^2) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{3j})\right) \oplus \\ \displaybreak
-			   \oplus \frac{1}{3}&\left(h_1(X_1^1) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{2j}) + h_1(X_1^3)\right) \oplus \\
-			   \oplus \frac{1}{3}&\left(h_1(X_1^1) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{2j}) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{3j})\right) \oplus \\ 
+			   \oplus \frac{1}{3}&\left(h_1(X_1^1) + h_1(X_1^2) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{3j})\right) \oplus \\ 
+			   \oplus \frac{1}{3}&\left(h_1(X_1^1) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{2j}) + h_1(X_1^3)\right) \oplus \\ 
+			   \oplus \frac{1}{3}&\left(h_1(X_1^1) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{2j}) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{3j})\right) \oplus \\ \displaybreak
 			   \oplus \frac{1}{3}&\left(\frac{1}{3}\sum_{j=1}^3 h_2(X_2^{1j}) + h_1(X_1^2) + h_1(X_1^3)\right) \oplus \\
 			   \oplus \frac{1}{3}&\left(\frac{1}{3}\sum_{j=1}^3 h_2(X_2^{1j}) + h_1(X_1^2) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{3j})\right) \oplus \\
 			   \oplus \frac{1}{3}&\left(\frac{1}{3}\sum_{j=1}^3 h_2(X_2^{1j}) + \frac{1}{3}\sum_{j=1}^3 h_2(X_2^{2j}) + h_1(X_1^3)\right) \oplus \\
@@ -315,18 +315,18 @@ $$\forall X \in \GothB_{\nu(k)}\setminus\GothB'_{\nu(k)}\;\;\; \Vhat_k(X) = \arg
     \footnotesize{Оценки стоимости опциона с начальной ценой 100 и ценой страйк 100, выписанного на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемого 4 раза в году.}
 \end{figure}
 
-Представление о порядке улучшения, обеспечиваемом обходом случайных поддеревьев, можно получить, сравнив графики \ref{fig:rmse_over_nop_standard} и \ref{fig:rmse_over_nop_random_subtree}. Здесь видно, что средняя ошибка оценок относительно истинного значения цены опциона, полученных за одно и то же вычислительное время (число элементарных операций), для двух методов различаются слабо. 
+Представление о порядке улучшения, обеспечиваемом обходом случайных поддеревьев, можно получить, изучив графики \ref{fig:rmse_over_nop_upper} и ... . На первом из них представлено среднее отклонение от истинного значения для верхней оценки стоимости опциона различными методами: стандартным и усовершенствованным с изменением математического ожидания числа вершин, которые будут поглощены на $k$-м шаге, по линейному ($g_k = \nicefrac{k}{m}$), квадратичному ($g_k = \left(\nicefrac{k}{m}\right)^2$) и обратному квадратичному закону ($g_k = \sqrt{\nicefrac{k}{m}}$). Здесь видно, что средняя ошибка оценок относительно истинного значения цены опциона, полученных за одно и то же вычислительное время (число элементарных операций), для различных методов различаются слабо. 
 \begin{figure}%[HtPb]
     \centering
-	\includegraphics[width=0.8\textwidth]{rmse_over_nop_standard}
+	\includegraphics[width=0.8\textwidth]{rmse_over_nop_upper}
 	\caption{Отклонение оценок стоимости опциона по полному дереву от истинного значения.}
-	\label{fig:rmse_over_nop_standard}
-	\footnotesize{Оценивается опцион с начальной ценой 100 и ценой страйк 100, выписанный на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемого 6 раз в году.}
+	\label{fig:rmse_over_nop_upper}
+	\footnotesize{Оценивается опцион с начальной ценой 100 и ценой страйк 100, выписанный на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемый 6 раз в году.}
 \end{figure}
 \begin{figure}%[HtPb]
     \centering
-	\includegraphics[width=0.8\textwidth]{rmse_over_nop_random_subtree}
+	\includegraphics[width=0.8\textwidth]{rmse_over_nop_lower}
 	\caption{Отклонение оценок стоимости опциона по случайным поддеревьям от истинного значения.}
-	\label{fig:rmse_over_nop_random_subtree}
-	\footnotesize{Оценивается опцион с начальной ценой 100 и ценой страйк 100, выписанный на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемого 6 раз в году.}
+	\label{fig:rmse_over_nop_lower}
+	\footnotesize{Оценивается опцион с начальной ценой 100 и ценой страйк 100, выписанный на срок 1 год на базовый актив с риск-нейтральной процентной ставкой $r = 0.05$, дивидендной ставкой $\delta = 0.1$ и волатильностью $\sigma=0.2$, цена которого --- случайный процесс, являющийся геометрическим броуновским движением с параметрами $\mu = r - \delta$ и $\sigma$, исполняемый 6 раз в году.}
 \end{figure}
