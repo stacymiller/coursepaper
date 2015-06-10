@@ -1,4 +1,4 @@
-\documentclass[specialist, twoside,
+\documentclass[specialist,
 substylefile = spbu.rtx,
                subf,href,colorlinks=true, 12pt]{disser}
 
@@ -35,6 +35,9 @@ substylefile = spbu.rtx,
 \usepackage{listings}
 \usepackage{color}
 
+\renewcommand*{\algorithmcfname}{Алгоритм}
+\renewcommand*{\listalgorithmcfname}{Список алгоритмов}
+
 \usepackage[fixlanguage]{babelbib}
 \selectbiblanguage{russian}
 
@@ -48,7 +51,7 @@ substylefile = spbu.rtx,
 \newcommand{\vfi}{\varphi}
 \newcommand{\prob}[1]{\mathsf{P}\left(#1\right)}
 \newcommand{\R}{\ensuremath{\mathbb{R}}}
-\newcommand{\Tau}{\ensuremath{\mathfrak{T}}}
+\newcommand{\Tau}{\ensuremath{\mathcal{T}}}
 \newcommand{\GothB}{\mathfrak{B}}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\Vhat}{\hat{V}}
@@ -60,22 +63,9 @@ substylefile = spbu.rtx,
 
 \setlength\parindent{0pt}
 \setlength\parskip{0.4em}
+\widowpenalty=10000
+\clubpenalty=10000
 
-\lstdefinestyle{customjava}{
-%   belowcaptionskip=1\baselineskip,
-  	breaklines=true,
-  	breakatwhitespace=true,
-%   xleftmargin=\parindent,
-%   language=Java,
-%   showstringspaces=false,
-   	basicstyle=\footnotesize\fdmfamily,
-   	keywordstyle=\bfseries\color{blue},
-  	commentstyle=\color{magenta},
-  	morekeywords={ImitatedAsset, },
-  	% identifierstyle=\color{green},
-%   stringstyle=\color{orange},
-}
-\lstset{style=customjava, language=Java}
 
 \usepackage{tikz}
 \usetikzlibrary{arrows}
