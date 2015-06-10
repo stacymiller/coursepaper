@@ -8,8 +8,8 @@ public class EmpiricDistribAssetGenerator extends AssetGenerator {
         timedelta = 1. / steps;
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, false, timedelta);
         ImitatedAsset[] prevRow = getFirstRow(ans, branches);
+        boolean median = branches % 2 == 1;
         for (int step = 0; step < steps; step++) {
-            boolean median = branches % 2 == 1;
             ImitatedAsset[] curRow = new ImitatedAsset[branches * prevRow.length];
             ImitatedAsset[] newRow = new ImitatedAsset[prevRow.length];
             for (int i = 0; i < prevRow.length; i++) {

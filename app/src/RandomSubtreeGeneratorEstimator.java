@@ -33,9 +33,9 @@ public class RandomSubtreeGeneratorEstimator extends Estimation{
         ImitatedAsset ans = new ImitatedAsset(initialPrice, branches, steps == 0, timedelta);
         if (steps > 0) {
             int needCalculation = 0;
-//            System.out.println((steps + 1.) / stepsTotal);
+            double continueProbability = 1-(((float) stepsTotal - steps) / stepsTotal);
             for (int branch = 0; branch < branches; branch++) {
-                if (rnd2.nextDouble() < (steps + 1.) / stepsTotal){
+                if (rnd2.nextDouble() < continueProbability){
                     needCalculation++;
                 }
             }
