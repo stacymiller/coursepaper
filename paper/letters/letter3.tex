@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+
+\usepackage[intlimits]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\newcommand{\vfi}{\varphi}
+\newcommand{\deltat}{\triangle t}
+\begin{document}
+	\subsection{Напоминание} % (fold)
+	\label{sub:reminder}
+	Решаем задачу быстрого нахождения верхней (асимптотически несмещённой) оценки стоимости Американского опциона с ценой страйк $K$. Стоимость $V_0 \left(X_0\right) = \max_{\gamma\in\Gamma} A(\gamma)$, где $A(\gamma)$ --- оператор, определённый на поддеревьях $\gamma$ полного дерева $\Gamma$. Полное дерево $\Gamma$ --- это дерево, у каждой вершины которого, кроме листьев, ровно $b$ дочерних вершин, а все листья находятся на расстоянии $m$ поколений от корня. Поддеревья полного дерева $\gamma$ являются подмножествами $\Gamma$, содержат в себе корень $\Gamma$, связны, а у каждой их вершины либо 0, либо $b$ потомков. Оператор $A\left(\gamma\right)$ выглядит следующим образом:
+	$$A\left(\gamma\right) = 
+		\sum_{X_k^{i_1\cdots i_k}\in\gamma} \frac{1}{b^k}h_k\left(X_k^{i_1\cdots i_k}\right) = 
+		\sum_{X_k^{i_1\cdots i_k}\in\gamma} \frac{1}{b^k}e^{-rk\deltat}\left(K - X_k^{i_1\cdots i_k}\right)^+$$
+	последний сомножитель в выражении под знаком суммирования зависит от типа опциона: $\left(K - X_k^{i_1\cdots i_k}\right)^+$ или $\left(X_k^{i_1\cdots i_k} - K\right)^+$.
+	% subsection reminder (end)
+	\section{Распределение оператора на поддеревьях}
+	Цена актива, на который выписан опцион, $X$, моделируется как геометрическое броуновское движение. Т.е.
+	$$X_{k} = X_0 \exp\left(\left(r - \delta - \frac{\sigma^2}{2}\right)t + \sigma W_{k\deltat}\right)$$
+	где $W_t \sim N\left(0, t\right)$. Почему --- видимо, потому что это предположение модели Блэка-Шоулса. Таким образом, если обозначить логнормальное распределение как $\log N$ ($\xi\sim\log N\left(\mu, \sigma^2\right)$, если $\log\xi\sim N\left(\mu, \sigma^2\right)$),
+	$$X_k \sim \log N\left( \log X_0 + \left(r - \delta - \frac{\sigma^2}{2}\right)k\deltat, \sigma^2 k\deltat\right)$$
+	Для того, чтобы выписать распределение случайной величины $A(\gamma)$, нужно определиться с тем, считаем ли мы $\gamma$ случайным поддеревом или наперёд заданным. Мне пока непонятно.
+	\section{Предельная теорема для рекордных величин}
+	Для ряда $X_1, \ldots, X_n, \cdots$ значений случайной величины $X$ с функцией распределения $F(x)$ $n$-ое рекордное время $L(n)$ определяется как $L(0) = 0$, $L(1) = 1$, $L(n+1) = \min\left\lbrace j > L(n) \middle\vert X_j > X_{L(n)} \right\rbrace$, $n$-ая рекордная величина --- как $X(n) = X_{L(n)}$. Так как нас интересует максимум по всем поддеревьям, нам интересно значение $\lim_{n\to\infty}X(n)$.
+
+	Пока я видела следующие утверждения:
+	$$F_{X(n)}(x) = \frac{1}{(n+1)!}\int_0^{-\log(1-F(x))} e^{-u u^{n-1} du}$$
+	-- так мы получаем функцию распределения $n$-ой рекордной величины.
+	% CHECK OUT THE FORMULA!!!
+	$$\frac{-\log(1 - F_{X(n)}(X(n)))}{n} \rightarrow_{n\to\infty} 1$$
+	-- это, судя по всему, представляет собой предельную теорему.
+\end{document}
