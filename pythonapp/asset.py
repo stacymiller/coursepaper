@@ -25,15 +25,3 @@ class ImitatedAsset(object):
         return not self.price<other.price
     def __le__(self, other):
         return not other.price<self.price
-
-# class PandomSubtreeEstimator:
-#     timedelta = 1
-#     steps_total = 0
-#
-#     @classmethod
-#     def estimate(cls, branches, steps, initial_price, strike_price):
-#         if cls.timedelta == 1:
-#             cls.timedelta = 1. / steps
-#             cls.steps_total = steps
-#         asset = ImitatedAsset(initial_price, steps==0, cls.timedelta)
-#         if steps > 0:
