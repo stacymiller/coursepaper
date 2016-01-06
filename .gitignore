@@ -25,6 +25,11 @@ app/.idea/*
 *.bcf
 *.out
 *.toc
+*.log
+*.nav
+*.snm
+*.bak
+*.fls
 
 ## Java
 *.class
@@ -33,14 +38,9 @@ app/.idea/*
 *.sublime-project
 *.sublime-workspace
 
-*.bib
-
-*.log
-
-*.nav
-
-*.snm
-
-*.bak
-
 paper/media/*-converted-to.pdf
+
+
+## SageMath
+*.sage-chat
+*.sage-history
