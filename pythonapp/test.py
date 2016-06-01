@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import print_function
 import numpy as np
 import pandas as pd
 from numpy.core.umath import sqrt
@@ -24,7 +25,7 @@ def GBM_consecutive(N, volatility, u, S0):
     dt = 1. / N
     St = np.empty((N, ))
     St[0] = S0
-    for i in xrange(1, len(St)):
+    for i in range(1, len(St)):
         St[i] = St[i - 1] * np.exp((u - 0.5 * volatility * volatility) * dt + volatility * np.sqrt(dt) * Wt[i])
     return St
 
@@ -51,7 +52,7 @@ def show_stats(filename="", groupby="branches", plottitle=None, true_value=None,
     if to_slides:
         matplotlib_to_slides()
     data = pd.read_table(filename, sep=",", decimal=".")
-    print data.columns
+    print(data.columns)
     if not plottitle and plottitle is not None:
         plottitle = (filename.split("/")[-1]).split(".")[0].replace("_", " ")
     means = data.groupby(groupby).mean()
@@ -101,7 +102,7 @@ def RMSE_by_nop(filenames, true_value, estimator, groupby="branches", plottitle=
         #         print index
         #         print row[est_value]
         #         print (row[est_value] - true_value) ** 2
-        print filename
+        print(filename)
         data["deviance"] = (data[est_value] - true_value) ** 2
         grouped = data.groupby(groupby)
         rmse = grouped.deviance.mean()
@@ -130,7 +131,7 @@ def nop_by_steps(filenames, groupby="branches"):
     for filename in filenames:
         data = pd.read_table(filename, sep=",", decimal=".")
         nops = data.groupby(groupby).elem_comp_upper_est.mean()
-        print nops
+        print(nops)
         plt.plot(nops.index, nops)
 
 def draw_gbm_sample():
