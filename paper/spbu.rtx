@@ -30,7 +30,7 @@
 \fi
 
 \ifundeflength\firstskip{1.5cm}
-\ifundeflength\secondskip{1.5cm}
+\ifundeflength\secondskip{3.5cm}
 \ifundeflength\thirdskip{3ex}
 \ifundeflength\fourthskip{2ex}
 \ifundeflength\fifthskip{4ex}
@@ -66,6 +66,7 @@
 \vskip\sixthskip
 \hfill
 \begin{minipage}{.5\linewidth}
+    \begin{flushright}
     \ifx\@apname\empty\else
     \vskip\seventhskip
     \approved\\%
@@ -84,6 +85,7 @@
     \ifx\@revsnd\empty\else
     \vskip\seventhskip\diplomafield{revsnd}
     \fi
+    \end{flushright}
 \end{minipage}
 \vfill
 \begin{center}
