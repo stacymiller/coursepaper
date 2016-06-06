@@ -7,7 +7,7 @@ m = 4
 N = 1000
 b = 200
 
-S0 = 70
+S0 = 100
 K = 100
 r = 0.05
 delta = 0.1
@@ -15,16 +15,17 @@ mu = r - delta
 sigma = 0.2
 T = 1
 # interest = 0.11  # current Russian interest rate
-
-states = np.linspace(1 / (2 * N), 1 - 1 / (2 * N), N, endpoint=True)
-states = np.repeat(states[None, :], m, axis=0)
-deltat = np.linspace(0, T, m)[:, None]
-states = S0 * np.exp((mu - sigma * sigma / 2) * deltat + sigma * np.sqrt(deltat) * norm.ppf(states))
-
-borders = (states[:, 1:] + states[:, :-1]) / 2
-
+ticks = 0
 Vertex = recordclass("Vertex", ["children", "estimate"])
 
+def set_precalculated_constants(S0, T, m, N):
+    deltat = np.linspace(0, T, m)[:, None]
+    states = np.linspace(1 / (2 * N), 1 - 1 / (2 * N), N, endpoint=True)
+    states = np.repeat(states[None, :], m, axis=0)
+    states = S0 * np.exp((mu - sigma * sigma / 2) * deltat + sigma * np.sqrt(deltat) * norm.ppf(states))
+    discount = np.exp(-r * T / m)
+    borders = (states[:, 1:] + states[:, :-1]) / 2
+    return deltat, states, borders, discount
 
 def get_probs(level, source):
     """
@@ -35,14 +36,12 @@ def get_probs(level, source):
     law = norm(loc=(mu - sigma * sigma / 2) * deltat[level], scale=sigma * np.sqrt(deltat[level]))
     p = law.cdf(np.log(borders[level]) - np.log(states[level - 1, source]))
     return np.diff(np.concatenate([[0], p, [1]]))
-    # p = law.cdf(np.log(states[level]) - np.log(states[level - 1, source]))  # for the sake of precision!
-    # return np.array([0.5 * (p[i] + p[i + 1]) if i == 0 else
-    #                  0.5 * (p[i + 1] - p[i - 1]) if i + 1 < N else
-    #                  1 - 0.5 * (p[i] + p[i - 1]) for i in range(N)])
 
 
 def payoff(lvl, i):
-    return max(states[lvl, i] - K, 0)  # TODO: discounting (or I do not need it at all?)
+    global ticks
+    ticks += 1
+    return max(states[lvl, i] - K, 0)
 
 
 def tree():
@@ -69,25 +68,43 @@ def tree():
     return levels
 
 
-def evaluate(tree):
-    prev_lvl = tree[-1]
+def evaluate(t):
+    prev_lvl = t[-1]
     for i in prev_lvl:
-        prev_lvl[i].estimate = payoff(m - 1, i)
+        prev_lvl[i].estimate = payoff(m-1, i)  # estimate at the last time is just payoff
 
     cur_lvl = prev_lvl
     for lvl in reversed(range(m - 1)):
         prev_lvl = cur_lvl
-        cur_lvl = tree[lvl]
+        cur_lvl = t[lvl]
 
         for i in cur_lvl:
             v = cur_lvl[i]
             continuation = [prev_lvl[x].estimate for x in v.children]
-            v.estimate = max(payoff(lvl, i), np.exp(-r * T / m) * np.mean(continuation))
+            v.estimate = max(payoff(lvl, i), discount * np.mean(continuation))
 
-    return tree[0][0].estimate
+    return t[0][0].estimate
 
 
-results = np.array([evaluate(tree()) for _ in range(100)])
-np.savetxt("init_res.csv", results, delimiter=",")
-print(results.mean())
-print(results.std())
+# print(evaluate(tree()))
+
+f = open("results2.csv", "w")
+f.write("S0,K,m,b,N,est,ticks\n")
+for s in [120, 130]:
+    S0 = s
+    for branches in [10, 20, 50, 100, 150, 200, 300]:
+        b = branches
+        for possible_states in [10, 100, 1000, 10000, 100000]:
+            N = possible_states
+            deltat, states, borders, discount = set_precalculated_constants(s, T, m, N)
+            print("{S0},{K},{m},{b},{N}\n".format(S0=S0, K=K, m=m, b=b, N=N))
+            for _ in range(1000):
+                print(_)
+                ticks = 0
+                result = evaluate(tree())
+                f.write("{S0},{K},{m},{b},{N},{est},{ticks}\n".format(S0=S0, K=K, m=m, b=b, N=N, est=result, ticks=ticks))
+f.close()
+        # np.savetxt("init_res.csv", results, delimiter=",")
+        # print("Setting: S_0 = {}, K = {}, m = {}, b = {}".format(S0, K, m, b))
+        # print(results.mean())
+        # print(results.std())

@@ -3,10 +3,13 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
+import static org.apache.commons.math3.stat.StatUtils.mean;
+import static org.apache.commons.math3.stat.StatUtils.variance;
+
 public class Main {
 
     public static void main(String[] args) throws InterruptedException, FileNotFoundException, UnsupportedEncodingException {
-        int branches = 10;
+        int branches = 20;
         int steps = 150;
         int width = 50;
         int sectors = 7;
@@ -17,7 +20,19 @@ public class Main {
 //        RandomSubtreeGeneratorEstimator.calculate(branches, 5, initialPrice, 100);
 //        System.out.println(RandomSubtreeLineGeneratorEstimator.calculate(100, 100, 3, 3, 1000));
 //        testConvergenceToTrueValue(5, 100);
-        testConvergenceToAmericanOption(100, 15);
+        double[] ans = new double[100];
+//        double ans = 0;
+        System.out.println(String.format("Setting: S_0 = %d, K = %d, m = %d, b = %d", 100, 100, 4, branches));
+        for (int i = 0; i < ans.length; i++) {
+            ImitatedAsset ia = AssetGenerator.generateAssetTree(branches, 4, 100);
+            ans[i] = BroadieGlassermanEstimation.upperEstimate(ia, 100);
+        }
+
+
+        System.out.println(mean(ans));
+        System.out.println(variance(ans));
+
+//        testConvergenceToAmericanOption(100, 15);
     }
 
     private static void calculateTruePrice(double initialPrice, int steps) {
