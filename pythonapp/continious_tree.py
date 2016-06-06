@@ -51,7 +51,7 @@ def evaluate_tree(state, branches, steps_left):
 
 f = open("results_continious.csv", "w")
 f.write("S0,K,m,b,est,ticks\n")
-for s in [120, 130]:
+for s in [130]:
     S0 = s
     for branches in [10, 20, 50, 100, 150, 200, 300]:
             b = branches

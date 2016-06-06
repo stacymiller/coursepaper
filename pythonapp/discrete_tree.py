@@ -88,14 +88,14 @@ def evaluate(t):
 
 # print(evaluate(tree()))
 
-f = open("results2.csv", "w")
+f = open("results130.csv", "w")
 f.write("S0,K,m,b,N,est,ticks\n")
-for s in [120, 130]:
+for s in [130]:
     S0 = s
-    for branches in [10, 20, 50, 100, 150, 200, 300]:
-        b = branches
-        for possible_states in [10, 100, 1000, 10000, 100000]:
-            N = possible_states
+    for possible_states in [10, 100, 1000, 10000, 100000]:
+        N = possible_states
+        for branches in [10, 20, 50, 100, 150, 200, 300]:
+            b = branches
             deltat, states, borders, discount = set_precalculated_constants(s, T, m, N)
             print("{S0},{K},{m},{b},{N}\n".format(S0=S0, K=K, m=m, b=b, N=N))
             for _ in range(1000):
@@ -103,6 +103,7 @@ for s in [120, 130]:
                 ticks = 0
                 result = evaluate(tree())
                 f.write("{S0},{K},{m},{b},{N},{est},{ticks}\n".format(S0=S0, K=K, m=m, b=b, N=N, est=result, ticks=ticks))
+
 f.close()
         # np.savetxt("init_res.csv", results, delimiter=",")
         # print("Setting: S_0 = {}, K = {}, m = {}, b = {}".format(S0, K, m, b))
