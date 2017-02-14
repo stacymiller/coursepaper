@@ -1,19 +1,7 @@
 import numpy as np
 from scipy.stats import norm
 
-m = 4
-# N = 1000
-b = 3
-
-S0 = 70
-K = 100
-r = 0.05
-delta = 0.1
-mu = r - delta
-sigma = 0.2
-T = 1
-deltat = T / m
-discount = np.exp(-r * deltat)
+from constants import *
 ticks = 0
 # law = norm(loc=(mu - sigma * sigma / 2) * (T / m), scale=sigma * np.sqrt(T / m))
 
@@ -44,10 +32,6 @@ def evaluate_tree(state, branches, steps_left):
     # print(" " * (m - steps_left), max(payoff(state), discount * est))
     return max(payoff(state), discount * est)
 
-# print(evaluate_tree(S0, b, m))
-# print("Setting: S_0 = {}, K = {}, m = {}, b = {}".format(S0, K, m, b))
-# results = np.array([evaluate_tree(S0, b, m) for _ in range(1000)])
-# print("{:.4f} +- {:.4f}".format(results.mean(), results.std()))
 
 f = open("results_continious.csv", "w")
 f.write("S0,K,m,b,est,ticks\n")

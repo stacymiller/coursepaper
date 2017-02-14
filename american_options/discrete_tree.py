@@ -14,7 +14,7 @@ delta = 0.1
 mu = r - delta
 sigma = 0.2
 T = 1
-# interest = 0.11  # current Russian interest rate
+
 ticks = 0
 Vertex = recordclass("Vertex", ["children", "estimate"])
 
@@ -88,9 +88,9 @@ def evaluate(t):
 
 # print(evaluate(tree()))
 
-f = open("results130.csv", "w")
-f.write("S0,K,m,b,N,est,ticks\n")
 for s in [130]:
+    f = open("results{}.csv".format(s), "w")
+    f.write("S0,K,m,b,N,est,ticks\n")
     S0 = s
     for possible_states in [10, 100, 1000, 10000, 100000]:
         N = possible_states
@@ -104,8 +104,4 @@ for s in [130]:
                 result = evaluate(tree())
                 f.write("{S0},{K},{m},{b},{N},{est},{ticks}\n".format(S0=S0, K=K, m=m, b=b, N=N, est=result, ticks=ticks))
 
-f.close()
-        # np.savetxt("init_res.csv", results, delimiter=",")
-        # print("Setting: S_0 = {}, K = {}, m = {}, b = {}".format(S0, K, m, b))
-        # print(results.mean())
-        # print(results.std())
+    f.close()
