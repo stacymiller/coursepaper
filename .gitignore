@@ -30,6 +30,7 @@ app/.idea/*
 *.snm
 *.bak
 *.fls
+*.pdf
 
 ## Java
 *.class
