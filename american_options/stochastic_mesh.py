@@ -110,9 +110,13 @@ def evaluate3(n):
         """
         if k == 0:
             return np.full_like(j, 1)
-        return np.sqrt(k + 1) * np.exp(- 0.5 * ((xi[k, j] - xi[k - 1, i]) ** 2) + 0.5 * (xi[k, j] ** 2) / (k + 1))
+        # return np.sqrt(k + 1) * np.exp(- 0.5 * ((xi[k, j] - xi[k - 1, i]) ** 2) + 0.5 * (xi[k, j] ** 2) / (k + 1))
+        # return np.sqrt(k + 1) * np.exp( - k * (xi[k-1, i] ** 2) / 2 + np.sqrt((k + 1) * k) * xi[k-1, i] * xi[k, j])
+        return np.sqrt(k + 1) * np.exp( - 0.5 * ((np.sqrt(k + 1) * xi[k, j] - np.sqrt(k) * xi[k-1, i]) ** 2) + (xi[k, j] ** 2) / 2.)
 
-    def state(xi, k): return S0 * np.exp(sigma * np.sqrt(deltat) * xi + lmbd * (k + 1) * deltat)
+    def state(xi, k):
+        # print(xi, k)
+        return S0 * np.exp(sigma * np.sqrt(deltat) * xi + lmbd * (k + 1) * deltat)
 
     def h(xi, k):
         """
@@ -165,12 +169,16 @@ def transition_density(x, y, dt):
 
 np.random.seed(13)
 print(m)
-for n in np.power(10, [1, 2, 3, 4, 5]):
-    for _ in range(100):
-        print("{}, {}, 3, {}".format(evaluate3(n), n, S0))
-        mesh = generate_mesh(n, gbm_state_generator)
+with open("results_mesh.csv", "w") as f:
+    f.write("value,n,S0\n")
+    for n in np.power(10, [1, 2, 3, 4, 5]):
+        for S0 in [70, 100]:
+            for _ in range(100):
+                print("{}, {}, {}".format(evaluate3(n), n, S0))
+                f.write("{}, {}, {}\n".format(evaluate3(n), n, S0))
+            # mesh = generate_mesh(n, gbm_state_generator)
     # print(mesh)
-        print("{}, {}, 2, {}".format(evaluate2(mesh, transition_density), n, S0))
+    #     print("{}, {}, 2, {}".format(evaluate2(mesh, transition_density), n, S0))
         # print()
     # # m = 3
     # # S0 = 1
