@@ -15,7 +15,6 @@ def payoff(state):
     return max(value(state) - K, 0)
 
 
-quasirand = HaltonNorm(len(S0))
 def get_states(state, n):
     if type == "pseudorandom":
         rand = norm.rvs(size=(n,) + np.asarray(state).shape)
@@ -44,18 +43,21 @@ np.random.seed(13)
 # values = [evaluate_tree(S0, 50, m) for _ in range(100)]
 # print(np.mean(values))
 # print(np.std(values))
-f = open("results_continious.csv", "w")
-f.write("S0,K,m,b,est,type\n")
 
-for branches in [10, 20, 50, 100, 150, 200, 300]:
-    b = branches
-    print("{S0},{K},{m},{b}\n".format(S0=S0, K=K, m=m, b=b))
-    for s in [70, 100]:
-        S0 = s * np.ones(5)
+type = "quazirandom"
+with open("results_continious_constructive_dimension.csv", "w") as f:
+    f.write("S0,rho,K,m,b,est,type\n")
+    for branches in [2,4,6,8,10]:#, 150, 200, 300]:
+        b = branches
+        print("{S0},{rho},{K},{m},{b},{type}\n".format(S0=np.mean(S0), rho=rho, K=K, m=m, b=b, type=type))
+        quasirand = HaltonNorm(len(S0), m, b, randomized=True)
+        # for s in [70, 100]:
+        #     S0 = s * np.ones(5)
         for type in ["quazirandom", "pseudorandom"]:
-            for _ in range(100):
-                print(_)
+            for i in range(500):
+                print(i)
                 # ticks = 0
+                if (i % 10 == 0):
+                    quasirand.randomize()
                 result = evaluate_tree(S0, b, m)
-                f.write("{S0},{K},{m},{b},{est},{type}\n".format(S0=np.mean(S0), K=K, m=m, b=b, est=result, type=type))
-f.close()
+                f.write("{S0},{rho},{K},{m},{b},{est},{type}\n".format(S0=np.mean(S0), rho=rho, K=K, m=m, b=b, est=result, type=type))
