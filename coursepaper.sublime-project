@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"build_systems":
+	[
+		{
+			"name": "Cleanup",
+			"shell_cmd": "cd $file_path && rm -r *.log *.aux *.fdb_latexmk *.out *.synctex.gz *.synctex.gz*busy* *.fls *.nav *.snm *.toc *.blg"
+		},
+		{
+			"name": "LaTeX thesis -shell-escape",
+			"shell_cmd": "pdflatex -shell-escape thesis.tex && (bibtex8 -H -c utf8cyrillic.csf thesis.aux ; pdflatex -shell-escape thesis.tex ; pdflatex -shell-escape thesis.tex)"
+		},
+		{
+			"name": "LaTeX -shell-escape",
+			"shell_cmd": "pdflatex -shell-escape $file_name"
+		}
+	]
+}
