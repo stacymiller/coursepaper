@@ -1,0 +1,40 @@
+%!TEX program = lualatex 
+
+% Drawing a graph using the PG 3.0 graphdrawing library
+% Author: Mark Wibrow
+\RequirePackage{luatex85}
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+
+\usetikzlibrary{graphdrawing}
+\usetikzlibrary{graphs}
+% \usetikzlibrary{calc}
+\usegdlibrary{trees}
+\begin{document}
+\begin{tikzpicture}[>=stealth, every node/.style={minimum size=0.75cm}]
+\graph [tree layout, grow=down, fresh nodes, level distance=0.7in, sibling distance=0.5in]
+    {
+        "$X_0$" -> { 
+			"$X_1^1$" -> { 
+				"$X_2^{11}$" -> { 
+					"$X_1^{111}$", 
+					"$X_2^{112}$",
+					"$X_3^{113}$" }, 
+				"$X_2^{12}$",
+				"$X_2^{13}$"},
+			"$X_1^2$" -> { 
+				"$X_2^{21}$", 
+				"$X_2^{22}$", 
+				"$X_2^{23}$"},
+			"$X_1^3$" -> { 
+				"$X_2^{31}$", 
+				"$X_2^{32}$" -> {
+					"$X_1^{321}$",
+					"$X_2^{322}$",
+					"$X_3^{323}$"
+				}, 
+				"$X_2^{33}$" }
+        } 
+    };
+\end{tikzpicture}
+\end{document}
