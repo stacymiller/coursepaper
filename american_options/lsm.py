@@ -4,6 +4,8 @@ from constants import *
 import numpy as np
 from scipy.stats import norm
 
+from quazi_mc_seq_gen import HaltonNorm
+
 
 def get_states(state, n):
     """
@@ -13,10 +15,16 @@ def get_states(state, n):
     """
     size = (m,) + np.asarray(state).shape
     i = (np.arange(m+1)).reshape(-1, 1)
+    if type == "MC":
+        rand = norm.rvs
+    elif type.find("QMC") >= 0:
+        rand = quasirand.gaussian
+    else:
+        raise ValueError("type \"{}\" is wrong!".format(type))
     def get_sample():
         return state * np.exp(
             (mu - sigma * sigma / 2) * deltat * i +
-            sigma * np.sqrt(deltat) * np.r_[np.zeros((1, len(state))), np.cumsum(norm.rvs(size=size).dot(corr_matrix), axis=0)]
+            sigma * np.sqrt(deltat) * np.r_[np.zeros((1, len(state))), np.cumsum(rand(size=size).dot(corr_matrix), axis=0)]
         )
     return np.stack([get_sample() for _ in range(n)], axis=1)
 
@@ -50,14 +58,28 @@ def evaluate(b=10):
     return cash_flow.mean()
 
 filename = "results_lsm.csv"
-fmt = "{S0},{rho},{K},{m},{b},{est}\n"
-samples = 500
+fmt = "{S0},{rho},{K},{m},{b},{type},{halton_dim},{group},{est}\n"
+samples = 5000
+types = ["MC", "QMC", "RQMC"]
 with open(filename, "w") as f:
-    f.write(fmt.format(S0="S0", rho="rho", K="K", m="m", b="b", est="est"))
+    f.write(fmt.format(S0="S0", rho="rho", K="K", m="m", b="b", est="est", type="type", group="group", halton_dim="halton_dim"))
 for b in [10, 20, 50, 100, 200, 500, 1000]:
-    with open(filename, "a") as f:
-        for i in range(samples):
-            est = evaluate(b)
-            f.write(fmt.format(S0=S0[0], rho=rho, K=K, m=m, b=b, est=est))
+    for type in types:
+        randomized = (type.find("QMC") >= 0) and (type.find("R") >= 0)
+        for halton_dim in [len(S0), len(S0) * m, len(S0) * m * b] if type.find("QMC") >= 0 else [None]:
+            if halton_dim is not None:
+                if halton_dim > 1200:
+                    continue
+                quasirand = HaltonNorm(int(halton_dim), cache=int(1e6), randomized=randomized)
+            strata = 100
+            current_group = lambda i: i // (samples / strata)
+            with open(filename, "a") as f:
+                for i in range(samples):
+                    print(i)
+                    if randomized and (current_group(i) != current_group(i - 1)):
+                        quasirand.randomize()
+                    est = evaluate(b)
+                    f.write(fmt.format(S0=S0[0], rho=rho, K=K, m=m, b=b, est=est,
+                                       type=type, halton_dim=halton_dim, group=current_group(i)))
 # est = [evaluate(100) for _ in range(500)]
 # print(np.mean(est), np.std(est))
