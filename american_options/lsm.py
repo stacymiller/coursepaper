@@ -4,7 +4,7 @@ from constants import *
 import numpy as np
 from scipy.stats import norm
 
-from quazi_mc_seq_gen import HaltonNorm
+from quazi_mc_seq_gen import QuasiNorm
 
 
 def get_states(state, n):
@@ -70,7 +70,7 @@ for b in [10, 20, 50, 100, 200, 500, 1000]:
             if halton_dim is not None:
                 if halton_dim > 1200:
                     continue
-                quasirand = HaltonNorm(int(halton_dim), cache=int(1e6), randomized=randomized)
+                quasirand = QuasiNorm(int(halton_dim), cache=int(1e6), randomized=randomized)
             strata = 100
             current_group = lambda i: i // (samples / strata)
             with open(filename, "a") as f:

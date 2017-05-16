@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import norm
 
 from constants import *
-from quazi_mc_seq_gen import HaltonNorm
+from quazi_mc_seq_gen import QuasiNorm
 
 ticks = 0
 
@@ -17,9 +17,9 @@ def payoff(state):
 
 def get_states(state, n):
     size = (n,) + np.asarray(state).shape
-    if type == "pseudorandom":
+    if type == "MC":
         rand = norm.rvs(size=size)
-    elif type == "quasirandom":
+    elif type.find("QMC") >= 0:
         rand = quasirand.gaussian(size=size)
     else:
         raise ValueError("type \"{}\" is wrong!".format(type))
@@ -48,43 +48,38 @@ def evaluate_tree(state, branches, steps_left):
 np.random.seed(13)
 
 samples=500
-quasirand = HaltonNorm(10)
+quasirand = QuasiNorm(10)
 fmt = "{S0},{rho},{K},{m},{b},{est_upper},{est_lower},{type},{halton_dim},{group}\n"
 
-filename = "variance_estimation.csv"
-
+# filename = "variance_estimation.csv"
+filename = "results_continuous_halton_S2.csv"
 with open(filename, "w") as f:
     f.write(fmt.format(S0="S0", rho="rho", K="K", m="m", b="b",
                        est_upper="est_upper", est_lower="est_lower", type="type",
-                       halton_dim="halton_dim", group="group"))
-# for iteration in range(100):
-for branches in [10,20,50,100,150,200]:
-    b = branches
-    print("{S0},{rho},{K},{m},{b},{type}\n".format(S0=np.mean(S0), rho=rho, K=K, m=m, b=b, type=type))
-    type = "quasirandom"
-    # for type in ["quasirandom", "pseudorandom"]:
-    dims = [
-        len(S0),
-        100,
-        (branches**(np.arange(m) + 1)).sum(),
-        len(S0) * m
-    ] if type == "quasirandom" else [None]
-    for halton_dim in dims:
-        if halton_dim is not None:
-            if halton_dim > 1200:
-                continue
-            quasirand = HaltonNorm(int(halton_dim), cache=int(1e6), randomized=False)
-        # print(iteration, branches, type, halton_dim)
-        f = open(filename, "a")
-        strata = 10
-        current_group = lambda i: i // (samples / strata)
-        for i in range(samples):
-            print(i)
-            if current_group(i) != current_group(i - 1):
-                quasirand.randomize()
-            upper, lower = evaluate_tree(S0, b, m)
-            f.write(fmt.format(
-                S0=np.mean(S0), rho=rho, K=K, m=m, b=b, est_upper=upper, est_lower=lower,
-                type=type, halton_dim=halton_dim, group=current_group(i)
-            ))
-        f.close()
+                       halton_dim="qdim", group="group"))
+
+
+samples = 5000
+types = ["MC", "QMC", "RQMC"]
+with open(filename, "w") as f:
+    f.write(fmt.format(S0="S0", rho="rho", K="K", m="m", b="b", est_upper="est_upper", est_lower="est_lower", type="type", group="group", halton_dim="halton_dim"))
+for b in [2, 5, 10]:
+    for type in types:
+        randomized = (type.find("QMC") >= 0) and (type.find("R") >= 0)
+        for halton_dim in [len(S0), (b**np.arange(1, m+1)).sum()*len(S0)] if type.find("QMC") >= 0 else [None]:
+            if halton_dim is not None:
+                if halton_dim > 40:
+                    continue
+                quasirand = QuasiNorm(int(halton_dim), cache=int(1e6), randomized=randomized, type="halton")
+            strata = 200
+            current_group = lambda i: i // (samples / strata)
+            with open(filename, "a") as f:
+                for i in range(samples):
+                    print(i)
+                    if randomized and (current_group(i) != current_group(i - 1)):
+                        quasirand.randomize()
+                    upper, lower = evaluate_tree(S0, b, m)
+                    f.write(fmt.format(
+                        S0=np.mean(S0), rho=rho, K=K, m=m, b=b, est_upper=upper, est_lower=lower,
+                        type=type, halton_dim=halton_dim, group=current_group(i)
+                    ))
