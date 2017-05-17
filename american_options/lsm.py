@@ -57,29 +57,37 @@ def evaluate(b=10):
 
     return cash_flow.mean()
 
-filename = "results_lsm.csv"
-fmt = "{S0},{rho},{K},{m},{b},{type},{halton_dim},{group},{est}\n"
-samples = 5000
-types = ["MC", "QMC", "RQMC"]
+
+fmt = "{asset_dim},{rho},{T},{m},{b},{est},{type},{qdim},{group}\n"
+filename = "results_lsm_halton.csv"
 with open(filename, "w") as f:
-    f.write(fmt.format(S0="S0", rho="rho", K="K", m="m", b="b", est="est", type="type", group="group", halton_dim="halton_dim"))
-for b in [10, 20, 50, 100, 200, 500, 1000]:
-    for type in types:
-        randomized = (type.find("QMC") >= 0) and (type.find("R") >= 0)
-        for halton_dim in [len(S0), len(S0) * m, len(S0) * m * b] if type.find("QMC") >= 0 else [None]:
-            if halton_dim is not None:
-                if halton_dim > 1200:
-                    continue
-                quasirand = QuasiNorm(int(halton_dim), cache=int(1e6), randomized=randomized)
-            strata = 100
-            current_group = lambda i: i // (samples / strata)
-            with open(filename, "a") as f:
-                for i in range(samples):
-                    print(i)
-                    if randomized and (current_group(i) != current_group(i - 1)):
-                        quasirand.randomize()
-                    est = evaluate(b)
-                    f.write(fmt.format(S0=S0[0], rho=rho, K=K, m=m, b=b, est=est,
-                                       type=type, halton_dim=halton_dim, group=current_group(i)))
-# est = [evaluate(100) for _ in range(500)]
-# print(np.mean(est), np.std(est))
+    f.write(fmt.format(asset_dim="asset_dim", rho="rho", T="T", m="m", b="b",
+                       est="est", type="type",
+                       qdim="qdim", group="group"))
+
+samples = 15000
+types = ["MC", "QMC", "RQMC"]
+
+for t, dim_X, rho in [(1, 2, 0.3), (1, 5, 0.3), (3, 5, 0)]:
+    S0, rho, corr_matrix, K, r, mu, delta, sigma, T, m, deltat, discount = make_constants(dim_X=dim_X, T=t, rho=rho)
+
+    for b in [2, 5, 10, 20, 50]:
+        for type in types:
+            randomized = (type.find("QMC") >= 0) and (type.find("R") >= 0)
+            for qdim in [dim_X, b*m*dim_X] if type.find("QMC") >= 0 else [None]:
+                if qdim is not None:
+                    if qdim > 40:
+                        continue
+                    quasirand = QuasiNorm(int(qdim), cache=int(1e6), randomized=randomized, type="halton")
+                strata = samples / 25  # 25 estimates in one stratum
+                current_group = lambda i: i // (samples / strata)
+                with open(filename, "a") as f:
+                    for i in range(samples):
+                        print(i)
+                        if randomized and (current_group(i) != current_group(i - 1)):
+                            quasirand.randomize()
+                        est = evaluate(b)
+                        f.write(fmt.format(
+                            asset_dim=dim_X, rho=rho, T=T, m=m, b=b, est=est,
+                            type=type, qdim=qdim, group=current_group(i)
+                        ))
