@@ -1,0 +1,145 @@
+\documentclass{standalone}
+%Russian-specific packages
+%--------------------------------------
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+%--------------------------------------
+\usepackage{tikz}
+\usetikzlibrary{shapes,snakes}
+\usepackage{systeme}
+% \usepackage{pgfplots}
+\usetikzlibrary{calc}
+\pgfmathsetseed{\number\pdfrandomseed}
+\begin{document}
+\def\layersep{2.5cm}
+\def\vertsep{1.5cm}
+\def\gridp{17}
+\begin{tikzpicture}[shorten >=1pt,draw=black!50,yscale=-0.90, xscale=0.65]
+    \tikzstyle{vertex}=[circle,color=black,fill=black!50,inner sep=1,draw]
+    \tikzstyle{selected vertex}=[circle,color=red,fill=red!50,inner sep=1,draw]
+    
+    \draw (9.5, 0) node[rectangle] (root) {$X_0$};
+
+    \draw[loosely dotted,color=black!50] (root) -- (20,0) node[color=black] {$t_0$};
+    \foreach \line in {1,...,6}{
+        \draw[loosely dotted,color=black!50] (0,\line) -- (20,\line) node[color=black] {$t_\line$};
+    }
+    \foreach \line in {3,2,1}{
+        \draw[loosely dotted,color=black!50] (0,{10-\line}) -- (20,{10-\line}) node[color=black] {$t_{m-\line}$};
+    }
+
+    \foreach \branch in {1,2,3}{
+        \draw ({5.5+4*(\branch-1)}, 1) node[vertex] (1-\branch) {};
+        \draw[->] (root) -- (1-\branch);
+        \foreach \child in {1,2,3}{
+            \draw ({5.5+4*(\branch-1)+1*(\child-2)}, 2) node[vertex] (2-\branch\child) {};
+            \draw[->] (1-\branch) -- (2-\branch\child);
+        }
+    }
+
+    \foreach \n in {1,2}{
+        \pgfmathsetmacro{\b}{random(1,3)}
+        \pgfmathsetmacro{\c}{random(1,3)}
+        \draw node[selected vertex] (r1\n) at (2-\b\c) {};
+        \foreach \branch in {1,2,3}{
+            \draw ({(\n-1)*9+3*\branch-1},3) node[vertex] (3-\branch) {};
+            \draw[->] (r1\n) -- (3-\branch);
+            \foreach \child in {1,2,3}{
+                \draw ({(\n-1)*9 + \child + 3*\branch - 3}, 4) node[vertex] (4-\branch\child) {};
+                \draw[->] (3-\branch) -- (4-\branch\child);
+            }
+        }
+    }
+
+    \foreach \n in {1,2}{
+        \pgfmathsetmacro{\b}{random(1,3)}
+        \pgfmathsetmacro{\c}{random(1,3)}
+        \draw node[selected vertex] (r2\n) at (4-\b\c) {};
+        \foreach \branch in {1,2,3}{
+            \draw ({(\n-1)*9+3*\branch-1},5) node[vertex] (5-\branch) {};
+            \draw[->] (r2\n) -- (5-\branch);
+            \foreach \child in {1,2,3}{
+                \draw ({(\n-1)*9 + \child + 3*\branch - 3}, 6) node[vertex] (6-\branch\child) {};
+                \draw[->] (5-\branch) -- (6-\branch\child);
+            }
+        }
+    }
+
+    \foreach \mid in {2,5,8,11,14,17}{
+        \draw (\mid, 6.5) node {$\vdots$};
+    }
+
+    \foreach \n in {1,2}{
+        \pgfmathsetmacro{\b}{random(1,9)}
+        \draw ({(\n-1)*9+\b},7) node[selected vertex] (r3\n) {};
+        \foreach \branch in {1,2,3}{
+            \draw ({(\n-1)*9+3*\branch-1},8) node[vertex] (8-\branch) {};
+            \draw[->] (r3\n) -- (8-\branch);
+            \foreach \child in {1,2,3}{
+                \draw ({(\n-1)*9 + \child + 3*\branch - 3}, 9) node[vertex] (9-\branch\child) {};
+                \draw[->] (8-\branch) -- (9-\branch\child);
+            }
+        }
+    }
+
+    % \foreach \line in {1,3,5}{
+    %     \draw[dashed] (\line-3) -- (20,\line) node {\line};
+    % }
+    % \draw[dashed] (8-3) -- (20,8) node {$m-2$};
+    % \foreach \line in {2,4,6}{
+    %     \draw[dashed] (\line-33) -- (20,\line) node {\line};
+    % }
+    % \draw[dashed] (9-33) -- (20,9) node {$m-1$};
+    % \draw[dashed] (r32) -- (20,7) node {$m-3$};
+    % Draw the input layer nodes
+    % \foreach \name / \y in {1,...,3}
+    %     \node[input neuron, pin=left:Вход \#\y] (I-\name) at (0,-\vertsep*\y) {};
+    % \foreach \name / \y in {1,...,3}
+    %     \draw node at (I-\name) {$a^1_\name$};
+    
+
+    % % Draw the hidden layer nodes
+    % \foreach \name / \y in {1,2}
+    %     \path[yshift=-\vertsep*0.5]
+    %         node[hidden neuron, split vertically] (H-\name) at (\layersep,-\vertsep*\y) {\rotatebox{-90}{$z^2_\name$} \nodepart{lower} \rotatebox{-90}{$a^2_\name$}};
+    % % \foreach \name / \y in {1,2}
+    % %     \path[yshift=-\vertsep*0.5]
+    % %         node[split vertically] at (H-\name) {};
+
+    % % Draw the output layer node
+    % \coordinate (H-mid) at ($(H-1)!0.5!(H-2)$);
+    % \node[output neuron,pin={[pin edge={->}]right:Выход}, right of=H-mid] (O) {};
+
+    % \foreach \source in {1,...,3}
+    %     \foreach \dest in {1,2}
+    %         \path (I-\source) edge (H-\dest);
+    %         % \draw node[split vertically] at (I-\source) {\nodepart{lower} \rotatebox{-90}{$a^1_3$}};
+
+    % \foreach \source in {1,2}
+    %     \path (H-\source) edge (O);
+
+    % % Annotate the layers
+    % \node[annot,above of=I-1, node distance=1cm] (il) {Входной слой};
+    % \node[annot,right of=il] (hl) {~  };
+    % \node[annot,right of=hl] {Выходной слой};
+
+    % % Define task
+    % \foreach \source in {1,...,3}
+    %     \foreach \dest in {1,2}
+    %         \draw (I-\source) -- node[near start] {$w^2_{\dest\source}$} (H-\dest);
+    % \foreach \source in {1,2}
+    %     \draw (H-\source) -- node[near start] {$w^3_{1\source}$}  (O);
+
+    % % \node[annot, above of=hl] {\huge\textbf{A}};
+
+    % % \draw node at (I-1) {1};
+    % % \draw[->] (I-3) -- node[near start] {1} (H-1);
+    % % \draw[->] (I-1) -- node[near start] {2} (H-2);
+    % % \draw[->] (H-1) -- node[near start] {3} (O);
+    % % \draw[->] (H-2) -- node[near start] {4} (O);
+    % % \draw node[split vertically] at (H-1) {\rotatebox{-90}{5} \nodepart{lower} };
+    % % \draw node[split vertically] at (H-2) {\nodepart{lower} \rotatebox{-90}{6}};
+    % \draw node[split vertically] at (O) {\rotatebox{-90}{$z^3_1$} \nodepart{lower} \rotatebox{-90}{$a^3_1$}};
+\end{tikzpicture}
+\end{document}
