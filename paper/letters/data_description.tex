@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\usepackage[a4paper,
+            mag=1000, includefoot,
+            left=3cm, right=1.5cm, top=2cm, bottom=2cm, headsep=1cm, footskip=1cm]{geometry}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+
+\usepackage[style=verbose-ibid]{biblatex}
+\addbibresource{../biblio-u.bib}
+
+\ifpdf\usepackage{epstopdf}\fi
+
+\usepackage{multirow}
+\usepackage{enumitem}
+
+% Точка с запятой в качестве разделителя между номерами цитирований
+% \setcitestyle{semicolon}
+
+\graphicspath{ {../media/} }
+
+\usepackage[ruled,vlined]{algorithm2e}
+
+\usepackage[intlimits]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+
+\usepackage{hyperref}
+\newtheorem{theorem}{Теорема}
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\vfi}{\varphi}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\prob}[1]{\mathrm{P}\left(#1\right)}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\Tau}{\ensuremath{\mathcal{T}}}
+\newcommand{\GothB}{\mathfrak{B}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\Vhat}{\hat{V}}
+\newcommand{\vhat}{\hat{v}}
+\newcommand{\maxset}[1]{\max\left\lbrace#1\right\rbrace}
+\newcommand{\deltat}{\Delta t}
+\DeclareMathOperator{\correlation}{cor}
+\newcommand{\corr}[2]{\correlation\left(#1, #2\right)}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\dd}{d}
+
+\setlength{\parskip}{10pt}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+Данные по результатам измерений приведены в файле \texttt{data.csv}. Каждая строка -- результат отдельного эксперимента, про который указаны:
+
+\begin{description}[align=right]
+\item[\texttt{b}] параметр алгоритма оценки стоимости опциона по случайным деревьям $b = 10, 20, 50, 100, 150, 200$.
+\item[\texttt{type}] тип используемых случайных чисел: \begin{description}[align=right]
+	\item [\texttt{MC}] псевдослучайные,
+	\item [\texttt{QMC}] квазислучайные (последовательность Холтона),
+	\item [\texttt{RQMC}] рандомизированные квазислучайные (последовательность Холтона, рандомизация сдвигом).
+\end{description}
+\item [\texttt{halton\_dim}] размерность используемой последовательности Холтона, пропущена для псевдослучайных чисел.
+\item [\texttt{group}] группа наблюдений, имеющих один и тот же случайный сдвиг (имеет смысл только для рандомизированных квазислучайных чисел).
+\item [\texttt{est\_upper}] значение оценки.
+\end{description}
+
+
+
+
+\end{document}
