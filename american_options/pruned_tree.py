@@ -81,10 +81,7 @@ def evaluate(h, n, m, b, seed=np.random.randint(int(1e8)), type="MC"):
     for p in reversed(pruning_moments):
         clock = time.time()
         grow_points = get_states_for_time(S0, p, n, generator_grid)
-        # continuations = Parallel(n_jobs=4)(delayed(evaluate_tree)(state, b, h-1, continuation) for state in grow_points)
-        # continuations = np.array(continuations)[:,1]
-        continuations = np.array([evaluate_tree(state, b, h-1, continuation, generator_tree)[1] for state in grow_points])
-        # continuations = np.array([evaluate_tree(state, b, h-1, continuation) for state in grow_points])
+        continuations = np.array([evaluate_tree(state, b, h-1, continuation, generator_tree)[1] for state in grow_points])#.flatten()
         continuation = smooth(grow_points, continuations)
         logging.debug("done {} in {}".format(p, time.time() - clock))
     clock = time.time()
@@ -94,6 +91,7 @@ def evaluate(h, n, m, b, seed=np.random.randint(int(1e8)), type="MC"):
     logging.debug("done final in {}".format(time.time() - clock))
     return res
 
+
 if __name__ == '__main__':
     dim_X = 2
     rho = 0.3
@@ -101,10 +99,10 @@ if __name__ == '__main__':
     types = ["MC", "QMC grid", "RQMC grid", "QMC tree", "RQMC tree"]
     # type = "MC"
 
-    fmt = "{b},{h},{m},{n},{type},{est}\n"
+    fmt = "{b},{h},{m},{n},{type},{est},{group}\n"
     filename = "results_pruned_qmc.csv"
     with open(filename, "w") as f:
-        f.write(fmt.format(b="b",h="h",m="m",n="n",type="type",est="est"))
+        f.write(fmt.format(b="b",h="h",m="m",n="n",type="type",est="est",group="group"))
 
     logging.basicConfig(level=logging.INFO)
     # logging.basicConfig(level=logging.DEBUG)
@@ -112,27 +110,39 @@ if __name__ == '__main__':
     #     for h in range(2, 6):
     #         for b in range(2, 15):
     #             if (b ** np.arange(1, h)).sum() <= 40:
+    samples = 1000
+    strata = samples / 25
+    current_group = lambda i: i // (samples / strata)
     for b, h, m, n in [(14, 2, 22, 200), (4, 3, 22, 100), (14, 2, 22, 100)]:
-                    for type in types:
-                        generator_pr = norm.rvs
-                        qdim = dim_X if type.find("grid") >= 0 else dim_X * (b ** np.arange(1, h)).sum()
-                        randomized = type[0] == "R"
-                        quasirand = QuasiNorm(qdim, randomized=randomized, type="sobol")
-                        generator_qr = quasirand.gaussian
+        for type in types:
+            generator_pr = norm.rvs
+            qdim = dim_X if type.find("grid") >= 0 else dim_X * (b ** np.arange(1, h)).sum()
+            randomized = type[0] == "R"
+            quasirand = QuasiNorm(qdim, randomized=randomized, type="sobol")
+            generator_qr = quasirand.gaussian
 
-                        m = ((21 // (h - 1)) + 1) * (h - 1)
-                        S0, rho, corr_matrix, K, r, mu, delta, sigma, T, m, deltat, discount = make_constants(
-                            dim_X=dim_X, T=t, rho=rho, m=m
-                        )
-                        print("b = {}, h = {}, m = {}".format(b, h, m))
-                        clock = time.time()
-                        results = Parallel(n_jobs=8)(
-                            delayed(evaluate)(h=h, n=n, m=m+1, b=b, seed=np.random.randint(int(1e8))+s, type=type) for s in range(100)
-                        )
-                        # results = [evaluate(h=13, n=200, m=m+1, b=3) for _ in range(10)]
-                        logging.info("done all in {}".format(time.time() - clock))
-                        print(np.mean(results))
-                        print(np.std(results))
-                        with open(filename, "a") as f:
-                            for res in results:
-                                f.write(fmt.format(b=b, h=h, m=m, n=n, type=type, est=res))
+            m = ((21 // (h - 1)) + 1) * (h - 1)
+            S0, rho, corr_matrix, K, r, mu, delta, sigma, T, m, deltat, discount = make_constants(
+                dim_X=dim_X, T=t, rho=rho, m=m
+            )
+            print("b = {}, h = {}, m = {}, n = {}, discount = {}, deltat = {}".format(b, h, m, n, discount, deltat))
+            clock = time.time()
+
+            if not randomized:
+                results = Parallel(n_jobs=8)(
+                    delayed(evaluate)(h=h, n=n, m=m+1, b=b, seed=np.random.randint(int(1e8))+s, type=type) for s in range(samples)
+                )
+            else:
+                results = []
+                for s in range(samples):
+                    if current_group(s) != current_group(s - 1):
+                        quasirand.randomize()
+                    results.append(evaluate(h=h, n=n, m=m+1, b=b, seed=np.random.randint(int(1e8))+s, type=type))
+
+            # results = [evaluate(h=13, n=200, m=m+1, b=3) for _ in range(10)]
+            logging.info("done all in {}".format(time.time() - clock))
+            print(np.mean(results))
+            print(np.std(results))
+            with open(filename, "a") as f:
+                for i, res in enumerate(results):
+                    f.write(fmt.format(b=b, h=h, m=m, n=n, type=type, est=res, group=current_group(i)))

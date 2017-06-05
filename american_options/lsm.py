@@ -1,3 +1,7 @@
+import time
+
+import logging
+from joblib import Parallel, delayed
 from scipy import stats
 
 from constants import *
@@ -38,6 +42,7 @@ def payoff(state):
 
 
 def evaluate(b=10):
+    clock = time.time()
     mesh = get_states(S0, b)
     cash_flow = np.fromiter(map(payoff, mesh[-1]), dtype=np.float32)#.reshape(-1, 1)
 
@@ -55,6 +60,7 @@ def evaluate(b=10):
         continuation = predictors @ coef
         cash_flow[immediate_payoff > continuation] = immediate_payoff[immediate_payoff > continuation]
 
+    logging.info("done in", time.time() - clock)
     return cash_flow.mean()
 
 
@@ -68,6 +74,19 @@ with open(filename, "w") as f:
 samples = 15000
 types = ["MC", "QMC", "RQMC"]
 
+# filename = "results_lsm_to_pruned.csv"
+# with open(filename, "w") as f:
+#     fmt = "{n},{est}\n"
+#     f.write(fmt.format(n="n", est="est"))
+#
+# type="MC"
+# S0, rho, corr_matrix, K, r, mu, delta, sigma, T, m, deltat, discount = make_constants(dim_X=2, T=1, rho=0.3, m=22)
+# for n in [200*14, 1250]:
+#     print(n)
+#     res = Parallel(n_jobs=8)(delayed(evaluate)(200*14) for _ in range(samples))
+#     with open(filename, "a") as f:
+#         for est in res:
+#             f.write(fmt.format(n=n, est=est))
 for t, dim_X, rho in [(1, 2, 0.3), (1, 5, 0.3), (3, 5, 0)]:
     S0, rho, corr_matrix, K, r, mu, delta, sigma, T, m, deltat, discount = make_constants(dim_X=dim_X, T=t, rho=rho)
 
