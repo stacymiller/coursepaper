@@ -15,18 +15,18 @@
 \def\layersep{2.5cm}
 \def\vertsep{1.5cm}
 \def\gridp{17}
-\begin{tikzpicture}[shorten >=1pt,draw=black!50,yscale=-0.90, xscale=0.65]
+\begin{tikzpicture}[shorten >=1pt,draw=black!50,yscale=-0.95, xscale=0.5]
     \tikzstyle{vertex}=[circle,color=black,fill=black!50,inner sep=1,draw]
     \tikzstyle{selected vertex}=[circle,color=red,fill=red!50,inner sep=1,draw]
     
-    \draw (9.5, 0) node[rectangle] (root) {$X_0$};
+    \draw (9.5, 0) node[rectangle, color=black] (root) {$X_0$};
 
-    \draw[loosely dotted,color=black!50] (root) -- (20,0) node[color=black] {$t_0$};
+    \draw[loosely dotted,color=black!50] (root) -- (20,0) node[color=black, fill=white] {$t_0$};
     \foreach \line in {1,...,6}{
-        \draw[loosely dotted,color=black!50] (0,\line) -- (20,\line) node[color=black] {$t_\line$};
+        \draw[loosely dotted,color=black!50] (0,\line) -- (20,\line) node[color=black, fill=white] {$t_\line$};
     }
     \foreach \line in {3,2,1}{
-        \draw[loosely dotted,color=black!50] (0,{10-\line}) -- (20,{10-\line}) node[color=black] {$t_{m-\line}$};
+        \draw[loosely dotted,color=black!50] (0,{10-\line}) -- (20,{10-\line}) node[color=black, fill=white] {$t_{m-\line}$};
     }
 
     \foreach \branch in {1,2,3}{
@@ -67,7 +67,9 @@
     }
 
     \foreach \mid in {2,5,8,11,14,17}{
-        \draw (\mid, 6.75) node {$\vdots$};
+        \draw (\mid, 6.25) node {$\cdot$};
+        \draw (\mid, 6.5) node {$\cdot$};
+        \draw (\mid, 6.75) node {$\cdot$};
     }
 
     \foreach \n in {1,2}{
